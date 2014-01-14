@@ -1,6 +1,6 @@
 Name:		liblognorm
 Version:	0.3.7
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Fast samples-based log normalization library
 License:	LGPLv2+
 Group:		System Environment/Libraries
@@ -85,6 +85,9 @@ fi
 
 
 %changelog
+* Tue Dec 12 2013 Andre Lorbach
+- Fixed version
+
 * Wed Nov 27 2013 Andre Lorbach
 - Build for release 0.3.7
 

@@ -1,6 +1,6 @@
 Summary: The Reliable Event Logging Protocol library
 Name: librelp
-Version: 1.2.0
+Version: 1.2.2
 Release: 1%{?dist}
 License: GPLv3+
 Group: System Environment/Libraries
@@ -62,6 +62,9 @@ fi
 %{_libdir}/pkgconfig/relp.pc
 
 %changelog
+* Tue Jan 07 2014 Andre Lorbach
+- Updated to librelp 1.2.2
+
 * Mon Jul 15 2013 Andre Lorbach
 - Updated to librelp 1.2.0
 
