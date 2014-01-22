@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 7.4.8
-Release: 1%{?dist}
+Version: 7.4.9
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -33,6 +33,7 @@ BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
 BuildRequires: zlib-devel
+BuildRequires: liblogging-devel
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
 Requires: libgt
