@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.1.4
+Version: 8.1.5
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -34,6 +34,7 @@ BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
 BuildRequires: jemalloc-devel
+BuildRequires: liblogging-devel
 
 # json-c.i686
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
@@ -491,6 +492,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Fri Jan 24 2014 Andre Lorbach
+- Created RPM's for RSyslog 8.1.5
 
 * Fri Jan 10 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.1.4

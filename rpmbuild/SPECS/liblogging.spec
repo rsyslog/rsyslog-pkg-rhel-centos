@@ -1,8 +1,8 @@
 Name:		liblogging
 Version:	1.0.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	LibLogging stdlog library
-License:	LGPLv2+
+License:	2-clause BSD
 Group:		System Environment/Libraries
 URL:		http://www.liblogging.org
 Source0:	https://github.com/rsyslog/liblogging/releases/%{name}-%{version}.tar.gz
