@@ -5,7 +5,7 @@ Summary:	LibLogging stdlog library
 License:	2-clause BSD
 Group:		System Environment/Libraries
 URL:		http://www.liblogging.org
-Source0:	https://github.com/rsyslog/liblogging/releases/%{name}-%{version}.tar.gz
+Source0:	http://download.rsyslog.com/liblogging/%{name}-%{version}.tar.gz 
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
