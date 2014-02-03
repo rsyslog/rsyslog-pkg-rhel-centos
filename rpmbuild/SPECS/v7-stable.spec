@@ -14,7 +14,7 @@
 	%define rsysloglog rsyslog.log.epel5
 %endif
 
-Summary: Enhanced system logging and kernel message trapping daemon
+Summary: a rocket-fast system for log processing
 Name: rsyslog
 Version: 7.4.9
 Release: 2%{?dist}
