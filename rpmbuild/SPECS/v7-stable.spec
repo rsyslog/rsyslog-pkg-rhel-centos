@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 7.4.9
+Version: 7.4.10
 Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -33,7 +33,7 @@ BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
 BuildRequires: zlib-devel
-BuildRequires: liblogging-devel
+BuildRequires: liblogging1-devel
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
 Requires: libgt
@@ -461,6 +461,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Feb 12 2014 Andre Lorbach
+- Updated RPM's for RSyslog 7.4.10
+
+* Tue Feb 04 2014 Andre Lorbach
+- created RPM's for RSyslog 7.4.10
+
 * Wed Jan 08 2014 Andre Lorbach
 - created RPM's for RSyslog 7.4.8
 

@@ -1,14 +1,14 @@
-Name:		liblogging
-Version:	1.0.0
-Release:	2%{?dist}
+Name:		liblogging1
+Version:	1.0.1
+Release:	1%{?dist}
 Summary:	LibLogging stdlog library
 License:	2-clause BSD
 Group:		System Environment/Libraries
 URL:		http://www.liblogging.org
-Source0:	http://download.rsyslog.com/liblogging/%{name}-%{version}.tar.gz 
+Source0:	http://download.rsyslog.com/liblogging/liblogging-%{version}.tar.gz 
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot:	%{_tmppath}/liblogging-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	chrpath
 
 %description
@@ -28,7 +28,7 @@ The liblogging-devel package includes header files, libraries necessary for
 developing programs which use liblogging library.
 
 %prep
-%setup -q
+%setup -q -n liblogging-%{version}
 
 %build
 %configure
@@ -37,7 +37,7 @@ V=1 make
 %install
 make install INSTALL="install -p" DESTDIR=%{buildroot}
 rm -f %{buildroot}/%{_libdir}/*.{a,la}
-chrpath -d %{buildroot}/%{_libdir}/libstdlog.so.0.0.0
+chrpath -d %{buildroot}/%{_libdir}/liblogging-stdlog.so.0.0.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -56,9 +56,12 @@ fi
 %files devel
 %{_libdir}/lib*.so
 %{_includedir}/liblogging/*.h
-%{_libdir}/pkgconfig/libstdlog.pc
+%{_libdir}/pkgconfig/liblogging-stdlog.pc
 
 
 %changelog
+* Tue Feb 04 2014 Andre Lorbach
+- New RPMs for 1.0.1
+
 * Tue Jan 21 2014 Andre Lorbach
 - Initial Version
