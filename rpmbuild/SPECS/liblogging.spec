@@ -1,5 +1,5 @@
 Name:		liblogging
-Version:	1.0.0
+Version:	1.0.1
 Release:	2%{?dist}
 Summary:	LibLogging stdlog library
 License:	2-clause BSD
@@ -35,9 +35,9 @@ developing programs which use liblogging library.
 V=1 make
 
 %install
-make install INSTALL="install -p" DESTDIR=%{buildroot}
-rm -f %{buildroot}/%{_libdir}/*.{a,la}
-chrpath -d %{buildroot}/%{_libdir}/libstdlog.so.0.0.0
+make install INSTALL="install -p" DESTDIR="$RPM_BUILD_ROOT"
+rm -f %{buildroot}%{_libdir}/*.{a,la}
+chrpath -d %{buildroot}%{_libdir}/liblogging-stdlog.so.0.0.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -51,12 +51,12 @@ fi
 
 %files
 %doc AUTHORS ChangeLog COPYING NEWS README
-%{_libdir}/lib*.so.*
+%{_libdir}/liblogging-stdlog.so.*
 
 %files devel
-%{_libdir}/lib*.so
+%{_libdir}/liblogging-stdlog.so
 %{_includedir}/liblogging/*.h
-%{_libdir}/pkgconfig/libstdlog.pc
+%{_libdir}/pkgconfig/liblogging-stdlog.pc
 
 
 %changelog
