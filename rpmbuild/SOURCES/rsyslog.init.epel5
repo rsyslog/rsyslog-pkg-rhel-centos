@@ -24,6 +24,7 @@
 
 RETVAL=0
 PIDFILE=/var/run/rsyslogd.pid
+UMASK=077
 
 prog=rsyslog
 exec=/sbin/rsyslogd
@@ -37,7 +38,7 @@ fi
 start() {
 	[ -x $exec ] || exit 5
 
-	umask 077
+	umask $UMASK
 
         echo -n $"Starting system logger: "
 	daemon --pidfile="${PIDFILE}" $exec -i "${PIDFILE}" $SYSLOGD_OPTIONS
