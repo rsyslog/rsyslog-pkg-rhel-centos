@@ -3,3 +3,7 @@
 # If you want to use them, switch to compatibility mode 2 by "-c 2"
 # See rsyslogd(8) for more details
 SYSLOGD_OPTIONS=""
+
+# Change this if you need more flexibility in log permissions
+#UMASK=077
+
