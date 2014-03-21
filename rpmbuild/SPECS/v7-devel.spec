@@ -26,13 +26,22 @@ Source1: %{rsysloginit}
 Source2: rsyslog_v7.conf
 Source3: rsyslog.sysconfig
 Source4: %{rsysloglog}
-Requires: libgt
 BuildRequires: libestr-devel
 BuildRequires: libee-devel
 BuildRequires: json-c-devel
 BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
+BuildRequires: zlib-devel
+Requires: logrotate >= 3.5.2
+Requires: bash >= 2.0
+Requires: libgt
+Requires(post): /sbin/chkconfig coreutils
+Requires(preun): /sbin/chkconfig /sbin/service
+Requires(postun): /sbin/service
+Provides: syslog
+Obsoletes: sysklogd < 1.5-11
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # json-c.i686
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
@@ -40,16 +49,6 @@ BuildRequires: python-docutils
 # already patched 
 # Patch1: rsyslog-5.8.7-sysklogd-compat-1-template.patch
 # Patch2: rsyslog-5.8.7-sysklogd-compat-2-option.patch
-
-BuildRequires: zlib-devel
-Requires: logrotate >= 3.5.2
-Requires: bash >= 2.0
-Requires(post): /sbin/chkconfig coreutils
-Requires(preun): /sbin/chkconfig /sbin/service
-Requires(postun): /sbin/service
-Provides: syslog
-Obsoletes: sysklogd < 1.5-11
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # %package sysvinit
 # Summary: SysV init script for rsyslog

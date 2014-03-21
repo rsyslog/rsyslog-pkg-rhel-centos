@@ -16,8 +16,8 @@
 
 Summary: a rocket-fast system for log processing
 Name: rsyslog
-Version: 7.4.10
-Release: 2%{?dist}
+Version: 7.6.2
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -78,7 +78,7 @@ BuildRequires: krb5-devel
 Summary: RELP protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: librelp >= 1.0.2
+Requires: librelp >= 1.1.1
 BuildRequires: librelp-devel 
 
 %package gnutls
@@ -113,6 +113,17 @@ BuildRequires: liblognorm-devel
 
 %package mmanon
 Summary: mmanon support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
+%package mmfields
+Summary: mmfields support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: liblognorm-devel
+
+%package pmaixforwardedfrom
+Summary: pmaixforwardedfrom support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
@@ -207,6 +218,14 @@ inside the message, so after calling mmanon, the original message can
 no longer be obtained. Note that anonymization will break digital 
 signatures on the message, if they exist.
 
+%description mmfields
+Parse all fields of the message into structured data inside the JSON tree.
+
+%description pmaixforwardedfrom
+This module cleans up messages forwarded from AIX.
+Instead of actually parsing the message, this modifies the message and then 
+falls through to allow a later parser to handle the now modified message.
+
 %description ommail
 Mail Output Module.
 This module supports sending syslog messages via mail. Each syslog message 
@@ -255,6 +274,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
 		--disable-uuid \
 		--enable-cached-man-pages \
+                --enable-usertools \
 %endif
 		--enable-gnutls \
 		--enable-gssapi-krb5 \
@@ -276,6 +296,11 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmnormalize \
 		--enable-mmanon \
 		--enable-mail \
+		--enable-mmfields \
+		--enable-mmpstrucdata \
+		--enable-mmsequence \
+		--enable-pmaixforwardedfrom \
+		--enable-cached-man-pages \
 		--enable-guardtime
 
 make
@@ -368,10 +393,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/pmlastmsg.so
 %{_libdir}/rsyslog/lmcry_gcry.so
 %{_libdir}/rsyslog/lmsig_gt.so
-%if 0%{?rhel} >= 6
+%{_libdir}/rsyslog/mmpstrucdata.so
+%{_libdir}/rsyslog/mmsequence.so
+#%if 0%{?rhel} >= 6
 %{_bindir}/rscryutil
 %{_bindir}/rsgtutil
-%endif
+#%endif
 %config(noreplace) %{_sysconfdir}/rsyslog.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/rsyslog
 %config(noreplace) %{_sysconfdir}/logrotate.d/syslog
@@ -437,6 +464,14 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmanon.so
 
+%files mmfields
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmfields.so
+
+%files pmaixforwardedfrom
+%defattr(-,root,root)
+%{_libdir}/rsyslog/pmaixforwardedfrom.so
+
 %files ommail
 %defattr(-,root,root)
 %{_libdir}/rsyslog/ommail.so
@@ -461,6 +496,18 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Mon Mar 17 2014 Andre Lorbach
+- Created RPM's for RSyslog 7.6.2
+
+* Thu Mar 13 2014 Andre Lorbach
+- Final RPM's for RSyslog 7.6.1
+
+* Tue Mar 11 2014 Andre Lorbach
+- Created RPM's for RSyslog 7.6.1
+
+* Thu Feb 13 2014 Andre Lorbach
+- Created RPM's for RSyslog 7.6.0
+
 * Wed Feb 12 2014 Andre Lorbach
 - Updated RPM's for RSyslog 7.4.10
 

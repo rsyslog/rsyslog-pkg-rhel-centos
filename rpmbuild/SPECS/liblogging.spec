@@ -1,4 +1,4 @@
-Name:		liblogging1
+Name:		liblogging
 Version:	1.0.1
 Release:	2%{?dist}
 Summary:	LibLogging stdlog library
