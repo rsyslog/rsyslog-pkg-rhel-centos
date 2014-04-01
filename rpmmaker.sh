@@ -1,7 +1,7 @@
 
-SPECOPTIONS="v5-stable v6-stable v6-beta v7-stable v7-beta v7-devel v7-devel-cust v8-devel libestr libee libgt librelp json-c liblognorm liblognorm1 liblogging openpgm zeromq3 czmq libmongo-client python-docutils jemalloc gnutls libtasn1 nettle"
+SPECOPTIONS="v5-stable v6-stable v7-stable v7-devel v7-devel-cust v8-stable v8-devel libestr libee libgt librelp json-c liblognorm liblognorm1 liblogging openpgm zeromq3 czmq libmongo-client python-docutils jemalloc gnutls libtasn1 nettle"
 # util-linux popt udev gobject-introspection python db4 util-linux"
-REPOOPTIONS="v5-stable v6-stable v6-beta v7-stable v7-beta v7-devel v8-devel testing"
+REPOOPTIONS="v5-stable v6-stable v7-stable v7-devel v8-stable v8-devel testing"
 ARCHOPTIONS="i386 x86_64"				   
 PLATOPTIONS="epel-5 epel-6" #"opensuse-11"
 

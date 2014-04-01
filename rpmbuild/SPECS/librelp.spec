@@ -1,7 +1,7 @@
 Summary: The Reliable Event Logging Protocol library
 Name: librelp
 Version: 1.2.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv3+
 Group: System Environment/Libraries
 URL: http://www.rsyslog.com/
@@ -31,7 +31,12 @@ to develop applications using librelp.
 %setup -q
 
 %build
-%configure --disable-static --disable-tls
+%configure \
+--disable-static
+#%if 0%{?rhel} < 6
+#--disable-tls \
+#%endif
+
 make %{?_smp_mflags}
 
 %install
@@ -62,6 +67,9 @@ fi
 %{_libdir}/pkgconfig/relp.pc
 
 %changelog
+* Mon Mar 24 2014 Andre Lorbach
+- Removed disable-tls option
+
 * Thu Mar 20 2014 Andre Lorbach
 - Updated to librelp 1.2.5
 
