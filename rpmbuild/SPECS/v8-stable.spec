@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2.0
+Version: 8.2.1
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -366,7 +366,8 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS COPYING* NEWS README ChangeLog rsyslog-doc.tar.gz 
+%doc AUTHORS COPYING* NEWS README ChangeLog 
+# missing rsyslog-doc.tar.gz 
 # old doc/*html
 %dir %{_libdir}/rsyslog
 %{_libdir}/rsyslog/imfile.so
@@ -493,6 +494,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Apr 22 2014 Andre Lorbach
+- Created RPM's for RSyslog 8.2.1
+
+* Wed Apr 02 2014 Andre Lorbach
+- Final Build for first V8-Stable release
+
 * Tue Apr 01 2014 Andre Lorbach
 - First Testbuild for RSyslog V8-Stable
 

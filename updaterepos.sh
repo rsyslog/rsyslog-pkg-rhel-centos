@@ -1,6 +1,6 @@
 
 ALLREPOS="Yes"
-REPOOPTIONS="v5-stable v6-stable v6-beta v7-stable v7-beta v7-devel v8-devel testing"
+REPOOPTIONS="v5-stable v7-stable v8-stable v8-devel testing"
 ARCHOPTIONS="i386 x86_64"
 PLATOPTIONS="epel-5 epel-6" #"opensuse-11"
 

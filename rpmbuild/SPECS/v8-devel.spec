@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.1.6
-Release: 3%{?dist}
+Version: 8.3.1
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -257,10 +257,10 @@ open source NoSQL database.
 %build
 %ifarch sparc64
 #sparc64 need big PIE
-export CFLAGS="$RPM_OPT_FLAGS -fPIE -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\""
+export CFLAGS="$RPM_OPT_FLAGS -fPIE -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
-export CFLAGS="$RPM_OPT_FLAGS -fpie -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\""
+export CFLAGS="$RPM_OPT_FLAGS -fpie -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %endif
 #		--enable-imzmq3 \
@@ -366,7 +366,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS COPYING* NEWS README ChangeLog doc/*html
+%doc AUTHORS COPYING* NEWS README ChangeLog 
 %dir %{_libdir}/rsyslog
 %{_libdir}/rsyslog/imfile.so
 %{_libdir}/rsyslog/imklog.so
@@ -394,6 +394,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/lmsig_gt.so
 %{_libdir}/rsyslog/mmpstrucdata.so
 %{_libdir}/rsyslog/mmsequence.so
+%{_libdir}/rsyslog/mmexternal.so
 %if 0%{?rhel} >= 6
 %{_bindir}/rscryutil
 %{_bindir}/rsgtutil
@@ -492,6 +493,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Thu Apr 24 2014 Andre Lorbach
+- Created RPM's for RSyslog 8.3.1
+
+* Thu Apr 10 2014 Andre Lorbach
+- Created RPM's for RSyslog 8.3.0
+
 * Thu Mar 11 2014 Andre Lorbach
 - New build for librelp
 

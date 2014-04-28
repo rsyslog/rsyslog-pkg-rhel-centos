@@ -1,6 +1,6 @@
 Name:		liblogging
-Version:	1.0.1
-Release:	2%{?dist}
+Version:	1.0.4
+Release:	1%{?dist}
 Summary:	LibLogging stdlog library
 License:	2-clause BSD
 Group:		System Environment/Libraries
@@ -31,7 +31,7 @@ developing programs which use liblogging library.
 %setup -q -n liblogging-%{version}
 
 %build
-%configure
+%configure --disable-journal
 V=1 make
 
 %install
@@ -52,6 +52,8 @@ fi
 %files
 %doc AUTHORS ChangeLog COPYING NEWS README
 %{_libdir}/liblogging-stdlog.so.*
+%{_bindir}/stdlogctl
+%{_mandir}/*/*
 
 %files devel
 %{_libdir}/liblogging-stdlog.so
@@ -60,6 +62,9 @@ fi
 
 
 %changelog
+* Wed Mar 02 2014 Andre Lorbach
+- New RPMs for 1.0.4
+
 * Tue Feb 04 2014 Andre Lorbach
 - New RPMs for 1.0.1
 
