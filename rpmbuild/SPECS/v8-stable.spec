@@ -655,3 +655,4 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 
 * Thu Aug 23 2012 Andre Lorbach
 - created RPMs for 5.8.13, no changes needed
+
