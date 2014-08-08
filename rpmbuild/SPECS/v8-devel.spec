@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.3.1
+Version: 8.3.5
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -137,6 +137,11 @@ Summary: Mail support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package pmciscoios
+Summary: pmciscoios support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %if 0%{?rhel} >= 6
 %package elasticsearch
 Summary: Provides the omelasticsearch module
@@ -227,6 +232,9 @@ inside the message, so after calling mmanon, the original message can
 no longer be obtained. Note that anonymization will break digital 
 signatures on the message, if they exist.
 
+%description pmciscoios
+Parser module which supports various Cisco IOS formats.
+
 %description ommail
 Mail Output Module.
 This module supports sending syslog messages via mail. Each syslog message 
@@ -276,6 +284,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
 		--disable-uuid \
 		--enable-cached-man-pages \
+		--disable-generate-man-pages \
 %endif
 		--enable-gnutls \
 		--enable-imfile \
@@ -299,6 +308,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmfields \
 		--enable-mmpstrucdata \
 		--enable-mmsequence \
+		--enable-pmciscoios \
 		--enable-guardtime \
 		--enable-jemalloc
 
@@ -469,6 +479,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmanon.so
 
+%files pmciscoios
+%defattr(-,root,root)
+%{_libdir}/rsyslog/pmciscoios.so
+
 %files ommail
 %defattr(-,root,root)
 %{_libdir}/rsyslog/ommail.so
@@ -493,6 +507,19 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Aug 05 2014 Andre Lorbach
+- Created RPM's for RSyslog 8.3.5
+- Added RPM Package for pmciscoios
+
+* Fri Jul 11 2014 Andre Lorbach
+- Created RPM's for RSyslog 8.3.4
+
+* Thu Jun 26 2014 Andre Lorbach
+- Created RPM's for RSyslog 8.3.3
+
+* Fri May 02 2014 Andre Lorbach
+- Created RPM's for RSyslog 8.3.2
+
 * Thu Apr 24 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.3.1
 

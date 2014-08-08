@@ -1,4 +1,6 @@
 %global reldate 20130402
+# AVOIDS CRASH BUG in make https://bugzilla.redhat.com/show_bug.cgi?id=903009
+%global debug_package %{nil} 
 
 Name:		json-c
 Version:	0.11
