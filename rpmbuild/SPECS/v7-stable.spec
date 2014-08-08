@@ -116,6 +116,11 @@ Summary: mmanon support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package mmutf8fix
+Summary: mmutf8fix support
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %package mmfields
 Summary: mmfields support 
 Group: System Environment/Daemons
@@ -218,6 +223,10 @@ inside the message, so after calling mmanon, the original message can
 no longer be obtained. Note that anonymization will break digital 
 signatures on the message, if they exist.
 
+%description mmutf8fix
+UTF-8 Fix support (mmutf8fix).
+The mmutf8fix module permits to fix invalid UTF-8 sequences. Most often, such invalid sequences result from syslog sources sending in non-UTF character sets, e.g. ISO 8859. As syslog does not have a way to convey the character set information, these sequences are not properly handled.
+
 %description mmfields
 Parse all fields of the message into structured data inside the JSON tree.
 
@@ -295,6 +304,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmjsonparse \
 		--enable-mmnormalize \
 		--enable-mmanon \
+		--enable-mmutf8fix \
 		--enable-mail \
 		--enable-mmfields \
 		--enable-mmpstrucdata \
@@ -464,6 +474,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmanon.so
 
+%files mmutf8fix
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmutf8fix.so
+
 %files mmfields
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmfields.so
@@ -496,6 +510,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Jun 14 2014 Mike Liebsch
+- Added mmutf8fix support
+
 * Thu Mar 27 2014 Andre Lorbach
 - Created RPM's for RSyslog 7.6.3
 

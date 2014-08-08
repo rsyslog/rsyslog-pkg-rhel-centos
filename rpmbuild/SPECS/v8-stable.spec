@@ -132,6 +132,11 @@ Summary: mmanon support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package mmutf8fix
+Summary: mmutf8fix support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %package ommail
 Summary: Mail support 
 Group: System Environment/Daemons
@@ -227,6 +232,10 @@ inside the message, so after calling mmanon, the original message can
 no longer be obtained. Note that anonymization will break digital 
 signatures on the message, if they exist.
 
+%description mmutf8fix
+UTF-8 Fix support (mmutf8fix).
+The mmutf8fix module permits to fix invalid UTF-8 sequences. Most often, such invalid sequences result from syslog sources sending in non-UTF character sets, e.g. ISO 8859. As syslog does not have a way to convey the character set information, these sequences are not properly handled.
+
 %description ommail
 Mail Output Module.
 This module supports sending syslog messages via mail. Each syslog message 
@@ -295,6 +304,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmjsonparse \
 		--enable-mmnormalize \
 		--enable-mmanon \
+		--enable-mmutf8fix \
 		--enable-mail \
 		--enable-mmfields \
 		--enable-mmpstrucdata \
@@ -470,6 +480,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmanon.so
 
+%files mmutf8fix 
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmutf8fix.so
+
 %files ommail
 %defattr(-,root,root)
 %{_libdir}/rsyslog/ommail.so
@@ -494,8 +508,13 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
 * Thu Jun 26 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.2.2
+
+* Tue Jun 14 2014 Mike Liebsch
+- Added mmutf8fix support
+- Updated to RSyslog 8.2.2
 
 * Wed Apr 22 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.2.1
@@ -640,3 +659,4 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 
 * Thu Aug 23 2012 Andre Lorbach
 - created RPMs for 5.8.13, no changes needed
+
