@@ -87,7 +87,6 @@ rm -rf %{buildroot}
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
-
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING NEWS README README.html
@@ -106,7 +105,6 @@ rm -rf %{buildroot}
 %files doc
 %defattr(-,root,root,-)
 %doc doc/html/*
-
 
 %changelog
 * Sat Aug 24 2013 Remi Collet <remi@fedoraproject.org> - 0.11-3

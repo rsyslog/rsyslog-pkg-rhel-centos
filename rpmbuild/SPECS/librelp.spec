@@ -31,6 +31,7 @@ to develop applications using librelp.
 %setup -q
 
 %build
+
 %configure \
 %if 0%{?rhel} < 6
 --disable-tls \
