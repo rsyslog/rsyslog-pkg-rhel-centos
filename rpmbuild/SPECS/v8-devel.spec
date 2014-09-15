@@ -90,12 +90,14 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: librelp >= 1.1.1
 BuildRequires: librelp-devel 
+BuildRequires: libgcrypt-devel
 
 %package gnutls
 Summary: TLS protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: gnutls-devel
+BuildRequires: libgcrypt-devel
 
 %package snmp
 Summary: SNMP protocol support for rsyslog
@@ -129,6 +131,11 @@ BuildRequires: liblognorm1-devel
 
 %package mmanon
 Summary: mmanon support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
+%package mmutf8fix
+Summary: mmutf8fix support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
@@ -232,6 +239,10 @@ inside the message, so after calling mmanon, the original message can
 no longer be obtained. Note that anonymization will break digital 
 signatures on the message, if they exist.
 
+%description mmutf8fix
+UTF-8 Fix support (mmutf8fix).
+The mmutf8fix module permits to fix invalid UTF-8 sequences. Most often, such invalid sequences result from syslog sources sending in non-UTF character sets, e.g. ISO 8859. As syslog does not have a way to convey the character set information, these sequences are not properly handled.
+
 %description pmciscoios
 Parser module which supports various Cisco IOS formats.
 
@@ -283,7 +294,6 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 	        --enable-usertools \
 %else
 		--disable-uuid \
-		--enable-cached-man-pages \
 		--disable-generate-man-pages \
 %endif
 		--enable-gnutls \
@@ -304,13 +314,14 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmjsonparse \
 		--enable-mmnormalize \
 		--enable-mmanon \
+		--enable-mmutf8fix \
 		--enable-mail \
 		--enable-mmfields \
 		--enable-mmpstrucdata \
 		--enable-mmsequence \
 		--enable-pmciscoios \
-		--enable-guardtime \
-		--enable-jemalloc
+		--enable-guardtime
+#--enable-jemalloc
 
 make
 
@@ -420,7 +431,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_mandir}/*/*
 # removed since 7.3.9 
 # %{_libdir}/rsyslog/compat.so
-# %{_unitdir}/rsyslog.service
+
+%if 0%{?rhel} >= 7
+%{_unitdir}/rsyslog.service
+%endif
 
 #%files sysvinit
 #%attr(0755,root,root) %{_initrddir}/rsyslog
@@ -478,6 +492,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %files mmanon
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmanon.so
+
+%files mmutf8fix 
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmutf8fix.so
 
 %files pmciscoios
 %defattr(-,root,root)

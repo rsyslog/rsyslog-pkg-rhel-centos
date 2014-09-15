@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2.2
+Version: 8.4.1
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -90,12 +90,14 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: librelp >= 1.1.1
 BuildRequires: librelp-devel 
+BuildRequires: libgcrypt-devel
 
 %package gnutls
 Summary: TLS protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: gnutls-devel
+BuildRequires: libgcrypt-devel
 
 %package snmp
 Summary: SNMP protocol support for rsyslog
@@ -139,6 +141,11 @@ Requires: %name = %version-%release
 
 %package ommail
 Summary: Mail support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
+%package pmciscoios
+Summary: pmciscoios support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
@@ -236,6 +243,9 @@ signatures on the message, if they exist.
 UTF-8 Fix support (mmutf8fix).
 The mmutf8fix module permits to fix invalid UTF-8 sequences. Most often, such invalid sequences result from syslog sources sending in non-UTF character sets, e.g. ISO 8859. As syslog does not have a way to convey the character set information, these sequences are not properly handled.
 
+%description pmciscoios
+Parser module which supports various Cisco IOS formats.
+
 %description ommail
 Mail Output Module.
 This module supports sending syslog messages via mail. Each syslog message 
@@ -266,10 +276,10 @@ open source NoSQL database.
 %build
 %ifarch sparc64
 #sparc64 need big PIE
-export CFLAGS="$RPM_OPT_FLAGS -fPIE -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\""
+export CFLAGS="$RPM_OPT_FLAGS -fPIE -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
-export CFLAGS="$RPM_OPT_FLAGS -fpie -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\""
+export CFLAGS="$RPM_OPT_FLAGS -fpie -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %endif
 #		--enable-imzmq3 \
@@ -284,7 +294,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 	        --enable-usertools \
 %else
 		--disable-uuid \
-		--enable-cached-man-pages \
+		--disable-generate-man-pages \
 %endif
 		--enable-gnutls \
 		--enable-imfile \
@@ -309,8 +319,9 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmfields \
 		--enable-mmpstrucdata \
 		--enable-mmsequence \
-		--enable-guardtime \
-		--enable-jemalloc
+		--enable-pmciscoios \
+		--enable-guardtime
+#--enable-jemalloc
 
 make
 
@@ -406,6 +417,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/lmsig_gt.so
 %{_libdir}/rsyslog/mmpstrucdata.so
 %{_libdir}/rsyslog/mmsequence.so
+%{_libdir}/rsyslog/mmexternal.so
 %if 0%{?rhel} >= 6
 %{_bindir}/rscryutil
 %{_bindir}/rsgtutil
@@ -421,7 +433,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_mandir}/*/*
 # removed since 7.3.9 
 # %{_libdir}/rsyslog/compat.so
-# %{_unitdir}/rsyslog.service
+%if 0%{?rhel} >= 7
+%{_unitdir}/rsyslog.service
+%endif
 
 #%files sysvinit
 #%attr(0755,root,root) %{_initrddir}/rsyslog
@@ -480,6 +494,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmanon.so
 
+%files pmciscoios
+%defattr(-,root,root)
+%{_libdir}/rsyslog/pmciscoios.so
+
 %files mmutf8fix 
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmutf8fix.so
@@ -508,6 +526,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Mon Aug 18 2014 Andre Lorbach
+- Created RPM's for RSyslog 8.4.0
 
 * Thu Jun 26 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.2.2

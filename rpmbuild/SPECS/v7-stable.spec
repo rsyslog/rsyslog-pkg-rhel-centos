@@ -16,7 +16,7 @@
 
 Summary: a rocket-fast system for log processing
 Name: rsyslog
-Version: 7.6.3
+Version: 7.6.4
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -33,7 +33,7 @@ BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
 BuildRequires: zlib-devel
-BuildRequires: liblogging1-devel
+BuildRequires: liblogging-devel
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
 Requires: libgt
@@ -80,12 +80,14 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: librelp >= 1.1.1
 BuildRequires: librelp-devel 
+BuildRequires: libgcrypt-devel
 
 %package gnutls
 Summary: TLS protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: gnutls-devel
+BuildRequires: libgcrypt-devel
 
 %package snmp
 Summary: SNMP protocol support for rsyslog
@@ -265,10 +267,10 @@ open source NoSQL database.
 %build
 %ifarch sparc64
 #sparc64 need big PIE
-export CFLAGS="$RPM_OPT_FLAGS -fPIE -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\""
+export CFLAGS="$RPM_OPT_FLAGS -fPIE -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
-export CFLAGS="$RPM_OPT_FLAGS -fpie -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\""
+export CFLAGS="$RPM_OPT_FLAGS -fpie -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %endif
 #		--enable-imzmq3 \
@@ -282,8 +284,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 	        --enable-usertools \
 %else
 		--disable-uuid \
-		--enable-cached-man-pages \
-                --enable-usertools \
+		--disable-generate-man-pages \
 %endif
 		--enable-gnutls \
 		--enable-gssapi-krb5 \
@@ -310,8 +311,8 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmpstrucdata \
 		--enable-mmsequence \
 		--enable-pmaixforwardedfrom \
-		--enable-cached-man-pages \
 		--enable-guardtime
+#--enable-cached-man-pages \
 
 make
 
@@ -405,10 +406,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/lmsig_gt.so
 %{_libdir}/rsyslog/mmpstrucdata.so
 %{_libdir}/rsyslog/mmsequence.so
-#%if 0%{?rhel} >= 6
+%if 0%{?rhel} >= 6
 %{_bindir}/rscryutil
 %{_bindir}/rsgtutil
-#%endif
+%endif
 %config(noreplace) %{_sysconfdir}/rsyslog.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/rsyslog
 %config(noreplace) %{_sysconfdir}/logrotate.d/syslog
@@ -420,7 +421,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_mandir}/*/*
 # removed since 7.3.9 
 # %{_libdir}/rsyslog/compat.so
-# %{_unitdir}/rsyslog.service
+%if 0%{?rhel} >= 7
+%{_unitdir}/rsyslog.service
+%endif
 
 #%files sysvinit
 #%attr(0755,root,root) %{_initrddir}/rsyslog
@@ -510,6 +513,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Fri Sep 12 2014 Andre Lorbach
+- Created RPM's for RSyslog 7.6.4
+
 * Tue Jun 14 2014 Mike Liebsch
 - Added mmutf8fix support
 
