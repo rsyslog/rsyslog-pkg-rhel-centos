@@ -16,7 +16,7 @@
 
 Summary: a rocket-fast system for log processing
 Name: rsyslog
-Version: 7.6.4
+Version: 7.6.5
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -513,6 +513,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Wed Sep 17 2014 Andre Lorbach
+- Created RPM's for RSyslog 7.6.5
 
 * Fri Sep 12 2014 Andre Lorbach
 - Created RPM's for RSyslog 7.6.4

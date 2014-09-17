@@ -59,7 +59,7 @@ for distro in $szDist; do
 	        echo "Makeing RPMs from sourcefile '$szSrcDirFile'"
 	        sudo mv $szSrcDirFile $szRpmBuildDir/
 	        sudo mock -r $distro-$arch $szRpmBuildDir/$szSrcFile;
-	        chown makerpm /var/lib/mock/$distro-$arch/result/*.rpm
+	        chown $szLocalUser /var/lib/mock/$distro-$arch/result/*.rpm
 	        sudo rpm --addsign /var/lib/mock/$distro-$arch/result/*.rpm
 	        for subrepo in $szSubRepo; do 
 			repo=$szYumRepoDir/$subrepo/$distro/$arch;

@@ -6,5 +6,6 @@ PLATOPTIONS="epel-5 epel-6 epel-7" #"opensuse-11"
 szRpmBaseDir=$(dirname "$0")/rpmbuild
 szRpmBuildDir=$szRpmBaseDir/SRPMS
 szYumRepoDir=$(dirname "$0")/yumrepo
+szLocalUser=makerpm
 
 
