@@ -1,8 +1,10 @@
-SPECOPTIONS="v5-stable v6-stable v7-stable v7-devel v7-devel-cust v8-stable v8-devel libestr libee libgt librelp json-c liblognorm liblognorm1 liblogging openpgm zeromq3 czmq libmongo-client python-docutils python-sphinx jemalloc gnutls libtasn1 nettle"
-# util-linux popt udev gobject-introspection python db4 util-linux"
-REPOOPTIONS="v5-stable v7-stable v8-stable v8-devel testing"
-ARCHOPTIONS="i386 x86_64"				   
-PLATOPTIONS="epel-5 epel-6 epel-7" #"opensuse-11"
+# Definitions common to these scripts
+source $(dirname "$0")/config.sh
+
+#SPECOPTIONS="v5-stable v6-stable v7-stable v7-devel v7-devel-cust v8-stable v8-devel libestr libee libgt librelp json-c liblognorm liblognorm1 liblogging openpgm zeromq3 czmq libmongo-client python-docutils python-sphinx jemalloc gnutls libtasn1 nettle"
+#REPOOPTIONS="v5-stable v7-stable v8-stable v8-devel testing"
+#ARCHOPTIONS="i386 x86_64"				   
+#PLATOPTIONS="epel-5 epel-6 epel-7" #"opensuse-11"
 
 echo "-------------------------------------"
 echo "--- RPMMaker                      ---"
@@ -46,21 +48,21 @@ do
         break;
 done
 
-szRpmBuildDir=/home/makerpm/rpmbuild/SRPMS/
+#szRpmBuildDir=/home/makerpm/rpmbuild/SRPMS/
 	
 for distro in $szDist; do 
 	for arch in $szArch; do	
 		echo "Making Source RPM for $szSpec.spec in $distro-$arch"
-	        sudo mock -r $distro-$arch --buildsrpm --spec /home/makerpm/rpmbuild/SPECS/$szSpec.spec --sources /home/makerpm/rpmbuild/SOURCES
+	        sudo mock -r $distro-$arch --buildsrpm --spec $szRpmBaseDir/SPECS/$szSpec.spec --sources $szRpmBaseDir/SOURCES
 	        szSrcDirFile=`ls /var/lib/mock/$distro-$arch/result/*src.rpm`
 	        szSrcFile=`basename $szSrcDirFile`
 	        echo "Makeing RPMs from sourcefile '$szSrcDirFile'"
-	        sudo mv $szSrcDirFile $szRpmBuildDir
-	        sudo mock -r $distro-$arch $szRpmBuildDir$szSrcFile;
+	        sudo mv $szSrcDirFile $szRpmBuildDir/
+	        sudo mock -r $distro-$arch $szRpmBuildDir/$szSrcFile;
 	        chown makerpm /var/lib/mock/$distro-$arch/result/*.rpm
 	        sudo rpm --addsign /var/lib/mock/$distro-$arch/result/*.rpm
 	        for subrepo in $szSubRepo; do 
-			repo=/home/makerpm/yumrepo/$subrepo/$distro/$arch;
+			repo=$szYumRepoDir/$subrepo/$distro/$arch;
 			sudo cp /var/lib/mock/$distro-$arch/result/*rpm $repo/RPMS/;
        		        echo "Copying RPMs to $repo"
 			sudo createrepo -q -s sha -o $repo -d -p $repo;
