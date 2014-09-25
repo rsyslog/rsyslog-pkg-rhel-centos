@@ -3,6 +3,7 @@ REPOOPTIONS="v5-stable v7-stable v8-stable v8-devel testing"
 ARCHOPTIONS="i386 x86_64"
 PLATOPTIONS="epel-5 epel-6 epel-7" #"opensuse-11"
 
+szBaseDir=$(dirname "$0")
 szRpmBaseDir=$(dirname "$0")/rpmbuild
 szRpmBuildDir=$szRpmBaseDir/SRPMS
 szYumRepoDir=$(dirname "$0")/yumrepo
