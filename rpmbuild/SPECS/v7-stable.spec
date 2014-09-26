@@ -16,8 +16,8 @@
 
 Summary: a rocket-fast system for log processing
 Name: rsyslog
-Version: 7.6.5
-Release: 9%{?dist}
+Version: 7.6.6
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -513,6 +513,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Tue Sep 30 2014 Florian Riedl
+- Created RPM's for Rsyslog 7.6.6
 
 * Thu Sep 18 2014 Andre Lorbach
 - Fixed seqfault issue one CentOS 6
