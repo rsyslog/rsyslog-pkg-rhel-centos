@@ -17,7 +17,7 @@
 Summary: a rocket-fast system for log processing
 Name: rsyslog
 Version: 7.6.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -513,6 +513,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Wed Oct 01 2014 Florian Riedl
+- Fixed GPG signing
 
 * Tue Sep 30 2014 Florian Riedl
 - Created RPM's for Rsyslog 7.6.6
