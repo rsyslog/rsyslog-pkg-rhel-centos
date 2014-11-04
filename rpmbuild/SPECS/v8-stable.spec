@@ -530,6 +530,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Thu Oct 02 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.4.2
 
+* Wed Oct 01 2014 Florian Riedl
+- fixed GPG signing
+
+* Tue Sep 30 2014 Florian Riedl
+- Created RPM's for RSyslog 8.4.1
+
 * Mon Aug 18 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.4.0
 

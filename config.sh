@@ -8,5 +8,3 @@ szRpmBaseDir=$(dirname "$0")/rpmbuild
 szRpmBuildDir=$szRpmBaseDir/SRPMS
 szYumRepoDir=$(dirname "$0")/yumrepo
 szLocalUser=makerpm
-
-

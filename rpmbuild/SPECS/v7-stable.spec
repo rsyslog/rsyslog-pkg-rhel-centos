@@ -517,6 +517,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Thu Oct 02 2014 Andre Lorbach
 - Created RPM's for RSyslog 7.6.7
 
+* Wed Oct 01 2014 Florian Riedl
+- Fixed GPG signing
+
+* Tue Sep 30 2014 Florian Riedl
+- Created RPM's for Rsyslog 7.6.6
+
 * Thu Sep 18 2014 Andre Lorbach
 - Fixed seqfault issue one CentOS 6
 
