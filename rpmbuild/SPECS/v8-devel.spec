@@ -173,7 +173,6 @@ BuildRequires: libcurl-devel
 Summary: MongoDB output support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: mongodb-devel
 BuildRequires: libmongo-client-devel
 %endif
 

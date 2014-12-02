@@ -173,7 +173,6 @@ BuildRequires: libcurl-devel
 Summary: MongoDB output support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: mongodb-devel
 BuildRequires: libmongo-client-devel
 %endif
 
@@ -545,11 +544,11 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Mon Dec 01 2014 Florian Riedl
 - Created RPM's for RSyslog 8.6.0
 
-* Tue Nov 04 2014 Andre Lorbach
-- Added pmaixforwardedfrom module
-
 * Wed Nov 12 2014 Florian Riedl
 - Created RPM's for RSyslog 8.4.2.ad1
+
+* Tue Nov 04 2014 Andre Lorbach
+- Added pmaixforwardedfrom module
 
 * Thu Oct 02 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.4.2
