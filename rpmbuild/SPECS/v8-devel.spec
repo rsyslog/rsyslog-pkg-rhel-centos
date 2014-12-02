@@ -33,7 +33,6 @@ BuildRequires: json-c-devel
 BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
-BuildRequires: jemalloc-devel
 BuildRequires: liblogging-devel
 
 # json-c.i686
