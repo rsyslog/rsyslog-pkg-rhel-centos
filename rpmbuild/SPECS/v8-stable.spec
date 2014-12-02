@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.4.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -129,6 +129,11 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: liblognorm1-devel
 
+%package pmaixforwardedfrom
+Summary: pmaixforwardedfrom support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %package mmanon
 Summary: mmanon support 
 Group: System Environment/Daemons
@@ -232,6 +237,11 @@ by using the liblognorm and it's Rulebase format.
 %description mmfields
 Parse all fields of the message into structured data inside the JSON tree.
 
+%description pmaixforwardedfrom
+This module cleans up messages forwarded from AIX.
+Instead of actually parsing the message, this modifies the message and then 
+falls through to allow a later parser to handle the now modified message.
+
 %description mmanon
 IP Address Anonimization Module (mmanon).
 It is a message modification module that actually changes the IP address 
@@ -319,6 +329,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmfields \
 		--enable-mmpstrucdata \
 		--enable-mmsequence \
+		--enable-pmaixforwardedfrom \
 		--enable-pmciscoios \
 		--enable-guardtime
 #--enable-jemalloc
@@ -490,6 +501,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmfields.so
 
+%files pmaixforwardedfrom
+%defattr(-,root,root)
+%{_libdir}/rsyslog/pmaixforwardedfrom.so
+
 %files mmanon
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmanon.so
@@ -526,6 +541,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Tue Nov 04 2014 Andre Lorbach
+- Added pmaixforwardedfrom module 
 
 * Thu Oct 02 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.4.2
