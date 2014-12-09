@@ -1,5 +1,5 @@
 Name:		liblogging
-Version:	1.0.4
+Version:	1.0.5
 Release:	1%{?dist}
 Summary:	LibLogging stdlog library
 License:	2-clause BSD
@@ -62,6 +62,10 @@ fi
 
 
 %changelog
+
+* Tue Dec 09 2014 Florian Riedl
+- New RPMs for 1.0.5
+
 * Wed Mar 02 2014 Andre Lorbach
 - New RPMs for 1.0.4
 
