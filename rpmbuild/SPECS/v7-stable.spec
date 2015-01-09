@@ -532,7 +532,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Fri Sep 12 2014 Andre Lorbach
 - Created RPM's for RSyslog 7.6.4
 
-* Tue Jun 14 2014 Mike Liebsch
+* Sat Jun 14 2014 Mike Liebsch
 - Added mmutf8fix support
 
 * Thu Mar 27 2014 Andre Lorbach
@@ -572,13 +572,13 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Tue Oct 22 2013 Andre Lorbach
 - created RPM's for RSyslog 7.4.5
 
-* Thu Sep 09 2013 Andre Lorbach
+* Mon Sep 09 2013 Andre Lorbach
 - Removed libmongo dependency from base package
 
-* Thu Sep 03 2013 Andre Lorbach
+* Tue Sep 03 2013 Andre Lorbach
 - created RPM's for RSyslog 7.4.4
 
-* Thu Jul 19 2013 Andre Lorbach
+* Fri Jul 19 2013 Andre Lorbach
 - created RPM's for RSyslog 7.4.3
 
 * Thu Jul 04 2013 Andre Lorbach
@@ -587,7 +587,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Mon Jun 17 2013 Andre Lorbach
 - created RPM's for RSyslog 7.4.1
 
-* Thu Jun 05 2013 Andre Lorbach
+* Wed Jun 05 2013 Andre Lorbach
 - created RPM's for RSyslog 7.4.0
 
 * Fri May 24 2013 Andre Lorbach
@@ -605,12 +605,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Tue Mar 05 2013 Andre Lorbach
 - created RPM's for RSyslog 7.2.6
 
-* Tue Jan 18 2013 Andre Lorbach
+* Fri Jan 18 2013 Andre Lorbach
 - Added Package zmq3 for imzmq3 and omzmq3
   modules. Support is only available on
   EHEL 6
 
-* Tue Jan 16 2013 Andre Lorbach
+* Wed Jan 16 2013 Andre Lorbach
 - Added Module for omelasticsearch , 
   thanks to Radu Gheorghe. Support is only available on
   EHEL 6 and higher!
@@ -637,7 +637,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Mon Oct 15 2012 Andre Lorbach
 - removed systemd-units dependency  
 
-* Fri Sep 06 2012 Andre Lorbach
+* Thu Sep 06 2012 Andre Lorbach
 - created RPMs for RSyslog 7.1.0 
 
 * Fri Aug 24 2012 Andre Lorbach
@@ -675,7 +675,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 - modify logrotate configuration to omit boot.log
   Resolves: #745093
 
-* Mon Sep 06 2011 Tomas Heinrich <theinric@redhat.com> 5.8.5-2
+* Tue Sep 06 2011 Tomas Heinrich <theinric@redhat.com> 5.8.5-2
 - add systemd-units to BuildRequires for the _unitdir macro definition
 
 * Mon Sep 05 2011 Tomas Heinrich <theinric@redhat.com> 5.8.5-1
@@ -805,7 +805,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Sat Jan 24 2009 Caolán McNamara <caolanm@redhat.com> 3.21.9-3
 - rebuild for dependencies
 
-* Tue Jan 07 2009 Tomas Heinrich <theinric@redhat.com> 3.21.9-2
+* Wed Jan 07 2009 Tomas Heinrich <theinric@redhat.com> 3.21.9-2
 - fix several legacy options handling
 - fix internal message output (#478612)
 
@@ -870,7 +870,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Fri Apr 04 2008 Peter Vrabec <pvrabec@redhat.com> 3.14.1-1
 - upgrade
 
-* Mon Mar 25 2008 Peter Vrabec <pvrabec@redhat.com> 3.12.4-1
+* Tue Mar 25 2008 Peter Vrabec <pvrabec@redhat.com> 3.12.4-1
 - upgrade
 
 * Wed Mar 19 2008 Peter Vrabec <pvrabec@redhat.com> 3.12.3-1

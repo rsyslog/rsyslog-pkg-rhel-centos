@@ -85,7 +85,7 @@ fi
 
 
 %changelog
-* Tue Dec 12 2013 Andre Lorbach
+* Thu Dec 12 2013 Andre Lorbach
 - Fixed version
 
 * Wed Nov 27 2013 Andre Lorbach
@@ -95,7 +95,7 @@ fi
 - Build for release 0.3.6
 - Patch files no more needed with this release
 
-* Tue Jan 16 2013 Andre Lorbach
+* Wed Jan 16 2013 Andre Lorbach
 - Adapted spec file to EHEL 6
 
 * Fri Oct 05 2012 mdarade <mdarade@redhat.com> - 0.3.4-4
