@@ -1,6 +1,6 @@
 Name:		liblognorm1
-Version:	1.0.1
-Release:	2%{?dist}
+Version:	1.1.0
+Release:	1%{?dist}
 Summary:	Fast samples-based log normalization library
 License:	LGPLv2+
 Group:		System Environment/Libraries
@@ -86,6 +86,9 @@ fi
 
 
 %changelog
+* Mon Jan 12 2015 Florian Riedl
+- Build for release 1.1.0
+
 * Tue Apr 15 2014 Andre Lorbach
 - Fixed problem with doc building
 
