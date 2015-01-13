@@ -4,7 +4,7 @@
 
 Name:		json-c
 Version:	0.11
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	A JSON implementation in C
 Group:		Development/Libraries
 License:	MIT
@@ -62,7 +62,7 @@ autoreconf -fi
 
 
 %build
-%configure --enable-shared --disable-static --disable-rpath
+%configure  --prefix=%{_prefix} --enable-shared --disable-static --disable-rpath
 # parallel build is broken for now, make %{?_smp_mflags}
 make
 
@@ -107,6 +107,9 @@ rm -rf %{buildroot}
 %doc doc/html/*
 
 %changelog
+* Tue Jan 13 2014 Andre Lorbach <alorbach@adiscon.com> - 0.11-4
+- Added prefix to configure 
+
 * Sat Aug 24 2013 Remi Collet <remi@fedoraproject.org> - 0.11-3
 - increase parser strictness for php
 

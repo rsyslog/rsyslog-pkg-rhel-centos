@@ -1,8 +1,10 @@
+# Definitions common to these scripts
+source $(dirname "$0")/config.sh
 
-ALLREPOS="Yes"
-REPOOPTIONS="v5-stable v7-stable v8-stable v8-devel testing"
-ARCHOPTIONS="i386 x86_64"
-PLATOPTIONS="epel-5 epel-6" #"opensuse-11"
+#ALLREPOS="Yes"
+#REPOOPTIONS="v5-stable v7-stable v8-stable v8-devel testing"
+#ARCHOPTIONS="i386 x86_64"
+#PLATOPTIONS="epel-5 epel-6" #"opensuse-11"
 
 echo "-------------------------------------"
 echo "--- Update Repos!                 ---"
@@ -21,10 +23,10 @@ done
 for rsyslogver in $szRepos
 	do for distro in 5 6;
 	do for arch in i386 x86_64;
-	        do repo=/home/makerpm/yumrepo/$rsyslogver/epel-$distro/$arch;
+	        do repo=$szYumRepoDir/$rsyslogver/epel-$distro/$arch;
 		echo "Updating Repository: $repo"
                 sudo rm $repo/repodata/repomd.xml.asc
-                sudo chown makerpm $repo/* -R
+                sudo chown $szLocalUser $repo/* -R
                 rpm --resign $repo/RPMS/*.rpm
 		sudo createrepo -q -s sha -o $repo -d -p $repo/RPMS/;
 	        sudo gpg --detach-sign --armor $repo/repodata/repomd.xml

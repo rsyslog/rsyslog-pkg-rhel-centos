@@ -540,11 +540,8 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 
 %changelog
 
-* Mon Jan 12 2015 Florian Riedl
+* Tue Jan 13 2015 Florian Riedl
 - Created RPM's for Rsyslog 8.7.0
-
-* Fri Dec 09 2014 Florian Riedl
-- test-release
 
 * Tue Dec 02 2014 Florian Riedl
 - re-release of 8.6.0
