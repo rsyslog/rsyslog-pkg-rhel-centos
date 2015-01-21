@@ -1,6 +1,6 @@
 Name:		liblognorm1
-Version:	1.0.1
-Release:	2%{?dist}
+Version:	1.1.0
+Release:	1%{?dist}
 Summary:	Fast samples-based log normalization library
 License:	LGPLv2+
 Group:		System Environment/Libraries
@@ -11,7 +11,10 @@ Requires(postun): /sbin/ldconfig
 BuildRoot:	%{_tmppath}/liblognorm-%{version}-%{release}-root-%(%{__id_u} -n)
 #Patch0:		liblognorm-0.3.4-rename-to-lognormalizer.patch
 #Patch1:		liblognorm-0.3.4-pc-file.patch
-BuildRequires:	libestr-devel, libee-devel, chrpath, python-sphinx
+BuildRequires:	libestr-devel
+BuildRequires:	libee-devel
+BuildRequires:	chrpath
+BuildRequires:  python-sphinx
 BuildRequires:	json-c-devel
 
 %description
@@ -51,8 +54,8 @@ log files.
 #%patch1 -p1 -b .pc-file.patch
 
 %build
-%configure \
---disable-docs
+export PKG_CONFIG_PATH=%{_libdir}/pkgconfig:/%{_lib}/pkgconfig
+%configure --disable-docs
 V=1 make
 
 %install
@@ -86,6 +89,9 @@ fi
 
 
 %changelog
+* Mon Jan 12 2015 Florian Riedl
+- Build for release 1.1.0
+
 * Tue Apr 15 2014 Andre Lorbach
 - Fixed problem with doc building
 
