@@ -1,5 +1,5 @@
 Name:		liblognorm1
-Version:	1.1.0
+Version:	1.1.1
 Release:	1%{?dist}
 Summary:	Fast samples-based log normalization library
 License:	LGPLv2+
@@ -89,6 +89,9 @@ fi
 
 
 %changelog
+* Mon Mar 09 2015 Florian Riedl
+- Build for release 1.1.1
+
 * Mon Jan 12 2015 Florian Riedl
 - Build for release 1.1.0
 
@@ -105,7 +108,7 @@ fi
 - Build for release 0.3.6
 - Patch files no more needed with this release
 
-* Tue Jan 16 2013 Andre Lorbach
+* Wed Jan 16 2013 Andre Lorbach
 - Adapted spec file to EHEL 6
 
 * Fri Oct 05 2012 mdarade <mdarade@redhat.com> - 0.3.4-4
