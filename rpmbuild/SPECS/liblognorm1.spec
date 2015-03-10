@@ -62,7 +62,7 @@ V=1 make
 make install INSTALL="install -p" DESTDIR=%{buildroot}
 rm -f %{buildroot}/%{_libdir}/*.{a,la}
 chrpath -d %{buildroot}/%{_bindir}/lognormalizer
-chrpath -d %{buildroot}/%{_libdir}/liblognorm.so.1.0.0
+chrpath -d %{buildroot}/%{_libdir}/liblognorm.so.2.0.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
