@@ -148,6 +148,11 @@ Summary: Mail support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package omkafka
+Summary: A kafka output module
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %package pmciscoios
 Summary: pmciscoios support 
 Group: System Environment/Daemons
@@ -261,6 +266,10 @@ is sent via its own mail. The ommail plugin is primarily meant for alerting user
 As such, it is assume that mails will only be sent in an extremely 
 limited number of cases.
 
+%description omkafka
+Kafka Output Module
+This module supports sending syslog messages via kafaka topic. See http://www.rsyslog.com/doc/master/configuration/modules/omkafka.html
+
 %if 0%{?rhel} >= 6
 %description elasticsearch
 The rsyslog-elasticsearch package provides omelasticsearch module support. 
@@ -295,6 +304,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 #		--enable-gssapi-krb5 \	# bugged
 %configure	--disable-static \
 		--disable-testbench \
+		--enable-omkafka\
 %if 0%{?rhel} >= 6
 		--enable-uuid \
 		--enable-elasticsearch \
@@ -418,6 +428,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/lmzlibw.so
 %{_libdir}/rsyslog/omtesting.so
 %{_libdir}/rsyslog/ommail.so
+%{_libdir}/rsyslog/omkafka.so
 %{_libdir}/rsyslog/omprog.so
 # %{_libdir}/rsyslog/omruleset.so
 %{_libdir}/rsyslog/omuxsock.so
@@ -519,6 +530,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/ommail.so
 
+%files omkafka
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omkafka.so
+
 %if 0%{?rhel} >= 6
 %files elasticsearch
 %defattr(-,root,root)
@@ -539,6 +554,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Thu Mar 12 2015 T. Pascal
+- Updated spec to build omkafka
 
 * Thu Mar 12 2015 Florian Riedl
 - Updated RPM's for Rsyslog 8.8.0.ad1 to support liblognorm 1.1.1
