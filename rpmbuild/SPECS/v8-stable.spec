@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.7.0
-Release: 1%{?dist}
+Version: 8.8.0.ad1
+Release: 3%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -173,6 +173,12 @@ Summary: MongoDB output support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libmongo-client-devel
+
+%package kafka
+Summary: Kafka output support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: adiscon-librdkafka-devel
 %endif
 
 %description
@@ -273,6 +279,12 @@ The rsyslog-elasticsearch package provides omelasticsearch module support.
 MongoDB output plugin for rsyslog. This plugin allows rsyslog to write 
 the syslog messages to MongoDB, a scalable, high-performance, 
 open source NoSQL database.
+
+%description kafka
+librdkafka is a C library implementation of the Apache Kafka protocol, 
+containing both Producer and Consumer support. It was designed with message delivery 
+reliability and high performance in mind, current figures exceed 800000 msgs/second 
+for the producer and 3 million msgs/second for the consumer.
 %endif
 
 %prep
@@ -329,6 +341,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmsequence \
 		--enable-pmaixforwardedfrom \
 		--enable-pmciscoios \
+		--enable-omkafka \
 		--enable-guardtime
 #--enable-jemalloc
 
@@ -536,9 +549,24 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_bindir}/logctl
 %endif
 
+%files kafka
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omkafka.so
 %endif
 
 %changelog
+
+* Tue Mar 17 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.8.0.ad1 to include omkafka
+
+* Thu Mar 12 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.8.0.ad1 to support liblognorm 1.1.1
+
+* Thu Mar 05 2015 Florian Riedl
+- Created RPM's for Rsyslog 8.8.0.ad1
+
+* Wed Feb 25 2015 Andre Lorbach
+- Created RPM's for Rsyslog 8.8.0
 
 * Tue Jan 13 2015 Florian Riedl
 - Created RPM's for Rsyslog 8.7.0
