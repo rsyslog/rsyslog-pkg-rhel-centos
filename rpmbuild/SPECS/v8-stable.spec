@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.8.0.ad1
-Release: 3%{?dist}
+Version: 8.9.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -555,6 +555,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Tue Apr 07 2015 Florian Riedl
+- Created RPM's for Rsyslog 8.9.0
 
 * Tue Mar 17 2015 Florian Riedl
 - Updated RPM's for Rsyslog 8.8.0.ad1 to include omkafka
