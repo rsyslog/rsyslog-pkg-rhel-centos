@@ -1,6 +1,6 @@
 Name:    adiscon-librdkafka
 # NOTE: Make sure to update this to match rdkafka.h version
-Version: 0.8.5
+Version: 0.8.6
 Release: 1
 %define soname 1
 
@@ -80,6 +80,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+
+* Mon Jun 29 2015 Florian Riedl
+- New RPM for librdkafka 0.8.6
+
 * Tue Mar 17 2015 Florian Riedl
 - Initial package build for librdkafka 0.8.5 to support rsyslog and omkafka packages
 

@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.10.0.ad1
-Release: 2%{?dist}
+Version: 8.11.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -34,6 +34,10 @@ BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
 BuildRequires: liblogging-devel
+%if 0%{?rhel} >= 6
+#Requires: libksi
+BuildRequires: libksi-devel
+%endif
 
 # json-c.i686
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
@@ -313,6 +317,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-ommongodb \
                 --enable-omkafka \
 	        --enable-usertools \
+		--enable-gt-ksi \
 %else
 		--disable-uuid \
 		--disable-generate-man-pages \
@@ -441,6 +446,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/mmsequence.so
 %{_libdir}/rsyslog/mmexternal.so
 %if 0%{?rhel} >= 6
+%{_libdir}/rsyslog/lmsig_ksi.so
 %{_bindir}/rscryutil
 %{_bindir}/rsgtutil
 %endif
@@ -555,6 +561,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Tue Jun 30 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.11.0
+- Added GT KSI support
 
 * Tue Jun 09 2015 Florian Riedl
 - Updated RPM's for Rsyslog 8.10.0.ad1
