@@ -1,5 +1,5 @@
 Name:		liblognorm1
-Version:	1.1.1
+Version:	1.1.2
 Release:	1%{?dist}
 Summary:	Fast samples-based log normalization library
 License:	LGPLv2+
@@ -14,7 +14,7 @@ BuildRoot:	%{_tmppath}/liblognorm-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	libestr-devel
 BuildRequires:	libee-devel
 BuildRequires:	chrpath
-BuildRequires:  python-sphinx
+BuildRequires:  python-docutils
 BuildRequires:	json-c-devel
 
 %description
@@ -89,6 +89,9 @@ fi
 
 
 %changelog
+* Mon Jul 20 2015 Florian Riedl
+- Build for release 1.1.2
+
 * Mon Mar 09 2015 Florian Riedl
 - Build for release 1.1.1
 
