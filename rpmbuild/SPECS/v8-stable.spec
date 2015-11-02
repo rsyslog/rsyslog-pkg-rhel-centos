@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.13.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -37,6 +37,9 @@ BuildRequires: liblogging-devel
 %if 0%{?rhel} >= 6
 #Requires: libksi
 BuildRequires: libksi-devel
+	%if %{?rhel} >= 7
+	BuildRequires: systemd-devel
+	%endif
 %endif
 
 # json-c.i686
@@ -318,6 +321,10 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
                 --enable-omkafka \
 	        --enable-usertools \
 		--enable-gt-ksi \
+	%if 0%{?rhel} >= 7
+			--enable-imjournal \
+			--enable-omjournal \
+	%endif
 %else
 		--disable-uuid \
 		--disable-generate-man-pages \
@@ -425,8 +432,8 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/imptcp.so
 %{_libdir}/rsyslog/imtcp.so
 %{_libdir}/rsyslog/imudp.so
-%{_libdir}/rsyslog/imuxsock.so
 %{_libdir}/rsyslog/lmnet.so
+%{_libdir}/rsyslog/imuxsock.so
 %{_libdir}/rsyslog/lmnetstrms.so
 %{_libdir}/rsyslog/lmnsd_ptcp.so
 %{_libdir}/rsyslog/lmregexp.so
@@ -446,6 +453,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/mmsequence.so
 %{_libdir}/rsyslog/mmexternal.so
 %if 0%{?rhel} >= 6
+	%if 0%{?rhel} >= 7
+	%{_libdir}/rsyslog/imjournal.so
+	%{_libdir}/rsyslog/omjournal.so
+	%endif
 %{_libdir}/rsyslog/lmsig_ksi.so
 %{_bindir}/rscryutil
 %{_bindir}/rsgtutil
@@ -561,6 +572,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+
+* Mon Nov 02 2015 Florian Riedl
+- added imjournal and omjournal to base RPM
 
 * Tue Sep 22 2015 Florian Riedl
 - Updated RPM's for Rsyslog 8.13.0
