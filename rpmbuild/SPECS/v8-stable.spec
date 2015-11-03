@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.13.0
-Release: 2%{?dist}
+Version: 8.14.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -38,7 +38,7 @@ BuildRequires: liblogging-devel
 #Requires: libksi
 BuildRequires: libksi-devel
 	%if %{?rhel} >= 7
-	BuildRequires: systemd-devel
+BuildRequires: systemd-devel
 	%endif
 %endif
 
@@ -573,7 +573,8 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 
 %changelog
 
-* Mon Nov 02 2015 Florian Riedl
+* Tue Nov 03 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.14.0
 - added imjournal and omjournal to base RPM
 
 * Tue Sep 22 2015 Florian Riedl
