@@ -5,8 +5,11 @@ Release: 1%{?dist}
 License: Apache Software License
 Group:      Networking/Admin
 URL: http://www.rsyslog.com/
-Source0: https://github.com/rsyslog/libgt/archive/master.zip 
+Source0: https://github.com/rsyslog/libgt/archive/libgt-0.3.11.tar.xz
 BuildRoot:  /var/tmp/%{name}-build
+BuildRequires: autoconf
+BuildRequires: automake
+BuildRequires: libtool
 BuildRequires: openssl-devel
 BuildRequires: curl-devel
 Requires: /sbin/ldconfig
@@ -27,6 +30,7 @@ needed to develop applications using libgt.
 
 %prep
 %setup -q
+autoreconf --force --verbose --install
 
 %build
 %configure 
