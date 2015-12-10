@@ -1,14 +1,15 @@
-Summary: GuardTime KSI API
-Name:    libksi
-Version: 3.2.2.0
-Release: 1%{?dist}
-License: Apache Software License
-Group:      Networking/Admin
-URL: http://www.rsyslog.com/
-Source0: http://libgt.adiscon.com/files/download/%{name}-%{version}.tar.gz
-BuildRoot:  /var/tmp/%{name}-build
+Summary:	GuardTime KSI API
+Name:		libksi
+Version:	3.2.2.0
+Release:	2%{?dist}
+License:	Apache Software License
+Group:		Networking/Admin
+URL:		http://www.rsyslog.com/
+Source0:	http://libgt.adiscon.com/files/download/%{name}-%{version}.tar.gz
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: openssl-devel
 BuildRequires: curl-devel
+BuildRequires: ca-certificates
 Requires: /sbin/ldconfig
 
 %description
@@ -26,7 +27,7 @@ The libksi-devel package contains the header files and libraries
 needed to develop applications using libksi.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}
 
 %build
 %configure 
@@ -83,6 +84,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 12 2015 Andre Lorbach <alorbach@adiscon.com> 3.2.2.0-2
+- Added dependency for ca-certificates
+
 * Fri Jun 26 2015 Florian Riedl <friedl@adiscon.com> 3.2.2.0-1
 - Created initial RPM for libksi!
 

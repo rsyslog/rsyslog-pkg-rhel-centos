@@ -1,15 +1,18 @@
-Summary: GuardTime KSI API
-Name:    libksi1
-Version: 3.4.0.5
-Release: 1%{?dist}
-License: Apache Software License
-Group:      Networking/Admin
+Summary:	GuardTime KSI API
+Name:		libksi1
+Version:	3.4.0.5
+Release:	2%{?dist}
+Provides:	libksi = 2:%{version}-%{release}
+Obsoletes:	libksi <= 2:3.4.4.0-1 
+License:	Apache Software License
+Group:		Networking/Admin
 URL: http://www.rsyslog.com/
-Source0: https://github.com/rsyslog/libksi/archive/v%{version}.tar.gz
-BuildRoot:  /var/tmp/%{name}-build
-BuildRequires: openssl-devel
-BuildRequires: curl-devel
-Requires: /sbin/ldconfig
+Source0: https://github.com/rsyslog/libksi/archive/libksi-%{version}.tar.gz
+BuildRoot:	%{_tmppath}/libksi-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires:	openssl-devel
+BuildRequires:	curl-devel
+BuildRequires:	ca-certificates
+Requires:	/sbin/ldconfig
 
 %description
 LibKSI - Keyless Signature Infrastructure GuardTime client library 
@@ -26,7 +29,7 @@ The libksi-devel package contains the header files and libraries
 needed to develop applications using libksi.
 
 %prep
-%setup -q
+%setup -q -n libksi-%{version}
 
 %build
 %configure 
@@ -36,6 +39,8 @@ needed to develop applications using libksi.
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
+
+%postun
 
 %post
 /sbin/ldconfig
@@ -77,13 +82,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/ksi/types_base.h
 %{_includedir}/ksi/types.h
 %{_includedir}/ksi/verification.h
+%{_includedir}/ksi/fast_tlv.h
+%{_includedir}/ksi/multi_signature.h
 %{_libdir}/pkgconfig/libksi.pc
 %{_libdir}/libksi.a
 %{_libdir}/libksi.la
 
 
 %changelog
-* Tue Dec 12 2015 Andre Lorbach <alorbach@adiscon.com> 3.4.0.5-1
+* Wed Dec 13 2015 Andre Lorbach <alorbach@adiscon.com> 3.4.0.5-2
 - Updated RPMs for libksi 
 
 * Fri Jun 26 2015 Florian Riedl <friedl@adiscon.com> 3.2.2.0-1
