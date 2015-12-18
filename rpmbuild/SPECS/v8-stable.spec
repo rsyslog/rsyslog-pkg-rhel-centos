@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.14.0
-Release: 6%{?dist}
+Version: 8.15.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -193,8 +193,8 @@ BuildRequires: adiscon-librdkafka-devel
 Summary: KSI signature support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: libksi <= 3.4.0.0
-BuildRequires: libksi-devel
+Requires: libksi1 <= 3.4.0.0
+BuildRequires: libksi1-devel
 %endif
 
 %description
@@ -598,6 +598,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Fri Dec 18 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.15.0
+
 * Thu Dec 10 2015 Andre Lorbach
 - KSI signature support has to be moved from 
   the base package to rsyslog-ksi
