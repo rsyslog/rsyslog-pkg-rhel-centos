@@ -4,14 +4,17 @@
 %define rsyslog_pkidir %{_sysconfdir}/pki/rsyslog
 
 # Set PIDFILE Variable!
-%if 0%{?rhel} >= 6
-	%define Pidfile syslogd.pid
-	%define rsysloginit rsyslog.init.epel6
-	%define rsysloglog rsyslog.log.epel6
+%if 0%{?fedora}0%{?rhel} >= 6
+    %define Pidfile syslogd.pid
+    %if 0%{?fedora}0%{?rhel} >= 7
+    %else
+        %define rsysloginit rsyslog.init.epel6
+    %endif
+    %define rsysloglog rsyslog.log.epel6
 %else
-	%define Pidfile rsyslogd.pid
-	%define rsysloginit rsyslog.init.epel5
-	%define rsysloglog rsyslog.log.epel5
+    %define Pidfile rsyslogd.pid
+    %define rsysloginit rsyslog.init.epel5
+    %define rsysloglog rsyslog.log.epel5
 %endif
 
 Summary: Enhanced system logging and kernel message trapping daemon
@@ -26,56 +29,54 @@ Source1: %{rsysloginit}
 Source2: rsyslog_v7.conf
 Source3: rsyslog.sysconfig
 Source4: %{rsysloglog}
-Requires: libgt
-BuildRequires: libestr-devel
+%if %{?rhel} >= 7
+# SystemD Patch needed for CentOS 7
+#  - tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
+Patch0: systemd-service.patch
+%endif
+
+BuildRequires: autoconf >= 2.52
+BuildRequires: automake
+BuildRequires: bison
+BuildRequires: dos2unix
+BuildRequires: flex
+BuildRequires: libtool
+BuildRequires: libestr-devel >= 0.1.9
 BuildRequires: libee-devel
 BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
 BuildRequires: liblogging-devel
-BuildRequires: automake
-BuildRequires: autoconf >= 2.52
-BuildRequires: libtool
 %if %{?rhel} >= 6
 BuildRequires: libfastjson-devel
 %else
 BuildRequires: json-c-devel
 %endif
-%if %{?rhel} >= 7
-BuildRequires: systemd-devel
+%if 0%{?fedora}0%{?rhel} >= 7
+# make sure systemd is in a version that isn't affected by rhbz#974132
+BuildRequires: systemd-devel >= 204-8
 %endif
-
-# json-c.i686
-# tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
-
-# SystemD Patch needed for CentOS 7
-%if %{?rhel} >= 7
-Patch0: rsyslog-systemd-centos7.patch
-%endif
-
-# NOT NEEDED ANYMORE Patch0: Patch0: rsyslog-7.1.0-systemd.patch
-# already patched 
-# Patch1: rsyslog-5.8.7-sysklogd-compat-1-template.patch
-# Patch2: rsyslog-5.8.7-sysklogd-compat-2-option.patch
-
 BuildRequires: zlib-devel
+
+Requires: libgt
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
+%if 0%{?fedora}%{?rhel}>= 7
+Requires(post): systemd
+Requires(preun): systemd
+Requires(postun): systemd
+%else
 Requires(post): /sbin/chkconfig coreutils
 Requires(preun): /sbin/chkconfig /sbin/service
 Requires(postun): /sbin/service
+%endif
+
 Provides: syslog
 Obsoletes: sysklogd < 1.5-11
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-# %package sysvinit
-# Summary: SysV init script for rsyslog
-# Group: System Environment/Daemons
-# Requires: %name = %version-%release
-# Requires(post): /sbin/chkconfig
-
 %package libdbi
-Summary: libdbi database support for rsyslog
+Summary: Libdbi database support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libdbi-devel
@@ -92,12 +93,11 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: postgresql-devel
 
-# bugged 
-#%package gssapi
-#Summary: GSSAPI authentication and encryption support for rsyslog
-#Group: System Environment/Daemons
-#Requires: %name = %version-%release
-#BuildRequires: krb5-devel 
+%package gssapi
+Summary: GSSAPI authentication and encryption support for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: krb5-devel
 
 %package relp
 Summary: RELP protocol support for rsyslog
@@ -127,87 +127,87 @@ Requires: %name = %version-%release
 BuildRequires: libnet-devel
 
 %package mmjsonparse
-Summary: mmjsonparse support 
+Summary: JSON enhanced logging support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: liblognorm1-devel
 
 %package mmnormalize
-Summary: mmnormalize support 
+Summary: Log normalization support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: liblognorm1-devel
 
 %package mmfields
-Summary: mmfields support 
+Summary: mmfields support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: liblognorm1-devel
 
 %package pmaixforwardedfrom
-Summary: pmaixforwardedfrom support 
+Summary: pmaixforwardedfrom support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
 %package mmanon
-Summary: mmanon support 
+Summary: mmanon support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
 %package mmutf8fix
-Summary: mmutf8fix support 
+Summary: Fix invalid UTF-8 sequences in messages
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
 %package ommail
-Summary: Mail support 
+Summary: Mail support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
 %package pmciscoios
-Summary: pmciscoios support 
+Summary: pmciscoios support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
-%if 0%{?rhel} >= 6
+%if 0%{?fedora}0%{?rhel} >= 6
 %package rsgtutil
-Summary: RSyslog rsgtutil support 
+Summary: RSyslog rsgtutil support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: %{name}-ksi = %version-%release
 
 %package elasticsearch
-Summary: Provides the omelasticsearch module
+Summary: ElasticSearch output module for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libuuid-devel
 BuildRequires: libcurl-devel
 
-# Package BUGGED!
-#%package zmq3
-#Summary: zmq3 support
-#Group: System Environment/Daemons
-#Requires: %name = %version-%release
-#BuildRequires: czmq-devel
-
 %package mongodb
-Summary: MongoDB output support 
+Summary: MongoDB output support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libmongo-client-devel
 
 %package kafka
-Summary: Kafka output support 
+Summary: Kafka output support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: adiscon-librdkafka-devel
 
 %package ksi
-Summary: KSI signature support 
+Summary: KSI signature support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: libksi1 >= 3.4.0.0
 BuildRequires: libksi1-devel
+
+%package mmgrok
+Summary: Grok pattern filtering support
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+Requires: grok
+BuildRequires: json-c-devel glib2-devel grok grok-devel tokyocabinet-devel
 %endif
 
 %description
@@ -217,10 +217,6 @@ and fine grain output format control. It is compatible with stock sysklogd
 and can be used as a drop-in replacement. Rsyslog is simple to set up, with
 advanced features suitable for enterprise-class, encryption-protected syslog
 relay chains.
-
-#%description sysvinit
-#SysV style init script for rsyslog. It needs to be installed only if systemd
-#is not used as the system init process.
 
 %description libdbi
 This module supports a large number of database systems via
@@ -235,16 +231,15 @@ MySQL database support to rsyslog.
 The rsyslog-pgsql package contains a dynamic shared object that will add
 PostgreSQL database support to rsyslog.
 
-# bugged 
-#%description gssapi
-#The rsyslog-gssapi package contains the rsyslog plugins which support GSSAPI 
-#authentication and secure connections. GSSAPI is commonly used for Kerberos 
-#authentication.
+%description gssapi
+The rsyslog-gssapi package contains the rsyslog plugins which support GSSAPI
+authentication and secure connections. GSSAPI is commonly used for Kerberos
+authentication.
 
 %description relp
 The rsyslog-relp package contains the rsyslog plugins that provide
 the ability to receive syslog messages via the reliable RELP
-protocol. 
+protocol.
 
 %description gnutls
 The rsyslog-gnutls package contains the rsyslog plugins that provide the
@@ -261,70 +256,70 @@ spoof the sender address. Also, it enables to circle through a number
 of source ports.
 
 %description mmjsonparse
-The rsyslog-mmjsonparse package provides mmjsonparse filter support. 
+This module provides support for parsing structured log messages that follow
+the CEE/lumberjack specification.
 
 %description mmnormalize
-The rsyslog-mmnormalize package provides log normalization 
-by using the liblognorm and it's Rulebase format. 
+The rsyslog-mmnormalize package provides log normalization by using the
+liblognorm and it's Rulebase format.
 
 %description mmfields
 Parse all fields of the message into structured data inside the JSON tree.
 
 %description pmaixforwardedfrom
 This module cleans up messages forwarded from AIX.
-Instead of actually parsing the message, this modifies the message and then 
+Instead of actually parsing the message, this modifies the message and then
 falls through to allow a later parser to handle the now modified message.
 
 %description mmanon
 IP Address Anonimization Module (mmanon).
-It is a message modification module that actually changes the IP address 
-inside the message, so after calling mmanon, the original message can 
-no longer be obtained. Note that anonymization will break digital 
+It is a message modification module that actually changes the IP address
+inside the message, so after calling mmanon, the original message can
+no longer be obtained. Note that anonymization will break digital
 signatures on the message, if they exist.
 
 %description mmutf8fix
-UTF-8 Fix support (mmutf8fix).
-The mmutf8fix module permits to fix invalid UTF-8 sequences. Most often, such invalid 
-sequences result from syslog sources sending in non-UTF character sets, e.g. ISO 8859. 
-As syslog does not have a way to convey the character set information, 
-these sequences are not properly handled.
+This module provides support for fixing invalid UTF-8 sequences. Most often,
+such invalid sequences result from syslog sources sending in non-UTF character
+sets, e.g. ISO 8859. As syslog does not have a way to convey the character
+set information, these sequences are not properly handled.
 
 %description pmciscoios
 Parser module which supports various Cisco IOS formats.
 
 %description ommail
 Mail Output Module.
-This module supports sending syslog messages via mail. Each syslog message 
-is sent via its own mail. The ommail plugin is primarily meant for alerting users. 
-As such, it is assume that mails will only be sent in an extremely 
+This module supports sending syslog messages via mail. Each syslog message
+is sent via its own mail. The ommail plugin is primarily meant for alerting users.
+As such, it is assume that mails will only be sent in an extremely
 limited number of cases.
 
-%if 0%{?rhel} >= 6
+%if 0%{?fedora}0%{?rhel} >= 6
 %description rsgtutil
-Adds rsyslog utility used for GT and KSI signature verification and more. 
-For more information see the rsgtutil manual. 
+Adds rsyslog utility used for GT and KSI signature verification and more.
+For more information see the rsgtutil manual.
 
 %description elasticsearch
-The rsyslog-elasticsearch package provides omelasticsearch module support. 
-
-#%description zmq3
-#zmq3 support for RSyslog. These plugins allows you to push data from 
-#and into rsyslog from a zeromq socket.
+This module provides the capability for rsyslog to feed logs directly into
+ElasticSearch.
 
 %description mongodb
-MongoDB output plugin for rsyslog. This plugin allows rsyslog to write 
-the syslog messages to MongoDB, a scalable, high-performance, 
+MongoDB output plugin for rsyslog. This plugin allows rsyslog to write
+the syslog messages to MongoDB, a scalable, high-performance,
 open source NoSQL database.
 
 %description kafka
-librdkafka is a C library implementation of the Apache Kafka protocol, 
-containing both Producer and Consumer support. It was designed with message delivery 
-reliability and high performance in mind, current figures exceed 800000 msgs/second 
+librdkafka is a C library implementation of the Apache Kafka protocol,
+containing both Producer and Consumer support. It was designed with message delivery
+reliability and high performance in mind, current figures exceed 800000 msgs/second
 for the producer and 3 million msgs/second for the consumer.
 
 %description ksi
-The KSI signature plugin provides access to the Keyless Signature Infrastructure 
-globally distributed by Guardtime. 
+The KSI signature plugin provides access to the Keyless Signature Infrastructure
+globally distributed by Guardtime.
+
+%description mmgrok
+This module provides filtering based on grok patterns.
 %endif
 
 %prep
@@ -332,8 +327,6 @@ globally distributed by Guardtime.
 %if %{?rhel} >= 7
 %patch0
 %endif
-#%patch1 -p1
-#%patch2 -p1
 
 %build
 autoreconf -vfi
@@ -345,98 +338,114 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 export CFLAGS="$RPM_OPT_FLAGS -fpie -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %endif
-#		--enable-imzmq3 \
-#		--enable-omzmq3 \
-#		--enable-gssapi-krb5 \	# bugged
-%configure	--disable-static \
-		--disable-testbench \
-%if 0%{?rhel} >= 6
-		--enable-uuid \
-		--enable-elasticsearch \
-		--enable-ommongodb \
-                --enable-omkafka \
-	        --enable-usertools \
-		--enable-gt-ksi \
-	%if 0%{?rhel} >= 7
-			--enable-imjournal \
-			--enable-omjournal \
-	%endif
-%else
-		--disable-uuid \
-		--disable-generate-man-pages \
-%endif
-		--enable-gnutls \
-		--enable-imfile \
-		--enable-impstats \
-		--enable-imptcp \
-		--enable-libdbi \
-		--enable-mail \
-		--enable-mysql \
-		--enable-omprog \
-		--enable-omudpspoof \
-		--enable-omuxsock \
-		--enable-pgsql \
-		--enable-pmlastmsg \
-		--enable-relp \
-		--enable-snmp \
-		--enable-unlimited-select \
-		--enable-mmjsonparse \
-		--enable-mmnormalize \
-		--enable-mmanon \
-		--enable-mmutf8fix \
-		--enable-mail \
-		--enable-mmfields \
-		--enable-mmpstrucdata \
-		--enable-mmsequence \
-		--enable-pmaixforwardedfrom \
-		--enable-pmciscoios \
-		--enable-guardtime
-#--enable-jemalloc
 
-make
+%configure \
+        --disable-generate-man-pages \
+        --disable-static \
+        --disable-testbench \
+%if 0%{?fedora}0%{?rhel} < 6
+        --disable-uuid \
+%else
+        --enable-uuid \
+        --enable-elasticsearch \
+        --enable-ommongodb \
+        --enable-omkafka \
+        --enable-usertools \
+        --enable-gt-ksi \
+    %if 0%{?fedora}0%{?rhel} >= 7
+        --enable-imjournal \
+        --enable-omjournal \
+    %endif
+%endif
+        --enable-gnutls \
+        --enable-imfile \
+        --enable-impstats \
+        --enable-imptcp \
+        --enable-libdbi \
+        --enable-mail \
+        --enable-mysql \
+        --enable-omprog \
+        --enable-omudpspoof \
+        --enable-omuxsock \
+        --enable-pgsql \
+        --enable-pmlastmsg \
+        --enable-relp \
+        --enable-snmp \
+        --enable-unlimited-select \
+        --enable-mmjsonparse \
+        --enable-mmnormalize \
+        --enable-mmanon \
+        --enable-mmutf8fix \
+        --enable-mail \
+        --enable-mmfields \
+        --enable-mmpstrucdata \
+        --enable-mmsequence \
+        --enable-pmaixforwardedfrom \
+        --enable-pmciscoios \
+        --enable-guardtime \
+        --enable-mmgrok \
+        --enable-gssapi-krb5
+
+make V=1
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
-make install DESTDIR=$RPM_BUILD_ROOT
+make V=1 DESTDIR=%{buildroot} install
 
-install -d -m 755 $RPM_BUILD_ROOT%{_initrddir}
-install -d -m 755 $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-install -d -m 755 $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -d -m 755 $RPM_BUILD_ROOT%{_sysconfdir}/rsyslog.d
-install -d -m 700 $RPM_BUILD_ROOT%{rsyslog_statedir}
-install -d -m 700 $RPM_BUILD_ROOT%{rsyslog_pkidir}
+%if 0%{?fedora}0%{?rhel} <= 6
+install -d -m 755 %{buildroot}%{_initrddir}
+%endif
+install -d -m 755 %{buildroot}%{_sysconfdir}/sysconfig
+install -d -m 755 %{buildroot}%{_sysconfdir}/logrotate.d
+install -d -m 755 %{buildroot}%{_sysconfdir}/rsyslog.d
+install -d -m 700 %{buildroot}%{rsyslog_statedir}
+install -d -m 700 %{buildroot}%{rsyslog_pkidir}
 
-install -p -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_initrddir}/rsyslog
-install -p -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/rsyslog
-install -p -m 644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/syslog
-install -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rsyslog.conf
+%if 0%{?fedora}0%{?rhel} <= 6
+install -p -m 755 %{SOURCE1} %{buildroot}%{_initrddir}/rsyslog
+%endif
+install -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/rsyslog.conf
+install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/sysconfig/rsyslog
+install -p -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/logrotate.d/syslog
 
-#get rid of *.la
-rm $RPM_BUILD_ROOT/%{_libdir}/rsyslog/*.la
+# get rid of libtool libraries
+rm -f %{buildroot}%{_libdir}/rsyslog/*.la
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post
+%if 0%{?fedora}0%{?rhel} <= 6
 /sbin/chkconfig --add rsyslog
+%endif
 for n in /var/log/{messages,secure,maillog,spooler}
 do
-	[ -f $n ] && continue
-	umask 066 && touch $n
+    [ -f $n ] && continue
+    umask 066 && touch $n
 done
+%if 0%{?fedora}0%{?rhel} >= 7
+%systemd_post rsyslog.service
+%endif
 
 %preun
+%if 0%{?fedora}0%{?rhel} <= 6
 if [ $1 = 0 ]; then
-	service rsyslog stop >/dev/null 2>&1 ||:
-	/sbin/chkconfig --del rsyslog
+    service rsyslog stop >/dev/null 2>&1 ||:
+    /sbin/chkconfig --del rsyslog
 fi
+%else
+%systemd_preun rsyslog.service
+%endif
 
 %postun
+%if 0%{?fedora}0%{?rhel} <= 6
 if [ "$1" -ge "1" ]; then
-	service rsyslog condrestart > /dev/null 2>&1 ||:
-fi 
-
+    service rsyslog condrestart > /dev/null 2>&1 ||:
+fi
+%else
+%systemd_postun_with_restart rsyslog.service
+%endif
 
 %triggerun -- rsyslog < 5.7.8-1
 ## Save the current service runlevel info
@@ -457,9 +466,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS COPYING* NEWS README ChangeLog 
-# missing rsyslog-doc.tar.gz 
-# old doc/*html
+%doc AUTHORS COPYING* NEWS ChangeLog README.md
 %dir %{_libdir}/rsyslog
 %{_libdir}/rsyslog/imfile.so
 %{_libdir}/rsyslog/imklog.so
@@ -480,7 +487,6 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/omtesting.so
 %{_libdir}/rsyslog/ommail.so
 %{_libdir}/rsyslog/omprog.so
-# %{_libdir}/rsyslog/omruleset.so
 %{_libdir}/rsyslog/omuxsock.so
 %{_libdir}/rsyslog/pmlastmsg.so
 %{_libdir}/rsyslog/lmcry_gcry.so
@@ -488,11 +494,11 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/mmpstrucdata.so
 %{_libdir}/rsyslog/mmsequence.so
 %{_libdir}/rsyslog/mmexternal.so
-%if 0%{?rhel} >= 7
+%if 0%{?fedora}0%{?rhel} >= 7
 %{_libdir}/rsyslog/imjournal.so
 %{_libdir}/rsyslog/omjournal.so
 %endif
-%if 0%{?rhel} >= 6
+%if 0%{?fedora}0%{?rhel} >= 6
 %{_bindir}/rscryutil
 %endif
 %config(noreplace) %{_sysconfdir}/rsyslog.conf
@@ -501,17 +507,14 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %dir %{_sysconfdir}/rsyslog.d
 %dir %{rsyslog_statedir}
 %dir %{rsyslog_pkidir}
+%if 0%{?fedora}0%{?rhel} <= 6
 %{_initrddir}/rsyslog
+%endif
 %{_sbindir}/rsyslogd
 %{_mandir}/*/*
-# removed since 7.3.9 
-# %{_libdir}/rsyslog/compat.so
-%if 0%{?rhel} >= 7
+%if 0%{?fedora}0%{?rhel} >= 7
 %{_unitdir}/rsyslog.service
 %endif
-
-#%files sysvinit
-#%attr(0755,root,root) %{_initrddir}/rsyslog
 
 %files libdbi
 %defattr(-,root,root)
@@ -527,12 +530,11 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %doc plugins/ompgsql/createDB.sql
 %{_libdir}/rsyslog/ompgsql.so
 
-# bugged 
-#%files gssapi
-#%defattr(-,root,root)
-#%{_libdir}/rsyslog/lmgssutil.so
-#%{_libdir}/rsyslog/imgssapi.so
-#%{_libdir}/rsyslog/omgssapi.so
+%files gssapi
+%defattr(-,root,root)
+%{_libdir}/rsyslog/lmgssutil.so
+%{_libdir}/rsyslog/imgssapi.so
+%{_libdir}/rsyslog/omgssapi.so
 
 %files relp
 %defattr(-,root,root)
@@ -575,7 +577,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/pmciscoios.so
 
-%files mmutf8fix 
+%files mmutf8fix
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmutf8fix.so
 
@@ -583,7 +585,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/ommail.so
 
-%if 0%{?rhel} >= 6
+%if 0%{?fedora}0%{?rhel} >= 6
 %files rsgtutil
 %defattr(-,root,root)
 %{_bindir}/rsgtutil
@@ -592,15 +594,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omelasticsearch.so
 
-#%files zmq3
-#%defattr(-,root,root)
-#%{_libdir}/rsyslog/imzmq3.so
-#%{_libdir}/rsyslog/omzmq3.so
-
 %files mongodb
 %defattr(-,root,root)
 %{_libdir}/rsyslog/ommongodb.so
-%if 0%{?rhel} >= 6
+%if 0%{?fedora}0%{?rhel} >= 6
 %{_bindir}/logctl
 %endif
 
@@ -611,9 +608,18 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %files ksi
 %defattr(-,root,root)
 %{_libdir}/rsyslog/lmsig_ksi.so
+
+%files mmgrok
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmgrok.so
 %endif
 
+
 %changelog
+* Wed Mar 23 2016 Peter Portante
+- Merge with Fedora's spec file
+- Enable mmgrok
+
 * Tue Mar 08 2016 Florian Riedl
 - Updated RPM's for Rsyslog 8.17.0
 
@@ -630,9 +636,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 - Updated RPM's for Rsyslog 8.15.0
 
 * Thu Dec 10 2015 Andre Lorbach
-- KSI signature support has to be moved from 
+- KSI signature support has to be moved from
   the base package to rsyslog-ksi
-- Moved rsgtutil into own package. 
+- Moved rsgtutil into own package.
 
 * Tue Nov 03 2015 Florian Riedl
 - Updated RPM's for Rsyslog 8.14.0
@@ -654,7 +660,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Tue Jun 09 2015 Florian Riedl
 - Updated RPM's for Rsyslog 8.10.0.ad1
 
-* Thu May 29 2015 Andre Lorbach
+* Fri May 29 2015 Andre Lorbach
 - Created RPM's for Rsyslog 8.10.0.ad1
 
 * Tue May 19 2015 Florian Riedl
@@ -711,11 +717,11 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Thu Jun 26 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.2.2
 
-* Tue Jun 14 2014 Mike Liebsch
+* Sat Jun 14 2014 Mike Liebsch
 - Added mmutf8fix support
 - Updated to RSyslog 8.2.2
 
-* Wed Apr 22 2014 Andre Lorbach
+* Tue Apr 22 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.2.1
 
 * Wed Apr 02 2014 Andre Lorbach
@@ -724,10 +730,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Tue Apr 01 2014 Andre Lorbach
 - First Testbuild for RSyslog V8-Stable
 
-* Thu Mar 11 2014 Andre Lorbach
+* Tue Mar 11 2014 Andre Lorbach
 - New build for librelp
 
-* Fri Mar 07 2014 Andre Lorbach 
+* Fri Mar 07 2014 Andre Lorbach
 - new build for CentOS 6
 
 * Thu Feb 20 2014 Andre Lorbach
@@ -753,8 +759,8 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 - Created RPM's for RSyslog 8.1.0
 
 * Thu Nov 07 2013 Andre Lorbach
-- Removed unused reload option 
-  from INIT script. 
+- Removed unused reload option
+  from INIT script.
 
 * Wed Oct 30 2013 Andre Lorbach
 - Added mmsequence modul into base package
@@ -762,7 +768,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Tue Oct 29 2013 Andre Lorbach
 - Created RPM's for RSyslog 7.5.6
 
-* Wed Oct 15 2013 Andre Lorbach
+* Tue Oct 15 2013 Andre Lorbach
 - Created RPM's for RSyslog 7.5.5
 
 * Mon Oct 07 2013 Andre Lorbach
@@ -775,14 +781,14 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Thu Jul 04 2013 Andre Lorbach
 - Created RPM's for RSyslog 7.5.2
 
-* Tue Jun 26 2013 Andre Lorbach
+* Wed Jun 26 2013 Andre Lorbach
 - Created new RPMs for v7-devel 7.5.1
 
 * Tue Jun 11 2013 Andre Lorbach
 - Created new RPMs for v7-devel 7.5.0
 
 * Tue May 21 2013 Andre Lorbach
-- Added new module ommail 
+- Added new module ommail
 
 * Wed May 15 2013 Andre Lorbach
 - Created new RPMs for v7-devel 7.3.15
@@ -793,7 +799,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Thu Apr 25 2013 Andre Lorbach
 - Created new RPMs for v7-devel 7.3.12
 
-* Wed Apr 13 2013 Andre Lorbach
+* Sat Apr 13 2013 Andre Lorbach
 - Created new RPMs for v7-devel 7.3.10
 
 * Thu Mar 28 2013 Andre Lorbach
@@ -801,7 +807,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 
 * Fri Mar 22 2013 Andre Lorbach
 - Testing RPMs for v7-devel 7.3.9
-				 
+
 * Mon Mar 18 2013 Andre Lorbach
 - Created new RPMs for v7-devel 7.3.8
 
@@ -821,12 +827,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 - removed -c option from sysconfig file
 
 * Tue Jan 29 2013 Andre Lorbach
-- Added new default configuration which is only 
-  V7 compatible. 
+- Added new default configuration which is only
+  V7 compatible.
 - Created new RPMs for v7-devel 7.3.6
 
-* Tue Jan 17 2013 Andre Lorbach
-- Added Module for omelasticsearch , 
+* Thu Jan 17 2013 Andre Lorbach
+- Added Module for omelasticsearch ,
   thanks to Radu Gheorghe. Support is only available on
   EHEL 6 and higher!
 - Added Module for mmjsonparse.
@@ -838,7 +844,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 - Changed PIDFile back to rsyslog.pid for EPEL5 dist
 - removed depencies for libuuid-devel package
 
-* Fri Nov 07 2012 Andre Lorbach
+* Wed Nov 07 2012 Andre Lorbach
 - Created RPMs for v7-devel: 7.3.3
 
 * Fri Oct 19 2012 Andre Lorbach
@@ -848,14 +854,13 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 - created RPMs for RSyslog 7.1.11
 
 * Mon Oct 15 2012 Andre Lorbach
-- removed systemd-units dependency  
+- removed systemd-units dependency
 
-* Fri Sep 06 2012 Andre Lorbach
-- created RPMs for RSyslog 7.1.0 
+* Thu Sep 06 2012 Andre Lorbach
+- created RPMs for RSyslog 7.1.0
 
 * Fri Aug 24 2012 Andre Lorbach
 - Adapted RPM Specfile for RSyslog 6 and 7
 
 * Thu Aug 23 2012 Andre Lorbach
 - created RPMs for 5.8.13, no changes needed
-

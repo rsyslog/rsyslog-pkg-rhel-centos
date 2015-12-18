@@ -9,6 +9,8 @@ Group:		Networking/Admin
 URL: http://www.rsyslog.com/
 Source0: https://github.com/rsyslog/libksi/archive/libksi-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/libksi-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires:  autoconf
+BuildRequires:  libtool
 BuildRequires:	openssl-devel
 BuildRequires:	curl-devel
 BuildRequires:	ca-certificates
