@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.8.0.ad1
-Release: 3%{?dist}
+Version: 8.15.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -34,6 +34,9 @@ BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
 BuildRequires: liblogging-devel
+%if %{?rhel} >= 7
+BuildRequires: systemd-devel
+%endif
 
 # json-c.i686
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
@@ -154,6 +157,12 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 
 %if 0%{?rhel} >= 6
+%package rsgtutil
+Summary: RSyslog rsgtutil support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+Requires: %{name}-ksi = %version-%release
+
 %package elasticsearch
 Summary: Provides the omelasticsearch module
 Group: System Environment/Daemons
@@ -179,6 +188,13 @@ Summary: Kafka output support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: adiscon-librdkafka-devel
+
+%package ksi
+Summary: KSI signature support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+Requires: libksi1 <= 3.4.0.0
+BuildRequires: libksi1-devel
 %endif
 
 %description
@@ -255,7 +271,10 @@ signatures on the message, if they exist.
 
 %description mmutf8fix
 UTF-8 Fix support (mmutf8fix).
-The mmutf8fix module permits to fix invalid UTF-8 sequences. Most often, such invalid sequences result from syslog sources sending in non-UTF character sets, e.g. ISO 8859. As syslog does not have a way to convey the character set information, these sequences are not properly handled.
+The mmutf8fix module permits to fix invalid UTF-8 sequences. Most often, such invalid 
+sequences result from syslog sources sending in non-UTF character sets, e.g. ISO 8859. 
+As syslog does not have a way to convey the character set information, 
+these sequences are not properly handled.
 
 %description pmciscoios
 Parser module which supports various Cisco IOS formats.
@@ -268,6 +287,10 @@ As such, it is assume that mails will only be sent in an extremely
 limited number of cases.
 
 %if 0%{?rhel} >= 6
+%description rsgtutil
+Adds rsyslog utility used for GT and KSI signature verification and more. 
+For more information see the rsgtutil manual. 
+
 %description elasticsearch
 The rsyslog-elasticsearch package provides omelasticsearch module support. 
 
@@ -285,6 +308,10 @@ librdkafka is a C library implementation of the Apache Kafka protocol,
 containing both Producer and Consumer support. It was designed with message delivery 
 reliability and high performance in mind, current figures exceed 800000 msgs/second 
 for the producer and 3 million msgs/second for the consumer.
+
+%description ksi
+The KSI signature plugin provides access to the Keyless Signature Infrastructure 
+globally distributed by Guardtime. 
 %endif
 
 %prep
@@ -311,7 +338,13 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-uuid \
 		--enable-elasticsearch \
 		--enable-ommongodb \
+                --enable-omkafka \
 	        --enable-usertools \
+		--enable-gt-ksi \
+	%if 0%{?rhel} >= 7
+			--enable-imjournal \
+			--enable-omjournal \
+	%endif
 %else
 		--disable-uuid \
 		--disable-generate-man-pages \
@@ -341,7 +374,6 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmsequence \
 		--enable-pmaixforwardedfrom \
 		--enable-pmciscoios \
-		--enable-omkafka \
 		--enable-guardtime
 #--enable-jemalloc
 
@@ -420,8 +452,8 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/imptcp.so
 %{_libdir}/rsyslog/imtcp.so
 %{_libdir}/rsyslog/imudp.so
-%{_libdir}/rsyslog/imuxsock.so
 %{_libdir}/rsyslog/lmnet.so
+%{_libdir}/rsyslog/imuxsock.so
 %{_libdir}/rsyslog/lmnetstrms.so
 %{_libdir}/rsyslog/lmnsd_ptcp.so
 %{_libdir}/rsyslog/lmregexp.so
@@ -440,9 +472,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/mmpstrucdata.so
 %{_libdir}/rsyslog/mmsequence.so
 %{_libdir}/rsyslog/mmexternal.so
+%if 0%{?rhel} >= 7
+%{_libdir}/rsyslog/imjournal.so
+%{_libdir}/rsyslog/omjournal.so
+%endif
 %if 0%{?rhel} >= 6
 %{_bindir}/rscryutil
-%{_bindir}/rsgtutil
 %endif
 %config(noreplace) %{_sysconfdir}/rsyslog.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/rsyslog
@@ -533,6 +568,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/ommail.so
 
 %if 0%{?rhel} >= 6
+%files rsgtutil
+%defattr(-,root,root)
+%{_bindir}/rsgtutil
+
 %files elasticsearch
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omelasticsearch.so
@@ -552,9 +591,55 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %files kafka
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omkafka.so
+
+%files ksi
+%defattr(-,root,root)
+%{_libdir}/rsyslog/lmsig_ksi.so
 %endif
 
 %changelog
+* Fri Dec 18 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.15.0
+
+* Thu Dec 10 2015 Andre Lorbach
+- KSI signature support has to be moved from 
+  the base package to rsyslog-ksi
+- Moved rsgtutil into own package. 
+
+* Tue Nov 03 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.14.0
+- added imjournal and omjournal to base RPM
+
+* Tue Sep 22 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.13.0
+
+* Tue Aug 11 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.12.0
+
+* Tue Jul 14 2015 Florian Riedl
+- Updated RPM's to use librdkafka 0.8.6
+
+* Tue Jun 30 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.11.0
+- Added GT KSI support
+
+* Tue Jun 09 2015 Florian Riedl
+- Updated RPM's for Rsyslog 8.10.0.ad1
+
+* Thu May 29 2015 Andre Lorbach
+- Created RPM's for Rsyslog 8.10.0.ad1
+
+* Tue May 19 2015 Florian Riedl
+- Created RPM's for Rsyslog 8.10.0
+
+* Thu Apr 23 2015 Florian Riedl
+- Created RPM's for Rsyslog 8.9.0.ad1
+
+* Thu Apr 09 2015 Florian Riedl
+- Created RPM's for Rsyslog 8.9.0 for RHEL5
+
+* Tue Apr 07 2015 Florian Riedl
+- Created RPM's for Rsyslog 8.9.0
 
 * Tue Mar 17 2015 Florian Riedl
 - Updated RPM's for Rsyslog 8.8.0.ad1 to include omkafka

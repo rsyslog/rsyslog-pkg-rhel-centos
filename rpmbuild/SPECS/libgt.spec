@@ -5,7 +5,7 @@ Release: 1%{?dist}
 License: Apache Software License
 Group:      Networking/Admin
 URL: http://www.rsyslog.com/
-Source0: http://libgt.adiscon.com/files/download/%{name}-%{version}.tar.gz
+Source0: https://github.com/rsyslog/libgt/archive/master.zip 
 BuildRoot:  /var/tmp/%{name}-build
 BuildRequires: openssl-devel
 BuildRequires: curl-devel
