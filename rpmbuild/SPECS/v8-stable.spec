@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.16.0
-Release: 1%{?dist}
+Release: 3%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -29,18 +29,29 @@ Source4: %{rsysloglog}
 Requires: libgt
 BuildRequires: libestr-devel
 BuildRequires: libee-devel
-BuildRequires: json-c-devel
-#BuildRequires: libfastjson-devel
 BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
 BuildRequires: liblogging-devel
+BuildRequires: automake
+BuildRequires: libtool
+#%if %{?rhel} >= 6
+#BuildRequires: libfastjson-devel
+#%else
+BuildRequires: json-c-devel
+#%endif
 %if %{?rhel} >= 7
 BuildRequires: systemd-devel
 %endif
 
 # json-c.i686
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
+
+# SystemD Patch needed for CentOS 7
+%if %{?rhel} >= 7
+Patch0: rsyslog-systemd-centos7.patch
+%endif
+
 # NOT NEEDED ANYMORE Patch0: Patch0: rsyslog-7.1.0-systemd.patch
 # already patched 
 # Patch1: rsyslog-5.8.7-sysklogd-compat-1-template.patch
@@ -194,7 +205,7 @@ BuildRequires: adiscon-librdkafka-devel
 Summary: KSI signature support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: libksi1 <= 3.4.0.0
+Requires: libksi1 >= 3.4.0.0
 BuildRequires: libksi1-devel
 %endif
 
@@ -317,11 +328,14 @@ globally distributed by Guardtime.
 
 %prep
 %setup -q
-#%patch0 -p1
+%if %{?rhel} >= 7
+%patch0
+%endif
 #%patch1 -p1
 #%patch2 -p1
 
 %build
+autoreconf -vfi
 %ifarch sparc64
 #sparc64 need big PIE
 export CFLAGS="$RPM_OPT_FLAGS -fPIE -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\" -std=c99"
@@ -599,6 +613,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Feb 10 2016 Andre Lorbach
+- Added systemd patch for CentOS7
+
+* Tue Feb 09 2016 Florian Riedl
+- Fixed libksi dependency
+
 * Tue Jan 26 2016 Florian Riedl
 - Updated RPM's for Rsyslog 8.16.0
 

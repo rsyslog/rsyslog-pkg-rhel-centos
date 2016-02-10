@@ -11,7 +11,7 @@ Requires(postun): /sbin/ldconfig
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 #Patch0:		liblognorm-0.3.4-rename-to-lognormalizer.patch
 #Patch1:		liblognorm-0.3.4-pc-file.patch
-BuildRequires:	libestr-devel, libee-devel, chrpath
+BuildRequires:	libestr-devel, chrpath
 BuildRequires:	json-c-devel
 
 %description
