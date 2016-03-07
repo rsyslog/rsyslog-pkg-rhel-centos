@@ -35,11 +35,11 @@ BuildRequires: python-docutils
 BuildRequires: liblogging-devel
 BuildRequires: automake
 BuildRequires: libtool
-#%if %{?rhel} >= 6
-#BuildRequires: libfastjson-devel
-#%else
+%if %{?rhel} >= 6
+BuildRequires: libfastjson-devel
+%else
 BuildRequires: json-c-devel
-#%endif
+%endif
 %if %{?rhel} >= 7
 BuildRequires: systemd-devel
 %endif
