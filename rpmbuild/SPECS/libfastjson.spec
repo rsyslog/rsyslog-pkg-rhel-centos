@@ -9,7 +9,7 @@ Summary:	A JSON implementation in C
 Group:		Development/Libraries
 License:	MIT
 URL:		https://github.com/rsyslog/libfastjson
-Source0:	https://github.com/rsyslog/libfastjson/archive/libfastjson-%{version}.tar.gz
+Source0:	https://github.com/rsyslog/libfastjson/archive/v%{version}.tar.gz
 
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
