@@ -34,6 +34,7 @@ BuildRequires: libgt-devel
 BuildRequires: python-docutils
 BuildRequires: liblogging-devel
 BuildRequires: automake
+BuildRequires: autoconf >= 2.52
 BuildRequires: libtool
 %if %{?rhel} >= 6
 BuildRequires: libfastjson-devel
