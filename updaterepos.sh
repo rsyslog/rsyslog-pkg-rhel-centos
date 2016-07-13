@@ -21,7 +21,7 @@ do
 done
 
 for rsyslogver in $szRepos
-	do for distro in 5 6;
+	do for distro in 5 6 7;
 	do for arch in i386 x86_64;
 	        do repo=$szYumRepoDir/$rsyslogver/epel-$distro/$arch;
 		echo "Updating Repository: $repo"
