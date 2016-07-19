@@ -2,7 +2,7 @@
 # AVOIDS CRASH BUG in make https://bugzilla.redhat.com/show_bug.cgi?id=903009
 %global debug_package %{nil} 
 
-Name:		libfastjson
+Name:		libfastjson4
 Version:	0.99.3
 Release:	2%{?dist}
 Summary:	A JSON implementation in C
@@ -99,9 +99,4 @@ rm -rf %{buildroot}
 * Mon Jul 11 2016 Florian Riedl <friedl@adiscon.com> - 0.99.3-1
 - New RPM for libfastjson 0.99.3
 
-* Mon Mar 07 2016 Florian Riedl <friedl@adiscon.com> - 0.99.2-1
-- New RPM for libfastjson 0.99.2
-
-* Thu Jan 14 2016 Florian Riedl <friedl@adiscon.com> - 0.99.1-1
-- Initial RPM for libfastjson 
 

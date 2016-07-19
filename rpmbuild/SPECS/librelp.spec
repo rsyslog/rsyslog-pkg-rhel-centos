@@ -68,7 +68,7 @@ fi
 %{_libdir}/pkgconfig/relp.pc
 
 %changelog
-* Thu Jul 07 2016 Florian Riedl
+* Thu Jul 19 2016 Florian Riedl
 - Updated to librelp 1.2.12
 
 * Thu Jun 23 2016 Florian Riedl

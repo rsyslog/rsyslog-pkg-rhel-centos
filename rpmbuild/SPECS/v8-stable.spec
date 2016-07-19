@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.19.0
+Version: 8.20.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -37,7 +37,7 @@ BuildRequires: automake
 BuildRequires: autoconf >= 2.52
 BuildRequires: libtool
 %if %{?rhel} >= 6
-BuildRequires: libfastjson-devel
+BuildRequires: libfastjson4-devel
 %else
 BuildRequires: json-c-devel
 %endif
@@ -614,6 +614,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Jul 19 2016 Florian Riedl
+- Updated RPM's for Rsyslog 8.20.0
+
 * Tue May 31 2016 Florian Riedl
 - Updated RPM's for Rsyslog 8.19.0
 
@@ -660,7 +663,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Tue Jun 09 2015 Florian Riedl
 - Updated RPM's for Rsyslog 8.10.0.ad1
 
-* Thu May 29 2015 Andre Lorbach
+* Fri May 29 2015 Andre Lorbach
 - Created RPM's for Rsyslog 8.10.0.ad1
 
 * Tue May 19 2015 Florian Riedl
@@ -717,11 +720,11 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Thu Jun 26 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.2.2
 
-* Tue Jun 14 2014 Mike Liebsch
+* Sat Jun 14 2014 Mike Liebsch
 - Added mmutf8fix support
 - Updated to RSyslog 8.2.2
 
-* Wed Apr 22 2014 Andre Lorbach
+* Tue Apr 22 2014 Andre Lorbach
 - Created RPM's for RSyslog 8.2.1
 
 * Wed Apr 02 2014 Andre Lorbach
@@ -730,7 +733,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Tue Apr 01 2014 Andre Lorbach
 - First Testbuild for RSyslog V8-Stable
 
-* Thu Mar 11 2014 Andre Lorbach
+* Tue Mar 11 2014 Andre Lorbach
 - New build for librelp
 
 * Fri Mar 07 2014 Andre Lorbach 
@@ -768,7 +771,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Tue Oct 29 2013 Andre Lorbach
 - Created RPM's for RSyslog 7.5.6
 
-* Wed Oct 15 2013 Andre Lorbach
+* Tue Oct 15 2013 Andre Lorbach
 - Created RPM's for RSyslog 7.5.5
 
 * Mon Oct 07 2013 Andre Lorbach
@@ -781,7 +784,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Thu Jul 04 2013 Andre Lorbach
 - Created RPM's for RSyslog 7.5.2
 
-* Tue Jun 26 2013 Andre Lorbach
+* Wed Jun 26 2013 Andre Lorbach
 - Created new RPMs for v7-devel 7.5.1
 
 * Tue Jun 11 2013 Andre Lorbach
@@ -799,7 +802,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Thu Apr 25 2013 Andre Lorbach
 - Created new RPMs for v7-devel 7.3.12
 
-* Wed Apr 13 2013 Andre Lorbach
+* Sat Apr 13 2013 Andre Lorbach
 - Created new RPMs for v7-devel 7.3.10
 
 * Thu Mar 28 2013 Andre Lorbach
@@ -831,7 +834,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
   V7 compatible. 
 - Created new RPMs for v7-devel 7.3.6
 
-* Tue Jan 17 2013 Andre Lorbach
+* Thu Jan 17 2013 Andre Lorbach
 - Added Module for omelasticsearch , 
   thanks to Radu Gheorghe. Support is only available on
   EHEL 6 and higher!
@@ -844,7 +847,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 - Changed PIDFile back to rsyslog.pid for EPEL5 dist
 - removed depencies for libuuid-devel package
 
-* Fri Nov 07 2012 Andre Lorbach
+* Wed Nov 07 2012 Andre Lorbach
 - Created RPMs for v7-devel: 7.3.3
 
 * Fri Oct 19 2012 Andre Lorbach
@@ -856,7 +859,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Mon Oct 15 2012 Andre Lorbach
 - removed systemd-units dependency  
 
-* Fri Sep 06 2012 Andre Lorbach
+* Thu Sep 06 2012 Andre Lorbach
 - created RPMs for RSyslog 7.1.0 
 
 * Fri Aug 24 2012 Andre Lorbach
