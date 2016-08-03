@@ -130,19 +130,19 @@ BuildRequires: libnet-devel
 Summary: mmjsonparse support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: liblognorm1-devel
+BuildRequires: liblognorm5-devel
 
 %package mmnormalize
 Summary: mmnormalize support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: liblognorm1-devel
+BuildRequires: liblognorm5-devel
 
 %package mmfields
 Summary: mmfields support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: liblognorm1-devel
+BuildRequires: liblognorm5-devel
 
 %package pmaixforwardedfrom
 Summary: pmaixforwardedfrom support 
@@ -614,6 +614,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Aug 03 2016 Florian Riedl
+- Changed dependencies for Rsyslog 8.20.0
+
 * Tue Jul 19 2016 Florian Riedl
 - Updated RPM's for Rsyslog 8.20.0
 

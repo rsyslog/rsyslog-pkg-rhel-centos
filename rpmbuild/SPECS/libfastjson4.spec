@@ -3,8 +3,8 @@
 %global debug_package %{nil} 
 
 Name:		libfastjson4
-Version:	0.99.3
-Release:	2%{?dist}
+Version:	0.99.4
+Release:	1%{?dist}
 Summary:	A JSON implementation in C
 Group:		Development/Libraries
 License:	MIT
@@ -12,7 +12,7 @@ URL:		https://github.com/rsyslog/libfastjson
 Source0:	https://github.com/rsyslog/libfastjson/archive/libfastjson-%{version}.tar.gz
 
 
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot:	%{_tmppath}/libfastjson-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libtool
 
 %description
@@ -41,7 +41,7 @@ This package contains the development headers and library for libfastjson.
 #This package contains the reference manual for json-c.
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q -n libfastjson-%{version}
 
 #for doc in ChangeLog; do
 # iconv -f iso-8859-1 -t utf8 $doc > $doc.new &&
@@ -96,7 +96,10 @@ rm -rf %{buildroot}
 #%doc doc/html/*
 
 %changelog
+* Mon Aug 03 2016 Florian Riedl <friedl@adiscon.com> - 0.99.4-1
+- New RPM for libfastjson4 0.99.4
+
 * Mon Jul 11 2016 Florian Riedl <friedl@adiscon.com> - 0.99.3-1
-- New RPM for libfastjson 0.99.3
+- New RPM for libfastjson4 0.99.3
 
 
