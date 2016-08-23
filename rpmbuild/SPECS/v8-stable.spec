@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.20.0
+Version: 8.21.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -390,6 +390,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmsequence \
 		--enable-pmaixforwardedfrom \
 		--enable-pmciscoios \
+		--disable-liblogging-stdlog \
 		--enable-guardtime
 #--enable-jemalloc
 
@@ -614,6 +615,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Aug 23 2016 Florian Riedl
+- Updated RPM's for Rsyslog 8.21.0
+
 * Wed Aug 03 2016 Florian Riedl
 - Changed dependencies for Rsyslog 8.20.0
 
