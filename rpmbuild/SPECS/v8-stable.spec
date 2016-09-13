@@ -28,7 +28,6 @@ Source3: rsyslog.sysconfig
 Source4: %{rsysloglog}
 Requires: libgt
 BuildRequires: libestr-devel
-BuildRequires: libee-devel
 BuildRequires: curl-devel
 BuildRequires: libgt-devel
 BuildRequires: python-docutils
