@@ -1,7 +1,7 @@
 Summary:	GuardTime KSI API
 Name:		libksi1
-Version:	3.4.0.5
-Release:	2%{?dist}
+Version:	3.4.0.7
+Release:	1%{?dist}
 Provides:	libksi = 2:%{version}-%{release}
 Obsoletes:	libksi <= 2:3.4.4.0-1 
 License:	Apache Software License
@@ -52,7 +52,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libksi.so
 %{_libdir}/libksi.so.1
-%{_libdir}/libksi.so.1.0.0
+%{_libdir}/libksi.so.1.0.1
 %{_defaultdocdir}/libksi/changelog
 %{_defaultdocdir}/libksi/license.txt
 
@@ -90,7 +90,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Dec 13 2015 Andre Lorbach <alorbach@adiscon.com> 3.4.0.5-2
+* Tue Nov 15 2016 Florian Riedl
+- Updated RPMs for libksi 3.4.0.7-1
+
+* Wed Dec 16 2015 Andre Lorbach <alorbach@adiscon.com> 3.4.0.5-2
 - Updated RPMs for libksi 
 
 * Fri Jun 26 2015 Florian Riedl <friedl@adiscon.com> 3.2.2.0-1
