@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.24.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -158,6 +158,11 @@ Summary: mmutf8fix support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package mmrm1stspace
+Summary: mmrm1stspace support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %package ommail
 Summary: Mail support 
 Group: System Environment/Daemons
@@ -288,6 +293,12 @@ sequences result from syslog sources sending in non-UTF character sets, e.g. ISO
 As syslog does not have a way to convey the character set information, 
 these sequences are not properly handled.
 
+%description mmrm1stspace
+Removes leading space (mmrm1stspace).
+The mmrm1stspace module is used to remove the leading space character of the msg
+property. It is basically for cleaning up this unneeded character to make 
+subsequent message parsing less error-prone.
+
 %description pmciscoios
 Parser module which supports various Cisco IOS formats.
 
@@ -387,6 +398,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmfields \
 		--enable-mmpstrucdata \
 		--enable-mmsequence \
+		--enable-mmrm1stspace \
 		--enable-pmaixforwardedfrom \
 		--enable-pmciscoios \
 		--disable-liblogging-stdlog \
@@ -579,6 +591,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmutf8fix.so
 
+%files mmrm1stspace 
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmrm1stspace.so
+
 %files ommail
 %defattr(-,root,root)
 %{_libdir}/rsyslog/ommail.so
@@ -614,6 +630,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Fri Jan 20 2017 Florian Riedl
+- Added new module mmrm1stspace to the RPM's
+
 * Tue Jan 10 2017 Florian Riedl
 - Updated RPM's for Rsyslog 8.24.0
 
