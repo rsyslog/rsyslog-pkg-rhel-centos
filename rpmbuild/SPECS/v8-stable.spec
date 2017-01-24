@@ -5,11 +5,11 @@
 
 # Set PIDFILE Variable!
 %if 0%{?rhel} >= 6
-	%define Pidfile syslogd.pid
+	%define Pidfile /var/run/syslogd.pid
 	%define rsysloginit rsyslog.init.epel6
 	%define rsysloglog rsyslog.log.epel6
 %else
-	%define Pidfile rsyslogd.pid
+	%define Pidfile /var/run/rsyslogd.pid
 	%define rsysloginit rsyslog.init.epel5
 	%define rsysloglog rsyslog.log.epel5
 %endif
@@ -42,6 +42,8 @@ BuildRequires: json-c-devel
 %endif
 %if %{?rhel} >= 7
 BuildRequires: systemd-devel
+BuildRequires: byacc
+BuildRequires: flex
 %endif
 
 # json-c.i686
@@ -349,10 +351,10 @@ globally distributed by Guardtime.
 autoreconf -vfi
 %ifarch sparc64
 #sparc64 need big PIE
-export CFLAGS="$RPM_OPT_FLAGS -fPIE -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\" -std=c99"
+export CFLAGS="$RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"%{Pidfile}\\\" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
-export CFLAGS="$RPM_OPT_FLAGS -fpie -DSYSLOGD_PIDNAME=\\\"%{Pidfile}\\\" -std=c99"
+export CFLAGS="$RPM_OPT_FLAGS -fpie -DPATH_PIDFILE=\\\"%{Pidfile}\\\" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %endif
 #		--enable-imzmq3 \
