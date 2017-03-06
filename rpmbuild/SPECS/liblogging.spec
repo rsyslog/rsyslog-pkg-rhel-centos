@@ -1,5 +1,5 @@
 Name:		liblogging
-Version:	1.0.5
+Version:	1.0.6
 Release:	1%{?dist}
 Summary:	LibLogging stdlog library
 License:	2-clause BSD
@@ -37,7 +37,7 @@ V=1 make
 %install
 make install INSTALL="install -p" DESTDIR="$RPM_BUILD_ROOT"
 rm -f %{buildroot}%{_libdir}/*.{a,la}
-chrpath -d %{buildroot}%{_libdir}/liblogging-stdlog.so.0.0.0
+chrpath -d %{buildroot}%{_libdir}/liblogging-stdlog.so.0.1.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -62,6 +62,8 @@ fi
 
 
 %changelog
+* Mon Mar 06 2017 Florian Riedl
+- New RPMs for 1.0.6
 
 * Tue Dec 09 2014 Florian Riedl
 - New RPMs for 1.0.5
