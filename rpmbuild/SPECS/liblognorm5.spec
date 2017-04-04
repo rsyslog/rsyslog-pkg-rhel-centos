@@ -1,5 +1,5 @@
 Name:		liblognorm5
-Version:	2.0.2
+Version:	2.0.3
 Release:	1%{?dist}
 Summary:	Fast samples-based log normalization library
 License:	LGPLv2+
@@ -62,7 +62,7 @@ V=1 make
 make install INSTALL="install -p" DESTDIR=%{buildroot}
 rm -f %{buildroot}/%{_libdir}/*.{a,la}
 chrpath -d %{buildroot}/%{_bindir}/lognormalizer
-chrpath -d %{buildroot}/%{_libdir}/liblognorm.so.5.0.0
+chrpath -d %{buildroot}/%{_libdir}/liblognorm.so.5.1.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -89,6 +89,9 @@ fi
 
 
 %changelog
+* Wed Mar 22 2017 Florian Riedl
+- Build for release 2.0.3
+
 * Tue Nov 15 2016 Florian Riedl
 - Build for release 2.0.2
 
