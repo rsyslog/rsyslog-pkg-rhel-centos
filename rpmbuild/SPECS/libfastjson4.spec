@@ -3,7 +3,7 @@
 %global debug_package %{nil} 
 
 Name:		libfastjson4
-Version:	0.99.4
+Version:	0.99.5
 Release:	1%{?dist}
 Summary:	A JSON implementation in C
 Group:		Development/Libraries
@@ -96,6 +96,9 @@ rm -rf %{buildroot}
 #%doc doc/html/*
 
 %changelog
+* Wed May 03 2017 Florian Riedl <friedl@adiscon.com> - 0.99.5-1
+- New RPM for libfastjson4 0.99.5
+
 * Mon Aug 03 2016 Florian Riedl <friedl@adiscon.com> - 0.99.4-1
 - New RPM for libfastjson4 0.99.4
 
