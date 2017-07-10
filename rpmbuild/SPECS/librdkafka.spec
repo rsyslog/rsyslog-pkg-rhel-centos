@@ -1,16 +1,17 @@
-Name:    adiscon-librdkafka
+Name:    adisconbuild-librdkafka
 # NOTE: Make sure to update this to match rdkafka.h version
-Version: 0.8.6
+Version: 0.9.5
 Release: 1
 %define soname 1
+%define _unpackaged_files_terminate_build 0
 
 Summary: The Apache Kafka C library
 Group:   Development/Libraries/C and C++
 License: BSD-2-Clause
 URL:     https://github.com/edenhill/librdkafka
-Source:	 adiscon-librdkafka-%{version}.tar.gz
+Source:	 adisconbuild-librdkafka-%{version}.tar.gz
 
-BuildRequires: zlib-devel libstdc++-devel gcc >= 4.1 gcc-c++
+BuildRequires: zlib-devel libstdc++-devel gcc >= 4.1 gcc-c++ python-devel lz4-devel
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %description
@@ -80,6 +81,8 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Jun 26 2017 Florian Riedl
+- Build dependency package 0.9.5
 
 * Mon Jun 29 2015 Florian Riedl
 - New RPM for librdkafka 0.8.6
