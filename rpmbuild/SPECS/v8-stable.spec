@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.28.0
+Version: 8.29.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -637,6 +637,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Aug 09 2017 Florian Riedl
+- Updated RPM's for Rsyslog 8.29.0
+
 * Tue Jun 27 2017 Florian Riedl
 - Updated RPM's for Rsyslog 8.28.0
 - Included static linking for librdkafka
