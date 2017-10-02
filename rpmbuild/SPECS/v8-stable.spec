@@ -642,7 +642,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %changelog
 * Wed Sep 21 2017 Florian Riedl
 - Included fixed liblognorm dependencies to
-  get around a RPM conflict with the base repo.
+  get around a RPM conflict with the base 
 
 * Wed Aug 09 2017 Florian Riedl
 - Updated RPM's for Rsyslog 8.29.0
