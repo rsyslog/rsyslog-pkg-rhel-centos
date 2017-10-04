@@ -1,7 +1,7 @@
 Name:    adisconbuild-librdkafka
 # NOTE: Make sure to update this to match rdkafka.h version
 Version: 0.11.0
-Release: 1
+Release: 2
 %define soname 1
 %define _unpackaged_files_terminate_build 0
 
@@ -31,6 +31,7 @@ librdkafka is a C/C++ library implementation of the Apache Kafka protocol, conta
 Summary: The Apache Kafka C library (Development Environment)
 Group:   Development/Libraries/C and C++
 Requires: %{name}%{soname} = %{version}
+BuildRequires: openssl-devel cyrus-sasl-devel
 
 %description -n %{name}-devel
 librdkafka is a C/C++ library implementation of the Apache Kafka protocol, containing both Producer and Consumer support.
@@ -81,6 +82,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Oct 04 2017 Florian Riedl
+- Re-build for SSL support
+
 * Mon Oct 02 2017 Florian Riedl
 - Build dependency package 0.11.0
 

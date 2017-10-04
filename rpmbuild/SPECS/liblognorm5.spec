@@ -1,8 +1,8 @@
 Name:		liblognorm5
-Version:	2.0.3
-Release:	3%{?dist}
+Version:	2.0.4
+Release:	1%{?dist}
 Provides:	liblognorm5 = %{version}-%{release}
-Obsoletes:	liblognorm <= 2.0.2-1 
+Obsoletes:	liblognorm <= 2.0.3-3 
 Summary:	Fast samples-based log normalization library
 License:	LGPLv2+
 Group:		System Environment/Libraries
@@ -91,6 +91,9 @@ fi
 
 
 %changelog
+* Wed Oct 04 2017 Florian Riedl
+- Build for release 2.0.4
+
 * Wed Mar 22 2017 Florian Riedl
 - Build for release 2.0.3
 
