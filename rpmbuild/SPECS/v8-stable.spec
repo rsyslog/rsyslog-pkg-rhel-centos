@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.29.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -128,22 +128,22 @@ BuildRequires: libnet-devel
 Summary: mmjsonparse support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: liblognorm5 >= 2.0.3
-BuildRequires: liblognorm5-devel >= 2.0.3
+Requires: liblognorm5 >= 2.0.4
+BuildRequires: liblognorm5-devel >= 2.0.4
 
 %package mmnormalize
 Summary: mmnormalize support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: liblognorm5 >= 2.0.3
-BuildRequires: liblognorm5-devel >= 2.0.3
+Requires: liblognorm5 >= 2.0.4
+BuildRequires: liblognorm5-devel >= 2.0.4
 
 %package mmfields
 Summary: mmfields support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: liblognorm5 >= 2.0.3
-BuildRequires: liblognorm5-devel >= 2.0.3
+Requires: liblognorm5 >= 2.0.4
+BuildRequires: liblognorm5-devel >= 2.0.4
 
 %package pmaixforwardedfrom
 Summary: pmaixforwardedfrom support 
@@ -640,6 +640,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Oct 04 2017 Florian Riedl
+- Repack for new liblognorm version
+
 * Wed Sep 21 2017 Florian Riedl
 - Included fixed liblognorm dependencies to
   get around a RPM conflict with the base 
