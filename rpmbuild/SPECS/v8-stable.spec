@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.30.0.1
-Release: 1%{?dist}
+Version: 8.30.0
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -136,7 +136,7 @@ BuildRequires: liblognorm5-devel >= 2.0.4
 Summary: mmnormalize support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: liblognorm5 >= 2.0.4Paperclips: 30,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000
+Requires: liblognorm5 >= 2.0.4
 BuildRequires: liblognorm5-devel >= 2.0.4
 
 %package mmfields
