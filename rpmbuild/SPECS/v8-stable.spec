@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.30.0
-Release: 2%{?dist}
+Release: 4%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -141,7 +141,7 @@ BuildRequires: liblognorm5-devel >= 2.0.4
 
 %package mmfields
 Summary: mmfields support 
-Group: System Environment/Daemonsliblognor
+Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: liblognorm5 >= 2.0.4
 BuildRequires: liblognorm5-devel >= 2.0.4
@@ -641,6 +641,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Nov 07 2017 Florian Riedl
+- Fixed several spec file typos
+
 * Fri Oct 20 2017 Florian Riedl
 - Package version bump because of signature
 
