@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.24.0
-Release: 2%{?dist}
+Version: 8.30.0
+Release: 4%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -26,17 +26,17 @@ Source1: %{rsysloginit}
 Source2: rsyslog_v7.conf
 Source3: rsyslog.sysconfig
 Source4: %{rsysloglog}
-Requires: libgt
+#Requires: libgt
 BuildRequires: libestr-devel
 BuildRequires: curl-devel
-BuildRequires: libgt-devel
 BuildRequires: python-docutils
 BuildRequires: liblogging-devel
 BuildRequires: automake
 BuildRequires: autoconf >= 2.52
 BuildRequires: libtool
 %if %{?rhel} >= 6
-BuildRequires: libfastjson4-devel
+Requires: libfastjson4 >= 0.99.7
+BuildRequires: libfastjson4-devel >= 0.99.7
 %else
 BuildRequires: json-c-devel
 %endif
@@ -104,7 +104,7 @@ BuildRequires: postgresql-devel
 Summary: RELP protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: librelp >= 1.2.10
+Requires: librelp >= 1.2.12
 BuildRequires: librelp-devel 
 BuildRequires: libgcrypt-devel
 
@@ -131,19 +131,22 @@ BuildRequires: libnet-devel
 Summary: mmjsonparse support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: liblognorm5-devel
+Requires: liblognorm5 >= 2.0.4
+BuildRequires: liblognorm5-devel >= 2.0.4
 
 %package mmnormalize
 Summary: mmnormalize support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: liblognorm5-devel
+Requires: liblognorm5 >= 2.0.4
+BuildRequires: liblognorm5-devel >= 2.0.4
 
 %package mmfields
 Summary: mmfields support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: liblognorm5-devel
+Requires: liblognorm5 >= 2.0.4
+BuildRequires: liblognorm5-devel >= 2.0.4
 
 %package pmaixforwardedfrom
 Summary: pmaixforwardedfrom support 
@@ -176,11 +179,11 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 
 %if 0%{?rhel} >= 6
-%package rsgtutil
-Summary: RSyslog rsgtutil support 
-Group: System Environment/Daemons
-Requires: %name = %version-%release
-Requires: %{name}-ksi = %version-%release
+#%package rsgtutil
+#Summary: RSyslog rsgtutil support 
+#Group: System Environment/Daemons
+#Requires: %name = %version-%release
+#Requires: %{name}-ksi = %version-%release
 
 %package elasticsearch
 Summary: Provides the omelasticsearch module
@@ -206,14 +209,17 @@ BuildRequires: libmongo-client-devel
 Summary: Kafka output support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: adiscon-librdkafka-devel
+Requires: lz4
+BuildRequires: adisconbuild-librdkafka-devel
+BuildRequires: lz4-devel
+BuildRequires: cyrus-sasl-devel
 
-%package ksi
+%package ksi-ls12
 Summary: KSI signature support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: libksi1 >= 3.4.0.0
-BuildRequires: libksi1-devel
+Requires: libksi >= 3.13.0
+BuildRequires: libksi-devel
 %endif
 
 %description
@@ -312,9 +318,9 @@ As such, it is assume that mails will only be sent in an extremely
 limited number of cases.
 
 %if 0%{?rhel} >= 6
-%description rsgtutil
-Adds rsyslog utility used for GT and KSI signature verification and more. 
-For more information see the rsgtutil manual. 
+#%description rsgtutil
+#Adds rsyslog utility used for GT and KSI signature verification and more. 
+#For more information see the rsgtutil manual. 
 
 %description elasticsearch
 The rsyslog-elasticsearch package provides omelasticsearch module support. 
@@ -334,8 +340,8 @@ containing both Producer and Consumer support. It was designed with message deli
 reliability and high performance in mind, current figures exceed 800000 msgs/second 
 for the producer and 3 million msgs/second for the consumer.
 
-%description ksi
-The KSI signature plugin provides access to the Keyless Signature Infrastructure 
+%description ksi-ls12
+The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastructure 
 globally distributed by Guardtime. 
 %endif
 
@@ -351,10 +357,13 @@ globally distributed by Guardtime.
 autoreconf -vfi
 %ifarch sparc64
 #sparc64 need big PIE
-export CFLAGS="$RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"%{Pidfile}\\\" -std=c99"
+
+export CFLAGS="$RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
+#" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
-export CFLAGS="$RPM_OPT_FLAGS -fpie -DPATH_PIDFILE=\\\"%{Pidfile}\\\" -std=c99"
+export CFLAGS="$RPM_OPT_FLAGS -fpie -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
+#" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %endif
 #		--enable-imzmq3 \
@@ -367,8 +376,10 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-elasticsearch \
 		--enable-ommongodb \
                 --enable-omkafka \
+		--enable-imkafka \
+		--enable-kafka-static \
 	        --enable-usertools \
-		--enable-gt-ksi \
+		--enable-ksi-ls12 \
 	%if 0%{?rhel} >= 7
 			--enable-imjournal \
 			--enable-omjournal \
@@ -403,8 +414,8 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmrm1stspace \
 		--enable-pmaixforwardedfrom \
 		--enable-pmciscoios \
-		--disable-liblogging-stdlog \
-		--enable-guardtime
+		--disable-liblogging-stdlog 
+#		--enable-guardtime
 #--enable-jemalloc
 
 make
@@ -498,7 +509,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/omuxsock.so
 %{_libdir}/rsyslog/pmlastmsg.so
 %{_libdir}/rsyslog/lmcry_gcry.so
-%{_libdir}/rsyslog/lmsig_gt.so
+#%{_libdir}/rsyslog/lmsig_gt.so
 %{_libdir}/rsyslog/mmpstrucdata.so
 %{_libdir}/rsyslog/mmsequence.so
 %{_libdir}/rsyslog/mmexternal.so
@@ -602,9 +613,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/ommail.so
 
 %if 0%{?rhel} >= 6
-%files rsgtutil
-%defattr(-,root,root)
-%{_bindir}/rsgtutil
+#%files rsgtutil
+#%defattr(-,root,root)
+#%{_bindir}/rsgtutil
 
 %files elasticsearch
 %defattr(-,root,root)
@@ -625,13 +636,50 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %files kafka
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omkafka.so
+%{_libdir}/rsyslog/imkafka.so
 
-%files ksi
+%files ksi-ls12
 %defattr(-,root,root)
-%{_libdir}/rsyslog/lmsig_ksi.so
+%{_libdir}/rsyslog/lmsig_ksi_ls12.so
 %endif
 
 %changelog
+* Tue Nov 07 2017 Florian Riedl
+- Fixed several spec file typos
+
+* Fri Oct 20 2017 Florian Riedl
+- Package version bump because of signature
+
+* Tue Oct 16 2017 Florian Riedl
+- Updated RPM's for Rsyslog 8.30.0
+
+* Wed Oct 04 2017 Florian Riedl
+- Repack for new liblognorm version
+
+* Wed Sep 21 2017 Florian Riedl
+- Included fixed liblognorm dependencies to
+  get around a RPM conflict with the base 
+
+* Wed Aug 09 2017 Florian Riedl
+- Updated RPM's for Rsyslog 8.29.0
+
+* Tue Jun 27 2017 Florian Riedl
+- Updated RPM's for Rsyslog 8.28.0
+- Included static linking for librdkafka
+- Included imkafka
+
+* Fri May 19 2017 Florian Riedl
+- Fixed liblognorm dependency
+
+* Tue May 16 2017 Florian Riedl
+- Updated RPM's for Rsyslog 8.27.0
+
+* Tue Apr 04 2017 Florian Riedl
+- Updated RPM's for Rsyslog 8.26.0
+
+* Tue Feb 21 2017 Florian Riedl
+- Updated RPM's for Rsyslog 8.25.0
+
 * Fri Jan 20 2017 Florian Riedl
 - Added new module mmrm1stspace to the RPM's
 

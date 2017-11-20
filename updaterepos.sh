@@ -2,7 +2,7 @@
 source $(dirname "$0")/config.sh
 
 #ALLREPOS="Yes"
-#REPOOPTIONS="v5-stable v7-stable v8-stable v8-devel testing"
+#REPOOPTIONS="v5-stable v7-stable v8-stable v8-devel v8-devel2 v8-q-debug testing"
 #ARCHOPTIONS="i386 x86_64"
 #PLATOPTIONS="epel-5 epel-6" #"opensuse-11"
 

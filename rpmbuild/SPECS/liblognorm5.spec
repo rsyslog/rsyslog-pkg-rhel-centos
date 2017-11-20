@@ -1,6 +1,9 @@
 Name:		liblognorm5
-Version:	2.0.2
-Release:	1%{?dist}
+Version:	2.0.4
+Release:	3%{?dist}
+Provides:	liblognorm5 = %{version}-%{release}
+Obsoletes:	liblognorm <= 2.0.3
+Obsoletes:	liblognorm5 <= 2.0.3
 Summary:	Fast samples-based log normalization library
 License:	LGPLv2+
 Group:		System Environment/Libraries
@@ -62,7 +65,7 @@ V=1 make
 make install INSTALL="install -p" DESTDIR=%{buildroot}
 rm -f %{buildroot}/%{_libdir}/*.{a,la}
 chrpath -d %{buildroot}/%{_bindir}/lognormalizer
-chrpath -d %{buildroot}/%{_libdir}/liblognorm.so.5.0.0
+chrpath -d %{buildroot}/%{_libdir}/liblognorm.so.5.1.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -89,6 +92,15 @@ fi
 
 
 %changelog
+* Wed Oct 18 2017 Florian Riedl
+- Repack for spec file changes
+
+* Wed Oct 04 2017 Florian Riedl
+- Build for release 2.0.4
+
+* Wed Mar 22 2017 Florian Riedl
+- Build for release 2.0.3
+
 * Tue Nov 15 2016 Florian Riedl
 - Build for release 2.0.2
 
