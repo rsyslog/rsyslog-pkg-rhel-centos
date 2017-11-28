@@ -1,7 +1,7 @@
 Name:    adisconbuild-librdkafka
 # NOTE: Make sure to update this to match rdkafka.h version
-Version: 0.11.0
-Release: 2
+Version: 0.11.1
+Release: 1
 %define soname 1
 %define _unpackaged_files_terminate_build 0
 
@@ -82,6 +82,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Nov 28 2017 Florian Riedl
+- Build dependency package 0.11.1
+
 * Wed Oct 04 2017 Florian Riedl
 - Re-build for SSL support
 

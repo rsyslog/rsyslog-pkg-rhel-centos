@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.30.0
-Release: 4%{?dist}
+Version: 8.31.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -199,11 +199,13 @@ BuildRequires: libcurl-devel
 #Requires: %name = %version-%release
 #BuildRequires: czmq-devel
 
-%package mongodb
-Summary: MongoDB output support 
-Group: System Environment/Daemons
-Requires: %name = %version-%release
-BuildRequires: libmongo-client-devel
+# Dependency is missing
+#%package mongodb
+#Summary: MongoDB output support 
+#Group: System Environment/Daemons
+#Requires: %name = %version-%release
+#BuildRequires: libmongo-client-devel
+
 
 %package kafka
 Summary: Kafka output support 
@@ -329,10 +331,10 @@ The rsyslog-elasticsearch package provides omelasticsearch module support.
 #zmq3 support for RSyslog. These plugins allows you to push data from 
 #and into rsyslog from a zeromq socket.
 
-%description mongodb
-MongoDB output plugin for rsyslog. This plugin allows rsyslog to write 
-the syslog messages to MongoDB, a scalable, high-performance, 
-open source NoSQL database.
+#%description mongodb
+#MongoDB output plugin for rsyslog. This plugin allows rsyslog to write 
+#the syslog messages to MongoDB, a scalable, high-performance, 
+#open source NoSQL database.
 
 %description kafka
 librdkafka is a C library implementation of the Apache Kafka protocol, 
@@ -369,12 +371,12 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 #		--enable-imzmq3 \
 #		--enable-omzmq3 \
 #		--enable-gssapi-krb5 \	# bugged
+# >=El6		--enable-ommongodb \
 %configure	--disable-static \
 		--disable-testbench \
 %if 0%{?rhel} >= 6
 		--enable-uuid \
 		--enable-elasticsearch \
-		--enable-ommongodb \
                 --enable-omkafka \
 		--enable-imkafka \
 		--enable-kafka-static \
@@ -626,12 +628,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 #%{_libdir}/rsyslog/imzmq3.so
 #%{_libdir}/rsyslog/omzmq3.so
 
-%files mongodb
-%defattr(-,root,root)
-%{_libdir}/rsyslog/ommongodb.so
-%if 0%{?rhel} >= 6
-%{_bindir}/logctl
-%endif
+#%files mongodb
+#%defattr(-,root,root)
+#%{_libdir}/rsyslog/ommongodb.so
+#%if 0%{?rhel} >= 6
+#%{_bindir}/logctl
+#%endif
 
 %files kafka
 %defattr(-,root,root)
@@ -644,6 +646,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Nov 28 2017 Florian Riedl
+- Updated RPM's for Rsyslog 8.31.0
+- Disabled MongoDB package because of dependency change
+
 * Tue Nov 07 2017 Florian Riedl
 - Fixed several spec file typos
 
