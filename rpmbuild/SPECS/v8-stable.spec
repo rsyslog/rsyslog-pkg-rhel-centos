@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.31.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -646,6 +646,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Nov 29 2017 Florian Riedl
+- Workaround for startup issue
+
 * Tue Nov 28 2017 Florian Riedl
 - Updated RPM's for Rsyslog 8.31.0
 - Disabled MongoDB package because of dependency change
@@ -656,13 +659,13 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Fri Oct 20 2017 Florian Riedl
 - Package version bump because of signature
 
-* Tue Oct 16 2017 Florian Riedl
+* Tue Oct 17 2017 Florian Riedl
 - Updated RPM's for Rsyslog 8.30.0
 
 * Wed Oct 04 2017 Florian Riedl
 - Repack for new liblognorm version
 
-* Wed Sep 21 2017 Florian Riedl
+* Wed Sep 20 2017 Florian Riedl
 - Included fixed liblognorm dependencies to
   get around a RPM conflict with the base 
 
