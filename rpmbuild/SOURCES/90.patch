@@ -1,0 +1,28 @@
+From e9ee4ae18a9fca8c31eac44669364034658b3d51 Mon Sep 17 00:00:00 2001
+From: Remi Collet <fedora@famillecollet.com>
+Date: Thu, 13 Jun 2013 13:40:01 +0200
+Subject: [PATCH] in strick mode, number must not start with 0
+
+---
+ json_tokener.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/json_tokener.c b/json_tokener.c
+index b2b47f9..4491cec 100644
+--- a/json_tokener.c
++++ b/json_tokener.c
+@@ -611,6 +611,11 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
+ 	int64_t num64;
+ 	double  numd;
+ 	if (!tok->is_double && json_parse_int64(tok->pb->buf, &num64) == 0) {
++		if (num64 && tok->pb->buf[0]=='0' && (tok->flags & JSON_TOKENER_STRICT)) {
++			/* in strick mode, number must not start with 0 */
++			tok->err = json_tokener_error_parse_number;
++			goto out;
++		}
+ 		current = json_object_new_int64(num64);
+ 	} else if(tok->is_double && json_parse_double(tok->pb->buf, &numd) == 0) {
+           current = json_object_new_double(numd);
+-- 
+1.8.1.6
+
