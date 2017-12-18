@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.31.0
-Release: 3%{?dist}
+Release: 6%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -359,12 +359,13 @@ globally distributed by Guardtime.
 autoreconf -vfi
 %ifarch sparc64
 #sparc64 need big PIE
+#-fno-omit-frame-pointer
 
-export CFLAGS="$RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
+export CFLAGS="$RPM_OPT_FLAGS -g -fsanitize=address -fPIE -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
 #" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
-export CFLAGS="$RPM_OPT_FLAGS -fpie -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
+export CFLAGS="$RPM_OPT_FLAGS -g -fsanitize=address -fpie -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
 #" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %endif
@@ -372,6 +373,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 #		--enable-omzmq3 \
 #		--enable-gssapi-krb5 \	# bugged
 # >=El6		--enable-ommongodb \
+# EL7 8.32.0			--enable-libsystemd=yes \
 %configure	--disable-static \
 		--disable-testbench \
 %if 0%{?rhel} >= 6
@@ -646,6 +648,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Thu Dec 07 2017 Florian Riedl
+- Potential Fix for service start issue
+
 * Wed Nov 29 2017 Florian Riedl
 - Workaround for service start issue
 

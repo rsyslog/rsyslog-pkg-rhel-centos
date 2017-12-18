@@ -7,7 +7,7 @@ diff -up rsyslog.service.in.orig rsyslog.service.in
  [Service]
 -Type=notify
 -ExecStart=@sbindir@/rsyslogd -n
-+#Type=notify
++Type=notify
 +EnvironmentFile=-/etc/sysconfig/rsyslog
 +ExecStart=@sbindir@/rsyslogd -n $SYSLOGD_OPTIONS
 +Restart=on-failure
