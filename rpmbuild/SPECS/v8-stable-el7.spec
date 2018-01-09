@@ -13,8 +13,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.31.0
-Release: 6%{?dist}
+Version: 8.32.0
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -41,6 +41,7 @@ BuildRequires: zlib-devel
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
 Requires: libestr >= 0.1.9
+Requires: libfastjson4 >= 0.99.8
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
@@ -92,7 +93,7 @@ Group: Documentation
 Summary: ElasticSearch output module for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: libcurl-devel
+BuildRequires: libcurl-devel libuuid-devel
 
 %if %{want_hiredis}
 %package hiredis
@@ -102,10 +103,19 @@ Requires: %name = %version-%release
 BuildRequires: hiredis-devel
 %endif
 
-%package mmjsonparse
-Summary: JSON enhanced logging support
+%package mmfields
+Summary: mmfields support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
+Requires: liblognorm5 >= 2.0.4
+BuildRequires: liblognorm5-devel >= 2.0.4
+
+%package mmjsonparse
+Summary: mmjsonparse support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+Requires: liblognorm5 >= 2.0.4
+BuildRequires: liblognorm5-devel >= 2.0.4
 
 %package mmnormalize
 Summary: Log normalization support for rsyslog
@@ -115,6 +125,11 @@ BuildRequires: libee-devel liblognorm5-devel >= 2.0.4
 
 %package mmaudit
 Summary: Message modification module supporting Linux audit format
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
+%package mmrm1stspace
+Summary: mmrm1stspace support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
@@ -150,6 +165,11 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: postgresql-devel
 
+%package pmciscoios
+Summary: pmciscoios support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %if %{want_rabbitmq}
 %package rabbitmq
 Summary: RabbitMQ support for rsyslog
@@ -168,14 +188,16 @@ BuildRequires: krb5-devel
 Summary: RELP protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: librelp >= 1.0.3
-BuildRequires: librelp-devel >= 1.0.3
+Requires: librelp >= 1.2.12
+BuildRequires: librelp-devel >= 1.2.12
+BuildRequires: libgcrypt-devel
 
 %package gnutls
 Summary: TLS protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: gnutls-devel
+BuildRequires: libgcrypt-devel
 
 %package snmp
 Summary: SNMP protocol support for rsyslog
@@ -188,6 +210,22 @@ Summary: Provides the omudpspoof module
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libnet-devel
+
+%package kafka
+Summary: Kafka output support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+Requires: lz4
+BuildRequires: adisconbuild-librdkafka-devel
+BuildRequires: lz4-devel
+BuildRequires: cyrus-sasl-devel
+
+%package ksi-ls12
+Summary: KSI signature support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+Requires: libksi >= 3.13.0
+BuildRequires: libksi-devel
 
 %description
 Rsyslog is an enhanced, multi-threaded syslog daemon. It supports MySQL,
@@ -223,6 +261,9 @@ This module provides the capability to normalize log messages via liblognorm.
 %description mmaudit
 This module provides message modification supporting Linux audit format
 in various settings.
+
+%description mmfields
+Parse all fields of the message into structured data inside the JSON tree.
 
 %description mmsnmptrapd
 This message modification module takes messages generated from snmptrapd and
@@ -276,11 +317,30 @@ This module is similar to the regular UDP forwarder, but permits to
 spoof the sender address. Also, it enables to circle through a number
 of source ports.
 
+%description mmrm1stspace
+Removes leading space (mmrm1stspace).
+The mmrm1stspace module is used to remove the leading space character of the msg
+property. It is basically for cleaning up this unneeded character to make 
+subsequent message parsing less error-prone.
+
+%description pmciscoios
+Parser module which supports various Cisco IOS formats.
+
+%description kafka
+librdkafka is a C library implementation of the Apache Kafka protocol, 
+containing both Producer and Consumer support. It was designed with message delivery 
+reliability and high performance in mind, current figures exceed 800000 msgs/second 
+for the producer and 3 million msgs/second for the consumer.
+
+%description ksi-ls12
+The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastructure 
+globally distributed by Guardtime. 
+
 %prep
 # set up rsyslog-doc sources
 %setup -q -a 1 -T -c
 #%patch10 -p1
-rm -r LICENSE README.md build.sh source build/objects.inv
+rm -r LICENSE README.md source build/objects.inv
 mv build doc
 
 # set up rsyslog sources
@@ -378,6 +438,16 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-snmp \
 	--enable-unlimited-select \
 	--enable-usertools \
+	--enable-uuid \
+        --enable-omkafka \
+	--enable-imkafka \
+	--enable-kafka-static \
+	--enable-ksi-ls12 \
+	--enable-mmfields \
+	--enable-mmpstrucdata \
+	--enable-mmsequence \
+	--enable-mmrm1stspace \
+	--enable-pmciscoios \
 
 #	--enable-pmrfc3164sd \
 
@@ -476,6 +546,9 @@ done
 %{_libdir}/rsyslog/pmlastmsg.so
 #%{_libdir}/rsyslog/pmrfc3164sd.so
 %{_libdir}/rsyslog/pmsnare.so
+%{_libdir}/rsyslog/lmcry_gcry.so
+%{_libdir}/rsyslog/mmpstrucdata.so
+%{_libdir}/rsyslog/mmsequence.so
 
 %files crypto
 %defattr(-,root,root)
@@ -563,7 +636,42 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omudpspoof.so
 
+%files mmfields
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmfields.so
+
+%files pmciscoios
+%defattr(-,root,root)
+%{_libdir}/rsyslog/pmciscoios.so
+
+%files mmrm1stspace 
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmrm1stspace.so
+
+%files kafka
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omkafka.so
+%{_libdir}/rsyslog/imkafka.so
+
+%files ksi-ls12
+%defattr(-,root,root)
+%{_libdir}/rsyslog/lmsig_ksi_ls12.so
+
 %changelog
+* Tue Jan 09 2018 Florian Riedl - 8.32.0-2
+- Fixed missing packages and modules
+- Dependency fixes
+
+* Tue Jan 09 2018 Florian Riedl - 8.32.0-1
+- Used spec file from base repository RPM for new build
+  fixes: https://github.com/rsyslog/rsyslog/issues/2134
+- Disabled most patches
+- Added module packages for modules previously built:
+  kafka, ksi-ls12, mmfields, mmrm1stspace, pmciscoios
+- Module packages no longer built, because modules in base RPM:
+  mmanon, mmutf8fix, mail, pmaixforwardedfrom
+- Added BuildRequires/Requires for libfastjson >= 0.99.8
+
 * Wed May 10 2017 Radovan Sroka <rsroka@redhat.com> - 8.24.0-12
 - added BuildRequires for systemd >= 219-39 depents on rhbz#1419228
 

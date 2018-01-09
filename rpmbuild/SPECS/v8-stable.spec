@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.31.0
-Release: 6%{?dist}
+Version: 8.32.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -35,8 +35,8 @@ BuildRequires: automake
 BuildRequires: autoconf >= 2.52
 BuildRequires: libtool
 %if %{?rhel} >= 6
-Requires: libfastjson4 >= 0.99.7
-BuildRequires: libfastjson4-devel >= 0.99.7
+Requires: libfastjson4 >= 0.99.8
+BuildRequires: libfastjson4-devel >= 0.99.8
 %else
 BuildRequires: json-c-devel
 %endif
@@ -361,11 +361,11 @@ autoreconf -vfi
 #sparc64 need big PIE
 #-fno-omit-frame-pointer
 
-export CFLAGS="$RPM_OPT_FLAGS -g -fsanitize=address -fPIE -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
+export CFLAGS="$RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
 #" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
-export CFLAGS="$RPM_OPT_FLAGS -g -fsanitize=address -fpie -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
+export CFLAGS="$RPM_OPT_FLAGS -fpie -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
 #" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %endif
@@ -648,6 +648,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Jan 09 2018 Florian Riedl
+- Updated RPM's for Rsyslog 8.32.0
+
 * Thu Dec 07 2017 Florian Riedl
 - Potential Fix for service start issue
 
