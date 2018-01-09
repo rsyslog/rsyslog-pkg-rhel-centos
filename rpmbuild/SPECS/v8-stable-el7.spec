@@ -29,6 +29,7 @@ BuildRequires: autoconf
 BuildRequires: libtool
 BuildRequires: bison
 BuildRequires: flex
+Requires: libfastjson4 >= 0.99.8
 BuildRequires: libfastjson4-devel >= 0.99.8
 BuildRequires: libestr-devel >= 0.1.9
 BuildRequires: libuuid-devel
