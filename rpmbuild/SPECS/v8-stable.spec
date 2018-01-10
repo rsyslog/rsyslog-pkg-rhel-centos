@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.32.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -402,6 +402,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-omprog \
 		--enable-omudpspoof \
 		--enable-omuxsock \
+		--enable-omstdout \
 		--enable-pgsql \
 		--enable-pmlastmsg \
 		--enable-relp \
@@ -509,6 +510,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/omtesting.so
 %{_libdir}/rsyslog/ommail.so
 %{_libdir}/rsyslog/omprog.so
+%{_libdir}/rsyslog/omstdout.so
 # %{_libdir}/rsyslog/omruleset.so
 %{_libdir}/rsyslog/omuxsock.so
 %{_libdir}/rsyslog/pmlastmsg.so
@@ -648,6 +650,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Jan 10 2018 Florian Riedl
+- Included omstdout.so in EL6 build per request
+  https://github.com/rsyslog/rsyslog/issues/2203
+
 * Tue Jan 09 2018 Florian Riedl
 - Updated RPM's for Rsyslog 8.32.0
 
