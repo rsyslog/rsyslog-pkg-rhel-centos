@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.32.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -178,6 +178,11 @@ Summary: pmciscoios support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package omstdout
+Summary: omstdout support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %if 0%{?rhel} >= 6
 #%package rsgtutil
 #Summary: RSyslog rsgtutil support 
@@ -311,6 +316,9 @@ subsequent message parsing less error-prone.
 
 %description pmciscoios
 Parser module which supports various Cisco IOS formats.
+
+%description omstdout
+Provides omstdout module
 
 %description ommail
 Mail Output Module.
@@ -510,7 +518,6 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/omtesting.so
 %{_libdir}/rsyslog/ommail.so
 %{_libdir}/rsyslog/omprog.so
-%{_libdir}/rsyslog/omstdout.so
 # %{_libdir}/rsyslog/omruleset.so
 %{_libdir}/rsyslog/omuxsock.so
 %{_libdir}/rsyslog/pmlastmsg.so
@@ -606,6 +613,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/pmciscoios.so
 
+%files omstdout
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omstdout.so
+
 %files mmutf8fix 
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmutf8fix.so
@@ -650,7 +661,11 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
-* Wed Jan 10 2018 Florian Riedl
+* Wed Jan 10 2018 Florian Riedl - 8.32.2-3
+- put omstdout.so in its own sub-package
+  rsyslog-omstdout
+
+* Wed Jan 10 2018 Florian Riedl - 8.32.2-2
 - Included omstdout.so in EL6 build per request
   https://github.com/rsyslog/rsyslog/issues/2203
 
