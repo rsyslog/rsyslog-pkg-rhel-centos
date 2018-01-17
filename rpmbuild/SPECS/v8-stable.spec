@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.32.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -50,9 +50,11 @@ BuildRequires: flex
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
 
 # SystemD Patch needed for CentOS 7
-%if %{?rhel} >= 7
-Patch0: rsyslog-systemd-centos7.patch
-%endif
+#%if %{?rhel} >= 7
+#Patch0: rsyslog-systemd-centos7.patch
+Patch0: 01-rsyslog-8.32.0-rscript_parse_json.patch
+Patch1: 02-rsyslog-8.32.0-jsonmesg-assert.patch
+#%endif
 
 # NOT NEEDED ANYMORE Patch0: Patch0: rsyslog-7.1.0-systemd.patch
 # already patched 
@@ -357,9 +359,10 @@ globally distributed by Guardtime.
 
 %prep
 %setup -q
-%if %{?rhel} >= 7
-%patch0
-%endif
+#%if %{?rhel} >= 7
+%patch0 -p1 
+%patch1 -p1
+#%endif
 #%patch1 -p1
 #%patch2 -p1
 
@@ -661,6 +664,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Jan 17 2018 Florian Riedl - 8.32.2-4
+- Added patches for json processing in rainerscript
+  and jsonmesg
+  fixes: https://github.com/rsyslog/rsyslog/issues/2391
+  fixes: https://github.com/rsyslog/rsyslog/issues/2396
+
 * Wed Jan 10 2018 Florian Riedl - 8.32.2-3
 - put omstdout.so in its own sub-package
   rsyslog-omstdout

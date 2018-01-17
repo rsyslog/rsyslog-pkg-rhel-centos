@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.32.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -51,6 +51,8 @@ Obsoletes: sysklogd < 1.5-11
 
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
 Patch0: rsyslog-8.24.0-sd-service.patch
+Patch1: 01-rsyslog-8.32.0-rscript_parse_json.patch
+Patch2: 02-rsyslog-8.32.0-jsonmesg-assert.patch
 #Patch1: rsyslog-8.24.0-msg_c_nonoverwrite_merge.patch
 #Patch2: rsyslog-8.24.0-rhbz1188503-imjournal-default-tag.patch
 
@@ -347,6 +349,8 @@ mv build doc
 %setup -q -D
 
 %patch0 -p1 -b .service
+%patch1 -p1 -b .rscript
+%patch2 -p1 -b .jsonmesg
 #%patch1 -p1 -b .msg_merge
 #%patch2 -p1 -b .default_tag
 #%patch3 -p1 -b .wildcards
@@ -658,6 +662,12 @@ done
 %{_libdir}/rsyslog/lmsig_ksi_ls12.so
 
 %changelog
+* Wed Jan 17 2018 Florian Riedl - 8.32.2-3
+- Added patches for json processing in rainerscript
+  and jsonmesg
+  fixes: https://github.com/rsyslog/rsyslog/issues/2391
+  fixes: https://github.com/rsyslog/rsyslog/issues/2396
+
 * Tue Jan 09 2018 Florian Riedl - 8.32.0-2
 - Fixed missing packages and modules
 - Dependency fixes
