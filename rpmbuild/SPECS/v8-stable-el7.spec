@@ -53,6 +53,7 @@ Obsoletes: sysklogd < 1.5-11
 Patch0: rsyslog-8.24.0-sd-service.patch
 Patch1: 01-rsyslog-8.32.0-rscript_parse_json.patch
 Patch2: 02-rsyslog-8.32.0-jsonmesg-assert.patch
+Patch3: 03-8.32.0-external-cmd-parser.patch
 #Patch1: rsyslog-8.24.0-msg_c_nonoverwrite_merge.patch
 #Patch2: rsyslog-8.24.0-rhbz1188503-imjournal-default-tag.patch
 
@@ -351,6 +352,7 @@ mv build doc
 %patch0 -p1 -b .service
 %patch1 -p1 -b .rscript
 %patch2 -p1 -b .jsonmesg
+%patch3 -p1 -b .external
 #%patch1 -p1 -b .msg_merge
 #%patch2 -p1 -b .default_tag
 #%patch3 -p1 -b .wildcards
@@ -662,7 +664,11 @@ done
 %{_libdir}/rsyslog/lmsig_ksi_ls12.so
 
 %changelog
-* Wed Jan 17 2018 Florian Riedl - 8.32.2-3
+* Fri Jan 19 2018 Florian Riedl - 8.32.0-4
+- Added patch for external cmd parser
+  ref https://github.com/rsyslog/rsyslog/pull/2410
+
+* Wed Jan 17 2018 Florian Riedl - 8.32.0-3
 - Added patches for json processing in rainerscript
   and jsonmesg
   fixes: https://github.com/rsyslog/rsyslog/issues/2391
