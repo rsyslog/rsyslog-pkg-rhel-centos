@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.32.0
-Release: 5%{?dist}
+Version: 8.33.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -52,9 +52,9 @@ BuildRequires: flex
 # SystemD Patch needed for CentOS 7
 #%if %{?rhel} >= 7
 #Patch0: rsyslog-systemd-centos7.patch
-Patch0: 01-rsyslog-8.32.0-rscript_parse_json.patch
-Patch1: 02-rsyslog-8.32.0-jsonmesg-assert.patch
-Patch2: 03-8.32.0-external-cmd-parser.patch
+#Patch0: 01-rsyslog-8.32.0-rscript_parse_json.patch
+#Patch1: 02-rsyslog-8.32.0-jsonmesg-assert.patch
+#Patch2: 03-8.32.0-external-cmd-parser.patch
 #%endif
 
 # NOT NEEDED ANYMORE Patch0: Patch0: rsyslog-7.1.0-systemd.patch
@@ -361,9 +361,9 @@ globally distributed by Guardtime.
 %prep
 %setup -q
 #%if %{?rhel} >= 7
-%patch0 -p1 
-%patch1 -p1
-%patch2 -p1
+#%patch0 -p1 
+#%patch1 -p1
+#%patch2 -p1
 #%endif
 #%patch1 -p1
 #%patch2 -p1
@@ -666,6 +666,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Feb 20 2018 Florian Riedl - 8.33.0-1
+- Release build for 8.33.0
+- Disabled previous patches
+
 * Fri Jan 19 2018 Florian Riedl - 8.32.0-5
 - Added patch for external cmd parser
   ref https://github.com/rsyslog/rsyslog/pull/2410
