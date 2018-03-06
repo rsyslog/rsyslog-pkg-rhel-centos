@@ -13,7 +13,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.33.0
+Version: 8.33.1
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -48,6 +48,7 @@ Requires(postun): systemd
 
 Provides: syslog
 Obsoletes: sysklogd < 1.5-11
+Obsoletes: rsyslog-mmutf8fix
 
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
 #Patch0: rsyslog-8.24.0-sd-service.patch
@@ -664,6 +665,10 @@ done
 %{_libdir}/rsyslog/lmsig_ksi_ls12.so
 
 %changelog
+* Tue Mar 06 2018 Florian Riedl - 8.33.1-1
+- Release build for 8.33.1
+- Added obsolete function rsyslog-mmutf8fix
+
 * Tue Feb 20 2018 Florian Riedl - 8.33.0-1
 - Release build for 8.33.0
 - Disabled previous patches

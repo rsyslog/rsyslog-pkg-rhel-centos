@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.33.0
+Version: 8.33.1
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -224,12 +224,12 @@ BuildRequires: adisconbuild-librdkafka-devel
 BuildRequires: lz4-devel
 BuildRequires: cyrus-sasl-devel
 
-%package ksi-ls12
-Summary: KSI signature support 
-Group: System Environment/Daemons
-Requires: %name = %version-%release
-Requires: libksi >= 3.13.0
-BuildRequires: libksi-devel
+#%package ksi-ls12
+#Summary: KSI signature support 
+#Group: System Environment/Daemons
+#Requires: %name = %version-%release
+#Requires: libksi >= 3.13.0
+#BuildRequires: libksi-devel
 %endif
 
 %description
@@ -353,9 +353,8 @@ containing both Producer and Consumer support. It was designed with message deli
 reliability and high performance in mind, current figures exceed 800000 msgs/second 
 for the producer and 3 million msgs/second for the consumer.
 
-%description ksi-ls12
-The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastructure 
-globally distributed by Guardtime. 
+#%description ksi-ls12
+#The KSI-LS12 signature plugin provides access to the Keyless Signature #Infrastructure globally distributed by Guardtime. 
 %endif
 
 %prep
@@ -396,7 +395,6 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-imkafka \
 		--enable-kafka-static \
 	        --enable-usertools \
-		--enable-ksi-ls12 \
 	%if 0%{?rhel} >= 7
 			--enable-imjournal \
 			--enable-omjournal \
@@ -434,6 +432,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-pmciscoios \
 		--disable-liblogging-stdlog 
 #		--enable-guardtime
+#		--enable-ksi-ls12 \
 #--enable-jemalloc
 
 make
@@ -660,12 +659,17 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/omkafka.so
 %{_libdir}/rsyslog/imkafka.so
 
-%files ksi-ls12
-%defattr(-,root,root)
-%{_libdir}/rsyslog/lmsig_ksi_ls12.so
+#%files ksi-ls12
+#%defattr(-,root,root)
+#%{_libdir}/rsyslog/lmsig_ksi_ls12.so
 %endif
 
 %changelog
+* Tue Mar 06 2018 Florian Riedl - 8.33.1-1
+- Release build for 8.33.1
+- Added obsolete function rsyslog-mmutf8fix
+- Disabled KSI because it does not build on EL6 currently
+
 * Tue Feb 20 2018 Florian Riedl - 8.33.0-1
 - Release build for 8.33.0
 - Disabled previous patches
