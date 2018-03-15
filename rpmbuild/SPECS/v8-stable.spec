@@ -107,8 +107,8 @@ BuildRequires: postgresql-devel
 Summary: RELP protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: librelp >= 1.2.12
-BuildRequires: librelp-devel 
+Requires: librelp >= 1.2.14
+BuildRequires: librelp-devel >= 1.2.14
 BuildRequires: libgcrypt-devel
 
 %package gnutls
