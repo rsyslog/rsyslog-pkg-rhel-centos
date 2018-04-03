@@ -13,8 +13,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.33.1
-Release: 2%{?dist}
+Version: 8.34.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -231,6 +231,21 @@ Requires: %name = %version-%release
 Requires: libksi >= 3.13.0
 BuildRequires: libksi-devel
 
+%package omfile-hardened
+Summary: omfile-hardened support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
+%package mmkubernetes
+Summary: mmkubernetes support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
+%package fmhttp
+Summary: fmhttp support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %description
 Rsyslog is an enhanced, multi-threaded syslog daemon. It supports MySQL,
 syslog/TCP, RFC 3195, permitted sender lists, filtering on any message part,
@@ -339,6 +354,16 @@ for the producer and 3 million msgs/second for the consumer.
 %description ksi-ls12
 The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastructure 
 globally distributed by Guardtime. 
+
+%description omfile-hardened
+Duplicate of the omfile module with settings to harden the output 
+against failure.
+
+%description mmkubernetes
+Message modification module to add Kubernetes metadata to a messages.
+
+%description fmhttp
+Function module for rainerscript function http_request.
 
 %prep
 # set up rsyslog-doc sources
@@ -455,6 +480,8 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-mmsequence \
 	--enable-mmrm1stspace \
 	--enable-pmciscoios \
+	--enable-omfile-hardened \
+	--enable-mmkubernetes \
 
 #	--enable-pmrfc3164sd \
 
@@ -664,7 +691,25 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/lmsig_ksi_ls12.so
 
+%files omfile-hardened
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omfile-hardened.so
+
+%files mmkubernetes
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmkubernetes.so
+
+%files fmhttp
+%defattr(-,root,root)
+%{_libdir}/rsyslog/fmhttp.so
+
 %changelog
+* Tue Apr 03 2018 Florian Riedl - 8.34.0-1
+- Release build for 8.34.0
+- Added RPM rsyslog-omfile-hardened
+- Added RPM rsyslog-mmkubernetes
+- Added RPM rsyslog-fmhttp
+
 * Wed Mar 21 2018 Florian Riedl - 8.33.1-2
 - Rebuild for librelp 1.2.15 dependency
 
