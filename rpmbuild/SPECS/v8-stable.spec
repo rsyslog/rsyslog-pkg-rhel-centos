@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.34.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -220,7 +220,7 @@ Summary: Kafka output support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: lz4
-BuildRequires: adisconbuild-librdkafka-devel
+BuildRequires: adisconbuild-librdkafka-devel >= 0.11.4
 BuildRequires: lz4-devel
 BuildRequires: cyrus-sasl-devel
 
