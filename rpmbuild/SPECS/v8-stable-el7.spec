@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.35.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -50,38 +50,9 @@ Provides: syslog
 Obsoletes: sysklogd < 1.5-11
 Obsoletes: rsyslog-mmutf8fix
 
-# tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
-#Patch0: rsyslog-systemd-centos7.patch
-#Patch1: 01-rsyslog-8.32.0-rscript_parse_json.patch
-#Patch2: 02-rsyslog-8.32.0-jsonmesg-assert.patch
-#Patch3: 03-8.32.0-external-cmd-parser.patch
-#Patch1: rsyslog-8.24.0-msg_c_nonoverwrite_merge.patch
-#Patch2: rsyslog-8.24.0-rhbz1188503-imjournal-default-tag.patch
-
-#Patch3: rsyslog-8.24.0-rhbz1303617-imfile-wildcards.patch
-#Patch4: rsyslog-8.24.0-doc-polling-by-default.patch
-#Patch5: rsyslog-8.24.0-rhbz1399569-flushontxend.patch
-#Patch6: rsyslog-8.24.0-rhbz1400594-tls-config.patch
-#Patch7: rsyslog-8.24.0-rhbz1401870-watermark.patch
-
-#Patch8: rsyslog-8.24.0-rhbz1403831-missing-cmd-line-switches.patch
-#Patch9: rsyslog-8.24.0-rhbz1245194-imjournal-ste-file.patch
-#Patch10: rsyslog-8.24.0-rhbz1286707-recover_qi-doc.patch
-#Patch10: rsyslog-8.24.0-rhbz1088021-systemd-time-backwards.patch
-#Patch10: rsyslog-8.24.0-rhbz1403907-imudp-deprecated-parameter.patch
-#Patch11: rsyslog-8.24.0-rhbz1196230-ratelimit-add-source.patch
-#Patch12: rsyslog-8.24.0-rhbz1422789-missing-chdir-w-chroot.patch
-#Patch13: rsyslog-8.24.0-rhbz1422414-glbDoneLoadCnf-segfault.patch
-#Patch14: rsyslog-8.24.0-rhbz1427828-set-unset-not-checking-varName.patch
-
-#Patch15: rsyslog-8.24.0-rhbz1427821-backport-num2ipv4.patch
-#Patch16: rsyslog-8.24.0-rhbz1427821-str2num-emty-string-handle.patch
-
-#Patch17: rsyslog-8.24.0-rhbz1165236-snmp-mib.patch
-#Patch18: rsyslog-8.24.0-rhbz1419228-journal-switch-persistent.patch
-#Patch19: rsyslog-8.24.0-rhbz1431616-pmrfc3164sd-backport.patch
-
-#Patch20: rsyslog-8.24.0-rhbz1056548-getaddrinfo.patch
+# Patches
+Patch0: rsyslog-systemd-centos7.patch
+Patch1: 0001_imrelp_too_old.patch
 
 %package crypto
 Summary: Encryption support
@@ -192,8 +163,8 @@ BuildRequires: krb5-devel
 Summary: RELP protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: librelp >= 1.2.15
-BuildRequires: librelp-devel >= 1.2.15
+Requires: librelp >= 1.2.16
+BuildRequires: librelp-devel >= 1.2.16
 BuildRequires: libgcrypt-devel
 
 %package gnutls
@@ -382,36 +353,8 @@ mv build doc
 
 # set up rsyslog sources
 %setup -q -D
-
-#%patch0 -p1 -b .service
-#%patch1 -p1 -b .rscript
-#%patch2 -p1 -b .jsonmesg
-#%patch3 -p1 -b .external
-#%patch1 -p1 -b .msg_merge
-#%patch2 -p1 -b .default_tag
-#%patch3 -p1 -b .wildcards
-#%patch4 -p1 -b .doc-polling
-
-#%patch5 -p1 -b .flushontxend
-#%patch6 -p1 -b .tls-config
-#%patch7 -p1 -b .watermark 
-
-#%patch8 -p1 -b .missg-cmd-line-switches
-#%patch9 -p1 -b .ste-file
-#%%patch10 is applied right after doc setup 
-#%patch10 -p1 -b .systemd-time
-#%patch10 -p1 -b .imudp-deprecated-parameter
-#%patch11 -p1 -b .ratelimit-add-source
-#%patch12 -p1 -b .missing-chdir-w-chroot
-#%patch13 -p1 -b .glbDoneLoadCnf-segfault
-#%patch14 -p1 -b .set-unset-check-varName
-
-#%patch15 -p1 -b .num2ipv4
-#%patch16 -p1 -b .str2num-handle-emty-strings
-#%patch17 -p1 -b .snmp-mib
-#%patch18 -p1 -b .journal-switch
-#%patch19 -p1 -b .pmrfc3164sd
-#%patch20 -p1 -b .getaddrinfo
+%patch0 -p1
+%patch1 -p1
 
 autoreconf 
 
@@ -716,10 +659,15 @@ done
 %{_libdir}/rsyslog/fmhash.so
 
 %changelog
+* Thu May 17 2018 Florian Riedl - 8.35.0-2
+- Rebuild for librelp 1.2.16 dependency
+- Added patch for imrelp: #2712
+- Added patch for rsyslog.service.in: #2676
+- Removed old patch definitions 
+
 * Tue May 15 2018 Florian Riedl - 8.35.0-1
 - Release build for 8.35.0
 - Added RPM rsyslog-fmhash
-- Patched service file to include option file again
 
 * Tue Apr 03 2018 Florian Riedl - 8.34.0-1
 - Release build for 8.34.0

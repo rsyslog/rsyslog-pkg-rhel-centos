@@ -2,6 +2,7 @@ diff --git a/rsyslog.service.in b/rsyslog.service.in
 --- a/rsyslog.service.in
 +++ b/rsyslog.service.in
 @@ -6,7 +6,9 @@ 
+
  [Service]
  Type=notify
 -ExecStart=@sbindir@/rsyslogd -n -iNONE

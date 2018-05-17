@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.35.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -49,18 +49,9 @@ BuildRequires: flex
 # json-c.i686
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
 
-# SystemD Patch needed for CentOS 7
-#%if %{?rhel} >= 7
-#Patch0: rsyslog-systemd-centos7.patch
-#Patch0: 01-rsyslog-8.32.0-rscript_parse_json.patch
-#Patch1: 02-rsyslog-8.32.0-jsonmesg-assert.patch
-#Patch2: 03-8.32.0-external-cmd-parser.patch
-#%endif
+# Patches
+Patch0: 0001_imrelp_too_old.patch
 
-# NOT NEEDED ANYMORE Patch0: Patch0: rsyslog-7.1.0-systemd.patch
-# already patched 
-# Patch1: rsyslog-5.8.7-sysklogd-compat-1-template.patch
-# Patch2: rsyslog-5.8.7-sysklogd-compat-2-option.patch
 
 BuildRequires: zlib-devel
 Requires: logrotate >= 3.5.2
@@ -390,13 +381,7 @@ The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastru
 
 %prep
 %setup -q
-#%if %{?rhel} >= 7
-#%patch0 -p1 
-#%patch1 -p1
-#%patch2 -p1
-#%endif
-#%patch1 -p1
-#%patch2 -p1
+%patch0 -p1 
 
 %build
 autoreconf -vfi
@@ -715,6 +700,11 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Thu May 17 2018 Florian Riedl - 8.35.0-2
+- Rebuild for librelp 1.2.16 dependency
+- Added patch for imrelp: #2712
+- Removed old patch definitions 
+
 * Tue May 15 2018 Florian Riedl - 8.35.0-1
 - Release build for 8.35.0
 - Added RPM rsyslog-fmhash
