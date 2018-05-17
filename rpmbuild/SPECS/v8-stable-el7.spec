@@ -13,8 +13,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.34.0
-Release: 2%{?dist}
+Version: 8.35.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -51,7 +51,7 @@ Obsoletes: sysklogd < 1.5-11
 Obsoletes: rsyslog-mmutf8fix
 
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
-#Patch0: rsyslog-8.24.0-sd-service.patch
+#Patch0: rsyslog-systemd-centos7.patch
 #Patch1: 01-rsyslog-8.32.0-rscript_parse_json.patch
 #Patch2: 02-rsyslog-8.32.0-jsonmesg-assert.patch
 #Patch3: 03-8.32.0-external-cmd-parser.patch
@@ -246,6 +246,11 @@ Summary: fmhttp support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package fmhash
+Summary: fmhash support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %description
 Rsyslog is an enhanced, multi-threaded syslog daemon. It supports MySQL,
 syslog/TCP, RFC 3195, permitted sender lists, filtering on any message part,
@@ -365,10 +370,13 @@ Message modification module to add Kubernetes metadata to a messages.
 %description fmhttp
 Function module for rainerscript function http_request.
 
+%description fmhash
+Function module for rainerscript function hash.
+
 %prep
 # set up rsyslog-doc sources
 %setup -q -a 1 -T -c
-#%patch10 -p1
+#%patch0 -p1
 rm -r LICENSE README.md source build/objects.inv
 mv build doc
 
@@ -703,7 +711,16 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/fmhttp.so
 
+%files fmhash
+%defattr(-,root,root)
+%{_libdir}/rsyslog/fmhash.so
+
 %changelog
+* Tue May 15 2018 Florian Riedl - 8.35.0-1
+- Release build for 8.35.0
+- Added RPM rsyslog-fmhash
+- Patched service file to include option file again
+
 * Tue Apr 03 2018 Florian Riedl - 8.34.0-1
 - Release build for 8.34.0
 - Added RPM rsyslog-omfile-hardened

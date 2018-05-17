@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.34.0
-Release: 2%{?dist}
+Version: 8.35.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -239,12 +239,17 @@ Summary: fmhttp support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
-#%package ksi-ls12
-#Summary: KSI signature support 
-#Group: System Environment/Daemons
-#Requires: %name = %version-%release
-#Requires: libksi >= 3.13.0
-#BuildRequires: libksi-devel
+%package fmhash
+Summary: fmhash support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
+%package ksi-ls12
+Summary: KSI signature support 
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+Requires: libksi >= 3.13.0
+BuildRequires: libksi-devel
 %endif
 
 %description
@@ -376,8 +381,11 @@ Message modification module to add Kubernetes metadata to a messages.
 %description fmhttp
 Function module for rainerscript function http_request.
 
-#%description ksi-ls12
-#The KSI-LS12 signature plugin provides access to the Keyless Signature #Infrastructure globally distributed by Guardtime. 
+%description fmhash
+Function module for rainerscript function hash.
+
+%description ksi-ls12
+The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastructure globally distributed by Guardtime. 
 %endif
 
 %prep
@@ -455,6 +463,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-pmciscoios \
 		--enable-omfile-hardened \
 		--enable-mmkubernetes \
+		--enable-ksi-ls12 \
 		--disable-liblogging-stdlog 
 #		--enable-guardtime
 #		--enable-ksi-ls12 \
@@ -696,12 +705,20 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/fmhttp.so
 
-#%files ksi-ls12
-#%defattr(-,root,root)
-#%{_libdir}/rsyslog/lmsig_ksi_ls12.so
+%files fmhash
+%defattr(-,root,root)
+%{_libdir}/rsyslog/fmhash.so
+
+%files ksi-ls12
+%defattr(-,root,root)
+%{_libdir}/rsyslog/lmsig_ksi_ls12.so
 %endif
 
 %changelog
+* Tue May 15 2018 Florian Riedl - 8.35.0-1
+- Release build for 8.35.0
+- Added RPM rsyslog-fmhash
+
 * Tue Apr 03 2018 Florian Riedl - 8.34.0-1
 - Release build for 8.34.0
 - Added RPM rsyslog-omfile-hardened
