@@ -24,7 +24,7 @@ URL: http://www.rsyslog.com/
 Source0: http://www.rsyslog.com/files/download/rsyslog/%{name}-%{version}.tar.gz
 Source1: %{rsysloginit}
 Source2: rsyslog_v7.conf
-Source3: rsyslog.sysconfig
+Source3: rsyslog.sysconfig.epel6
 Source4: %{rsysloglog}
 #Requires: libgt
 BuildRequires: libestr-devel
