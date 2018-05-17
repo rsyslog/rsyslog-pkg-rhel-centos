@@ -703,7 +703,8 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 * Thu May 17 2018 Florian Riedl - 8.35.0-2
 - Rebuild for librelp 1.2.16 dependency
 - Added patch for imrelp: #2712
-- Removed old patch definitions 
+- Removed old patch definitions
+- Added separate sysconfig file for EL6
 
 * Tue May 15 2018 Florian Riedl - 8.35.0-1
 - Release build for 8.35.0

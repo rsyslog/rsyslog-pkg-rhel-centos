@@ -51,8 +51,8 @@ Obsoletes: sysklogd < 1.5-11
 Obsoletes: rsyslog-mmutf8fix
 
 # Patches
-Patch0: rsyslog-systemd-centos7.patch
-Patch1: 0001_imrelp_too_old.patch
+#Patch0: rsyslog-systemd-centos7.patch
+Patch0: 0001_imrelp_too_old.patch
 
 %package crypto
 Summary: Encryption support
@@ -354,7 +354,7 @@ mv build doc
 # set up rsyslog sources
 %setup -q -D
 %patch0 -p1
-%patch1 -p1
+#%patch1 -p1
 
 autoreconf 
 
@@ -662,8 +662,8 @@ done
 * Thu May 17 2018 Florian Riedl - 8.35.0-2
 - Rebuild for librelp 1.2.16 dependency
 - Added patch for imrelp: #2712
-- Added patch for rsyslog.service.in: #2676
-- Removed old patch definitions 
+- Removed old patch definitions
+- Changed logrotate script to use systemctl command for HUP
 
 * Tue May 15 2018 Florian Riedl - 8.35.0-1
 - Release build for 8.35.0
