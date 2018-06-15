@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.35.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -51,8 +51,8 @@ Obsoletes: sysklogd < 1.5-11
 Obsoletes: rsyslog-mmutf8fix
 
 # Patches
-#Patch0: rsyslog-systemd-centos7.patch
-Patch0: 0001_imrelp_too_old.patch
+Patch0: rsyslog-systemd-centos7.patch
+Patch1: 0001_imrelp_too_old.patch
 
 %package crypto
 Summary: Encryption support
@@ -354,7 +354,7 @@ mv build doc
 # set up rsyslog sources
 %setup -q -D
 %patch0 -p1
-#%patch1 -p1
+%patch1 -p1
 
 autoreconf 
 
@@ -659,6 +659,10 @@ done
 %{_libdir}/rsyslog/fmhash.so
 
 %changelog
+* Tue Jun 12 2018 Florian Riedl - 8.35.0-3
+- Added patch to remove -iNone directive in service file
+  and add sysconfig path back for custom options
+
 * Thu May 17 2018 Florian Riedl - 8.35.0-2
 - Rebuild for librelp 1.2.16 dependency
 - Added patch for imrelp: #2712
