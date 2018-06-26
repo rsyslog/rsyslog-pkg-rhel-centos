@@ -13,8 +13,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.35.0
-Release: 3%{?dist}
+Version: 8.36.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -52,7 +52,6 @@ Obsoletes: rsyslog-mmutf8fix
 
 # Patches
 Patch0: rsyslog-systemd-centos7.patch
-Patch1: 0001_imrelp_too_old.patch
 
 %package crypto
 Summary: Encryption support
@@ -172,6 +171,13 @@ Summary: TLS protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: gnutls-devel
+BuildRequires: libgcrypt-devel
+
+%package openssl
+Summary: TLS protocol support for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: openssl-devel
 BuildRequires: libgcrypt-devel
 
 %package snmp
@@ -303,6 +309,11 @@ The rsyslog-gnutls package contains the rsyslog plugins that provide the
 ability to receive syslog messages via upcoming syslog-transport-tls
 IETF standard protocol.
 
+%description openssl
+The rsyslog-openssl package contains the rsyslog plugins that provide the
+ability to receive syslog messages via upcoming syslog-transport-tls
+IETF standard protocol.
+
 %description snmp
 The rsyslog-snmp package contains the rsyslog plugin that provides the
 ability to send syslog messages as SNMPv1 and SNMPv2c traps.
@@ -354,7 +365,6 @@ mv build doc
 # set up rsyslog sources
 %setup -q -D
 %patch0 -p1
-%patch1 -p1
 
 autoreconf 
 
@@ -381,6 +391,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-elasticsearch \
 	--enable-generate-man-pages \
 	--enable-gnutls \
+	--enable-openssl \
 	--enable-gssapi-krb5 \
 	--enable-imdiag \
 	--enable-imfile \
@@ -613,6 +624,10 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/lmnsd_gtls.so
 
+%files openssl
+%defattr(-,root,root)
+%{_libdir}/rsyslog/lmnsd_ossl.so
+
 %files snmp
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omsnmp.so
@@ -659,6 +674,10 @@ done
 %{_libdir}/rsyslog/fmhash.so
 
 %changelog
+* Tue Jun 26 2018 Florian Riedl - 8.36.0-1
+- Release build for 8.36.0
+- Removed imrelp patch
+
 * Tue Jun 12 2018 Florian Riedl - 8.35.0-3
 - Added patch to remove -iNone directive in service file
   and add sysconfig path back for custom options
