@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.36.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -462,6 +462,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-omfile-hardened \
 		--enable-mmkubernetes \
 		--enable-ksi-ls12 \
+		--enable-pmnull \
 		--disable-liblogging-stdlog 
 #		--enable-guardtime
 #		--enable-ksi-ls12 \
@@ -562,6 +563,7 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/mmpstrucdata.so
 %{_libdir}/rsyslog/mmsequence.so
 %{_libdir}/rsyslog/mmexternal.so
+%{_libdir}/rsyslog/pmnull.so
 %if 0%{?rhel} >= 7
 %{_libdir}/rsyslog/imjournal.so
 %{_libdir}/rsyslog/omjournal.so
@@ -717,6 +719,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Jun 27 2018 Florian Riedl - 8.36.0-2
+- Rebuild
+- Added module pmnull to base RPM
+
 * Tue Jun 26 2018 Florian Riedl - 8.36.0-1
 - Release build for 8.36.0
 - Removed imrelp patch
