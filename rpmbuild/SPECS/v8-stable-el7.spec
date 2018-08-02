@@ -162,8 +162,8 @@ BuildRequires: krb5-devel
 Summary: RELP protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: librelp >= 1.2.16
-BuildRequires: librelp-devel >= 1.2.16
+Requires: librelp >= 1.2.17
+BuildRequires: librelp-devel >= 1.2.17
 BuildRequires: libgcrypt-devel
 
 %package gnutls
@@ -676,8 +676,9 @@ done
 %{_libdir}/rsyslog/fmhash.so
 
 %changelog
-* Wed Jul 25 2018 Florian Riedl - 8.36.0-3
+* Thu Aug 02 2018 Florian Riedl - 8.36.0-3
 - Rebuild for new kafka support library
+- Updated librelp 1.2.17 dependency
 
 * Wed Jun 27 2018 Florian Riedl - 8.36.0-2
 - Rebuild

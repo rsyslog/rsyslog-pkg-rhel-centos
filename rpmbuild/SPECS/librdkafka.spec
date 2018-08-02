@@ -43,7 +43,7 @@ using librdkafka.
 %prep
 %setup -q
 
-%configure
+%configure --disable-hdrhistogram
 
 %build
 make
@@ -82,7 +82,7 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Wed Jul 25 2018 Florian Riedl
+* Thu Aug 02 2018 Florian Riedl
 - Build dependency package 0.11.5
 
 * Tue Jan 09 2018 Florian Riedl
