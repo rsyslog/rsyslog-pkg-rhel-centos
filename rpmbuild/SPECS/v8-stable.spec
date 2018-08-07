@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.36.0
-Release: 3%{?dist}
+Version: 8.37.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -50,7 +50,7 @@ BuildRequires: flex
 # tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
 
 # Patches
-Patch0: tmp.patch
+#Patch0: tmp.patch
 
 
 BuildRequires: zlib-devel
@@ -393,7 +393,7 @@ The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastru
 
 %prep
 %setup -q
-%patch0 -p1 
+#%patch0 -p1 
 
 %build
 autoreconf -vfi
@@ -719,6 +719,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Aug 07 2018 Florian Riedl - 8.37.0-1
+- Release build for 8.37.0
+
 * Thu Aug 02 2018 Florian Riedl - 8.36.0-3
 - Rebuild for new kafka support library
 - Updated librelp 1.2.17 dependency

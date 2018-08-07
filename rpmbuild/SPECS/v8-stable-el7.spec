@@ -13,8 +13,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.36.0
-Release: 3%{?dist}
+Version: 8.37.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -676,6 +676,9 @@ done
 %{_libdir}/rsyslog/fmhash.so
 
 %changelog
+* Tue Aug 07 2018 Florian Riedl - 8.37.0-1
+- Release build for 8.37.0
+
 * Thu Aug 02 2018 Florian Riedl - 8.36.0-3
 - Rebuild for new kafka support library
 - Updated librelp 1.2.17 dependency
