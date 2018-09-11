@@ -4,7 +4,7 @@
 
 Name:		libfastjson4
 Version:	0.99.8
-Release:	1%{?dist}
+Release:	2%{?dist}
 Provides:	libfastjson4 = %{version}-%{release}
 Obsoletes:	libfastjson <= 0.99.6 
 Summary:	A JSON implementation in C
@@ -27,6 +27,7 @@ Summary:	Development headers and library for json-c
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	pkgconfig
+Obsoletes:	libfastjson-devel <= 0.99.6
 
 %description devel
 This package contains the development headers and library for libfastjson.
@@ -98,6 +99,11 @@ rm -rf %{buildroot}
 #%doc doc/html/*
 
 %changelog
+* Tue Sep 11 2018 monobaila <monobaila@users.noreply.github.com> - 0.99.8-2
+- Add obsoletes parameter to development package to fix dependency error
+  when libfastjson upgrades to libfastjson4 without instruction to remove
+  libfastjson-devel.
+
 * Mon Dec 18 2017 Florian Riedl <friedl@adiscon.com> - 0.99.8-1
 - New RPM for libfastjson4 0.99.8
 
