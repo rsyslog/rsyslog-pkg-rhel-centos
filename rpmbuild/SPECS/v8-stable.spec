@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.37.0
+Version: 8.38.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -719,6 +719,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Sep 18 2018 Florian Riedl - 8.38.0-1
+- Release build for 8.38.0
+
 * Tue Aug 07 2018 Florian Riedl - 8.37.0-1
 - Release build for 8.37.0
 
