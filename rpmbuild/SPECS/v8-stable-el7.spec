@@ -427,6 +427,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-pmaixforwardedfrom \
 	--enable-pmcisconames \
 	--enable-pmlastmsg \
+        --enable-pmrfc3164sd \
 	--enable-pmsnare \
 	--enable-relp \
 	--enable-snmp \
@@ -541,7 +542,7 @@ done
 %{_libdir}/rsyslog/pmaixforwardedfrom.so
 %{_libdir}/rsyslog/pmcisconames.so
 %{_libdir}/rsyslog/pmlastmsg.so
-#%{_libdir}/rsyslog/pmrfc3164sd.so
+%{_libdir}/rsyslog/pmrfc3164sd.so
 %{_libdir}/rsyslog/pmsnare.so
 %{_libdir}/rsyslog/lmcry_gcry.so
 %{_libdir}/rsyslog/mmpstrucdata.so
@@ -676,6 +677,9 @@ done
 %{_libdir}/rsyslog/fmhash.so
 
 %changelog
+* Tue Sep 18 2018 Florian Riedl - 8.38.0-1
+- Enabled pmrfc3164sd parser module in base package
+
 * Tue Aug 07 2018 Florian Riedl - 8.37.0-1
 - Release build for 8.37.0
 
