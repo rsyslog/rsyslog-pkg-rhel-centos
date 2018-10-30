@@ -1,6 +1,6 @@
 Summary: Some essentials for string handling (and a bit more)
 Name:    libestr
-Version: 0.1.10
+Version: 0.1.11
 Release: 1%{?dist}
 License: GPLv2+
 Group:      Networking/Admin
@@ -54,6 +54,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libestr.la
 
 %changelog
+* Tue Oct 30 2018 Florian Riedl
+- updated package to 0.1.11
+
 * Tue Dec 09 2014 Florian Riedl
 - updated package to 0.1.10
 
