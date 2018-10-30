@@ -16,7 +16,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.38.0
+Version: 8.39.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -218,7 +218,7 @@ Summary: Kafka output support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: lz4
-BuildRequires: adisconbuild-librdkafka-devel >= 0.11.5
+BuildRequires: adisconbuild-librdkafka-devel >= 0.11.6
 BuildRequires: lz4-devel
 BuildRequires: cyrus-sasl-devel
 
@@ -548,7 +548,6 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/lmnetstrms.so
 %{_libdir}/rsyslog/lmnsd_ptcp.so
 %{_libdir}/rsyslog/lmregexp.so
-%{_libdir}/rsyslog/lmstrmsrv.so
 %{_libdir}/rsyslog/lmtcpclt.so
 %{_libdir}/rsyslog/lmtcpsrv.so
 %{_libdir}/rsyslog/lmzlibw.so
@@ -719,6 +718,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Oct 30 2018 Florian Riedl - 8.39.0-1
+- Release build for 8.39.0
+
 * Tue Sep 18 2018 Florian Riedl - 8.38.0-1
 - Release build for 8.38.0
 
