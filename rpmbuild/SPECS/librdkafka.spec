@@ -1,7 +1,7 @@
 Name:    adisconbuild-librdkafka
 # NOTE: Make sure to update this to match rdkafka.h version
 Version: 0.11.6
-Release: 1
+Release: 2
 %define soname 1
 %define _unpackaged_files_terminate_build 0
 
@@ -43,7 +43,7 @@ using librdkafka.
 %prep
 %setup -q
 
-%configure #--disable-hdrhistogram
+%configure --disable-hdrhistogram
 
 %build
 make
@@ -82,6 +82,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Oct 31 2018 Florian Riedl
+- Re-Build dependency package 0.11.6
+
 * Tue Oct 30 2018 Florian Riedl
 - Build dependency package 0.11.6
 
