@@ -144,6 +144,12 @@ Summary: pmciscoios support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package pmnormalize
+Summary: Log normalization parser for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: liblognorm5-devel >= 2.0.4
+
 %if %{want_rabbitmq}
 %package rabbitmq
 Summary: RabbitMQ support for rsyslog
@@ -332,6 +338,9 @@ subsequent message parsing less error-prone.
 %description pmciscoios
 Parser module which supports various Cisco IOS formats.
 
+%description pmnormalize
+Parser module based on liblognorm.
+
 %description kafka
 librdkafka is a C library implementation of the Apache Kafka protocol, 
 containing both Producer and Consumer support. It was designed with message delivery 
@@ -427,6 +436,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-pmaixforwardedfrom \
 	--enable-pmcisconames \
 	--enable-pmlastmsg \
+	--enable-pmnormalize \
 	--enable-pmsnare \
 	--enable-relp \
 	--enable-snmp \
@@ -645,6 +655,10 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/pmciscoios.so
 
+%files pmnormalize
+%defattr(-,root,root)
+%{_libdir}/rsyslog/pmnormalize.so
+
 %files mmrm1stspace 
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmrm1stspace.so
@@ -675,6 +689,9 @@ done
 %{_libdir}/rsyslog/fmhash.so
 
 %changelog
+* Fri Nov 02 2018 Julien Thomas - 8.39.0-3
+- Add pmnormalize subpackage
+
 * Wed Oct 31 2018 Florian Riedl - 8.39.0-2
 - Rebuild for fixed Kafka dependency
 

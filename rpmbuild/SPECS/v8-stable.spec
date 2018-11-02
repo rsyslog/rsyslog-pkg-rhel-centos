@@ -179,6 +179,12 @@ Summary: pmciscoios support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package pmnormalize
+Summary: Log normalization parser for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: liblognorm5-devel >= 2.0.4
+
 %package omstdout
 Summary: omstdout support 
 Group: System Environment/Daemons
@@ -341,6 +347,9 @@ The mmrm1stspace module is used to remove the leading space character of the msg
 %description pmciscoios
 Parser module which supports various Cisco IOS formats.
 
+%description pmnormalize
+Parser module based on liblognorm.
+
 %description omstdout
 Provides omstdout module
 
@@ -459,6 +468,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmrm1stspace \
 		--enable-pmaixforwardedfrom \
 		--enable-pmciscoios \
+		--enable-pmnormalize \
 		--enable-omfile-hardened \
 		--enable-mmkubernetes \
 		--enable-ksi-ls12 \
@@ -654,6 +664,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %defattr(-,root,root)
 %{_libdir}/rsyslog/pmciscoios.so
 
+%files pmnormalize
+%defattr(-,root,root)
+%{_libdir}/rsyslog/pmnormalize.so
+
 %files omstdout
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omstdout.so
@@ -718,6 +732,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Fri Nov 02 2018 Julien Thomas - 8.39.0-3
+- Add pmnormalize subpackage
+
 * Wed Oct 31 2018 Florian Riedl - 8.39.0-2
 - Rebuild for fixed Kafka dependency
 
