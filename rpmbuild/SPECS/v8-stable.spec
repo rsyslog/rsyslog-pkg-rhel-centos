@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.39.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -51,7 +51,7 @@ BuildRequires: flex
 
 # Patches
 #Patch0: tmp.patch
-
+Patch0: imfile_reopen_resend.patch
 
 BuildRequires: zlib-devel
 Requires: logrotate >= 3.5.2
@@ -394,6 +394,7 @@ The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastru
 %prep
 %setup -q
 #%patch0 -p1 
+%patch0 -p1
 
 %build
 autoreconf -vfi
@@ -718,6 +719,12 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Nov 13 2018 Florian Riedl - 8.39.0-4
+- Added patch to fix imfile issue where the 
+  whole content was resent for big files when
+  reopening the file
+  fixes: https://github.com/rsyslog/rsyslog/issues/3249
+
 * Wed Nov 07 2018 Florian Riedl - 8.39.0-3
 - Rebuild for liblognorm 2.0.6
 

@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.39.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -52,6 +52,7 @@ Obsoletes: rsyslog-mmutf8fix
 
 # Patches
 Patch0: rsyslog-systemd-centos7.patch
+Patch1: imfile_reopen_resend.patch
 
 %package crypto
 Summary: Encryption support
@@ -365,6 +366,7 @@ mv build doc
 # set up rsyslog sources
 %setup -q -D
 %patch0 -p1
+%patch1 -p1
 
 autoreconf 
 
@@ -675,6 +677,12 @@ done
 %{_libdir}/rsyslog/fmhash.so
 
 %changelog
+* Tue Nov 13 2018 Florian Riedl - 8.39.0-4
+- Added patch to fix imfile issue where the 
+  whole content was resent for big files when
+  reopening the file
+  fixes: https://github.com/rsyslog/rsyslog/issues/3249
+
 * Wed Nov 07 2018 Florian Riedl - 8.39.0-3
 - Rebuild for liblognorm 2.0.6
 
