@@ -13,7 +13,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.1901.0
+Version: 8.1903.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -675,6 +675,9 @@ done
 %{_libdir}/rsyslog/fmhash.so
 
 %changelog
+* Tue Mar 05 2019 Florian Riedl - 8.1903.0-1
+- Release build for 8.1903.0
+
 * Tue Jan 22 2019 Florian Riedl - 8.1901.0-1
 - Release build for 8.1901.0
 - Changed naming scheme

@@ -1,6 +1,6 @@
 Summary: The Reliable Event Logging Protocol library
 Name: librelp
-Version: 1.3.0
+Version: 1.4.0
 Release: 1%{?dist}
 License: GPLv3+
 Group: System Environment/Libraries
@@ -9,7 +9,7 @@ Source0: http://download.rsyslog.com/librelp/%{name}-%{version}.tar.gz
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: gnutls-devel
+BuildRequires: gnutls-devel, openssl-devel
 
 %description
 Librelp is an easy to use library for the RELP protocol. RELP (stands
@@ -36,6 +36,8 @@ to develop applications using librelp.
 %if 0%{?rhel} < 6
 --disable-tls \
 %endif
+--enable-tls \
+--enable-tls-openssl \
 --disable-static
 
 make %{?_smp_mflags}
@@ -68,10 +70,13 @@ fi
 %{_libdir}/pkgconfig/relp.pc
 
 %changelog
+* Tue Mar 05 2019 Florian Riedl
+- Updated to librelp 1.4.0
+
 * Tue Dec 11 2018 Florian Riedl
 - Updated to librelp 1.3.0
 
-* Thu Sep 18 2018 Florian Riedl
+* Tue Sep 18 2018 Florian Riedl
 - Updated to librelp 1.2.18
 
 * Thu Aug 02 2018 Florian Riedl
@@ -89,7 +94,7 @@ fi
 * Tue Feb 21 2017 Florian Riedl
 - Updated to librelp 1.2.13
 
-* Thu Jul 19 2016 Florian Riedl
+* Tue Jul 19 2016 Florian Riedl
 - Updated to librelp 1.2.12
 
 * Thu Jun 23 2016 Florian Riedl
