@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.1904.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -228,6 +228,12 @@ Summary: fmhash support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package omhttp
+Summary: omhttp output module for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: libcurl-devel
+
 %description
 Rsyslog is an enhanced, multi-threaded syslog daemon. It supports MySQL,
 syslog/TCP, RFC 3195, permitted sender lists, filtering on any message part,
@@ -355,6 +361,9 @@ Function module for rainerscript function http_request.
 %description fmhash
 Function module for rainerscript function hash.
 
+%description omhttp
+This module provides native support for writing to Redis, using the hiredis client library.
+
 %prep
 # set up rsyslog-doc sources
 %setup -q -a 1 -T -c
@@ -444,6 +453,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-pmciscoios \
 	--enable-omfile-hardened \
 	--enable-mmkubernetes \
+	--enable-omhttp \
 	--enable-pmnull
 
 #	--enable-pmrfc3164sd \
@@ -674,7 +684,14 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/fmhash.so
 
+%files omhttp
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omhttp.so
+
 %changelog
+* Fri Apr 26 2019 Florian Riedl - 8.1904.0-2
+- Added module package for omhttp
+
 * Wed Apr 17 2019 Florian Riedl - 8.1904.0-1
 - Release build for 8.1904.0
 
