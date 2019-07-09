@@ -16,8 +16,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.1905.0
-Release: 2%{?dist}
+Version: 8.1907.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -51,7 +51,6 @@ BuildRequires: flex
 
 # Patches
 #Patch0: tmp.patch
-Patch0: queue.patch
 
 BuildRequires: zlib-devel
 Requires: logrotate >= 3.5.2
@@ -394,7 +393,6 @@ The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastru
 %prep
 %setup -q
 #%patch0 -p1 
-%patch0 -p1
 
 %build
 autoreconf -vfi
@@ -719,6 +717,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Wed Jul 09 2019 Florian Riedl - 8.1907.0-1
+- Release build for 8.1907.0
+- Removed patch from 8.1905.0-2 build
+
 * Mon Jun 03 2019 Florian Riedl - 8.1905.0-2
 - Added patch for fix in queue subsystem
   closes: https://github.com/rsyslog/rsyslog/issues/3681
