@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.1907.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -52,6 +52,7 @@ Obsoletes: rsyslog-mmutf8fix
 
 # Patches
 Patch0: rsyslog-systemd-centos7.patch
+Patch1: rsyslog-8.1907-revert-BSD-HUP.patch
 
 %package crypto
 Summary: Encryption support
@@ -374,6 +375,7 @@ mv build doc
 # set up rsyslog sources
 %setup -q -D
 %patch0 -p1
+%patch1 -p1
 
 autoreconf 
 
@@ -689,6 +691,10 @@ done
 %{_libdir}/rsyslog/omhttp.so
 
 %changelog
+* Tue Jul 30 2019 Florian Riedl - 8.1907.0-2
+- Added patch to revert BSD Hup issue
+  fixes: https://github.com/rsyslog/rsyslog/issues/3760
+
 * Wed Jul 09 2019 Florian Riedl - 8.1907.0-1
 - Release build for 8.1907.0
 - Removed patch from 8.1905.0-2 build
