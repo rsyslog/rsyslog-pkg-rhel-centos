@@ -96,7 +96,7 @@ BuildRequires: liblognorm5-devel >= 2.0.6
 Summary: Log normalization support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: libee-devel liblognorm5-devel >= 2.0.6
+BuildRequires: liblognorm5-devel >= 2.0.6
 
 %package mmaudit
 Summary: Message modification module supporting Linux audit format
