@@ -17,7 +17,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.1908.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -400,11 +400,11 @@ autoreconf -vfi
 #sparc64 need big PIE
 #-fno-omit-frame-pointer
 
-export CFLAGS="$RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
+export CFLAGS="-g $RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
 #" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
-export CFLAGS="$RPM_OPT_FLAGS -fpie -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
+export CFLAGS="-g $RPM_OPT_FLAGS -fpie -DPATH_PIDFILE=\\\"%{Pidfile}\\\""
 #" -std=c99"
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %endif
@@ -462,6 +462,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-mmkubernetes \
 		--enable-ksi-ls12 \
 		--enable-pmnull \
+		--enable-debug-symbols \
 		--disable-liblogging-stdlog 
 #		--enable-guardtime
 #		--enable-ksi-ls12 \
@@ -717,6 +718,9 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Aug 27 2019 Florian Riedl - 8.1908.0-2
+- Properly enabled debug symbols for debuginfo package
+
 * Tue Aug 20 2019 Florian Riedl - 8.1908.0-1
 - Release build for 8.1908.0
 - Removed patch to revert BSD Hup issue

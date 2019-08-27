@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.1908.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -380,10 +380,10 @@ autoreconf
 %build
 %ifarch sparc64
 #sparc64 need big PIE
-export CFLAGS="$RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"/var/run/syslogd.pid\\\""
+export CFLAGS="-g $RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"/var/run/syslogd.pid\\\""
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
-export CFLAGS="$RPM_OPT_FLAGS -fpie -DPATH_PIDFILE=\\\"/var/run/syslogd.pid\\\""
+export CFLAGS="-g $RPM_OPT_FLAGS -fpie -DPATH_PIDFILE=\\\"/var/run/syslogd.pid\\\""
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %endif
 
@@ -454,7 +454,8 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-omfile-hardened \
 	--enable-mmkubernetes \
 	--enable-omhttp \
-	--enable-pmnull
+	--enable-pmnull \
+	--enable-debug-symbols
 
 #	--enable-pmrfc3164sd \
 
@@ -689,6 +690,9 @@ done
 %{_libdir}/rsyslog/omhttp.so
 
 %changelog
+* Tue Aug 27 2019 Florian Riedl - 8.1908.0-2
+- Properly enabled debug symbols for debuginfo package
+
 * Tue Aug 20 2019 Florian Riedl - 8.1908.0-1
 - Release build for 8.1908.0
 - Removed patch to revert BSD Hup issue
