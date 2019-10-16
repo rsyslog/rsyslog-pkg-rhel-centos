@@ -15,9 +15,13 @@ BuildRoot:	%{_tmppath}/liblognorm-%{version}-%{release}-root-%(%{__id_u} -n)
 #Patch0:		liblognorm-0.3.4-rename-to-lognormalizer.patch
 #Patch1:		liblognorm-0.3.4-pc-file.patch
 BuildRequires:	libestr-devel
-BuildRequires:	libee-devel
+#BuildRequires:	libee-devel
 BuildRequires:	chrpath
-BuildRequires:  python-docutils
+%if %{?rhel} >= 8
+BuildRequires: python3-docutils
+%else
+BuildRequires: python-docutils
+%endif
 BuildRequires:	libfastjson4-devel
 
 %description
@@ -35,7 +39,7 @@ the logs you want to normalize.
 Summary:	Development tools for programs using liblognorm library
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	libee-devel%{?_isa} libestr-devel%{?_isa}
+#Requires:	libee-devel%{?_isa} libestr-devel%{?_isa}
 Requires:	pkgconfig
 
 %description devel

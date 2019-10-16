@@ -29,7 +29,11 @@ Source4: %{rsysloglog}
 #Requires: libgt
 BuildRequires: libestr-devel
 BuildRequires: curl-devel
+%if %{?rhel} >= 8
+BuildRequires: python3-docutils
+%else
 BuildRequires: python-docutils
+%endif
 BuildRequires: liblogging-devel
 BuildRequires: automake
 BuildRequires: autoconf >= 2.52
