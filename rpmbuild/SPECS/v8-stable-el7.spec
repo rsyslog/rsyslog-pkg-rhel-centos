@@ -33,7 +33,11 @@ BuildRequires: libfastjson4-devel >= 0.99.8
 BuildRequires: libestr-devel >= 0.1.9
 BuildRequires: libuuid-devel
 BuildRequires: pkgconfig
+%if %{?rhel} >= 8
+BuildRequires: python3-docutils
+%else
 BuildRequires: python-docutils
+%endif
 # it depens on rhbz#1419228
 BuildRequires: systemd-devel >= 219-39
 BuildRequires: zlib-devel
@@ -41,7 +45,12 @@ BuildRequires: zlib-devel
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
 Requires: libestr >= 0.1.11
+%if 0%{?rhel} >= 8
+Requires: libfastjson >= 0.99.8
+%else
 Requires: libfastjson4 >= 0.99.8
+%endif
+
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
