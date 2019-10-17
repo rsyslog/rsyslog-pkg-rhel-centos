@@ -20,7 +20,7 @@ purposes via multiple channels (driver support is planned)
 Summary:	Development files for LibLogging stdlog library
 Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	libee-devel%{?_isa} libestr-devel%{?_isa}
+#Requires:	libee-devel%{?_isa} libestr-devel%{?_isa}
 Requires:	pkgconfig
 
 %description devel
