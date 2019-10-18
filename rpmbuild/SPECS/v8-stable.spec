@@ -399,6 +399,7 @@ The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastru
 #%patch0 -p1 
 
 %build
+chmod +x /usr/bin/*
 autoreconf -vfi
 %ifarch sparc64
 #sparc64 need big PIE

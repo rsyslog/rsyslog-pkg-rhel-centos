@@ -69,30 +69,33 @@ else
         szSubRepo=$RPM_REPO
 fi
 
-
-#szRpmBuildDir=/home/makerpm/rpmbuild/SRPMS/
-	
 for distro in $szDist; do 
 	for arch in $szArch; do	
 		echo "Making Source RPM for $szSpec.spec in $distro-$arch"
-	        sudo mock -r $distro-$arch --buildsrpm --spec $szRpmBaseDir/SPECS/$szSpec.spec --sources $szRpmBaseDir/SOURCES
-	        szSrcDirFile=`ls /var/lib/mock/$distro-$arch/result/*src.rpm`
-	        szSrcFile=`basename $szSrcDirFile`
-	        echo "Makeing RPMs from sourcefile '$szSrcDirFile'"
-	        sudo mv $szSrcDirFile $szRpmBuildDir/
-	        sudo mock -r $distro-$arch $szRpmBuildDir/$szSrcFile;
-	        chown $szLocalUser /var/lib/mock/$distro-$arch/result/*.rpm
-	        sudo rpm --addsign /var/lib/mock/$distro-$arch/result/*.rpm
-	        for subrepo in $szSubRepo; do 
-			repo=$szYumRepoDir/$subrepo/$distro/$arch;
-			sudo cp /var/lib/mock/$distro-$arch/result/*rpm $repo/RPMS/;
-       		        echo "Copying RPMs to $repo"
-			sudo createrepo -q -s sha -o $repo -d -p $repo;
-	       	        sudo rm $repo/repodata/repomd.xml.asc
-	       	        sudo gpg --passphrase-file passfile.txt --detach-sign --armor $repo/repodata/repomd.xml
-       		done;
-		echo "Cleaning up RPMs"
-		sudo rm /var/lib/mock/$distro-$arch/result/*rpm;
+	        if sudo mock -r $distro-$arch --buildsrpm --spec $szRpmBaseDir/SPECS/$szSpec.spec --sources $szRpmBaseDir/SOURCES; then
+    			echo "mock rpm build succeeded"
+
+		        szSrcDirFile=`ls /var/lib/mock/$distro-$arch/result/*src.rpm`
+		        szSrcFile=`basename $szSrcDirFile`
+		        echo "Makeing RPMs from sourcefile '$szSrcDirFile'"
+		        sudo mv $szSrcDirFile $szRpmBuildDir/
+		        sudo mock -r $distro-$arch $szRpmBuildDir/$szSrcFile;
+		        sudo chown $szLocalUser /var/lib/mock/$distro-$arch/result/*.rpm
+		        sudo rpm --addsign /var/lib/mock/$distro-$arch/result/*.rpm
+		        for subrepo in $szSubRepo; do 
+				repo=$szYumRepoDir/$subrepo/$distro/$arch;
+				sudo cp /var/lib/mock/$distro-$arch/result/*rpm $repo/RPMS/;
+       			        echo "Copying RPMs to $repo"
+				sudo createrepo -q -s sha -o $repo -d -p $repo;
+		       	        sudo rm $repo/repodata/repomd.xml.asc
+		       	        sudo gpg --passphrase-file passfile.txt --detach-sign --armor $repo/repodata/repomd.xml
+       			done;
+			echo "Cleaning up RPMs"
+			sudo rm /var/lib/mock/$distro-$arch/result/*rpm;
+		else
+			echo "mock rpm building FAILED";
+			exit 1;
+		fi
 	done;
 done;
 

@@ -387,6 +387,7 @@ mv build doc
 autoreconf 
 
 %build
+chmod +x /usr/bin/*
 %ifarch sparc64
 #sparc64 need big PIE
 export CFLAGS="-g $RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"/var/run/syslogd.pid\\\""
