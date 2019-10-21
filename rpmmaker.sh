@@ -99,4 +99,5 @@ for distro in $szDist; do
 	done;
 done;
 
-exit;
+exit 0;
+
