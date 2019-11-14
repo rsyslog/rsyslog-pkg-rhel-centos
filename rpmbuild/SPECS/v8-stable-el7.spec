@@ -46,7 +46,7 @@ Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
 Requires: libestr >= 0.1.11
 %if 0%{?rhel} >= 8
-Requires: libfastjson4 >= 0.99.8
+Requires: libfastjson >= 0.99.8
 %else
 Requires: libfastjson4 >= 0.99.8
 %endif
