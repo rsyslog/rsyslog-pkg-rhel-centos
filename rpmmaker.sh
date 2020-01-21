@@ -82,17 +82,21 @@ for distro in $szDist; do
 			if sudo mock -r $distro-$arch $szRpmBuildDir/$szSrcFile; then
 				echo "mock rpm build succeeded"
 				sudo chown $szLocalUser /var/lib/mock/$distro-$arch/result/*.rpm
-				sudo rpm --addsign /var/lib/mock/$distro-$arch/result/*.rpm
-				for subrepo in $szSubRepo; do
-					repo=$szYumRepoDir/$subrepo/$distro/$arch;
-					sudo cp /var/lib/mock/$distro-$arch/result/*rpm $repo/RPMS/;
-					echo "Copying RPMs to $repo"
-					sudo createrepo -q -s sha -o $repo -d -p $repo;
-					sudo rm $repo/repodata/repomd.xml.asc
-					sudo gpg --passphrase-file passfile.txt --detach-sign --armor $repo/repodata/repomd.xml
-				done;
-				echo "Cleaning up RPMs"
-				sudo rm /var/lib/mock/$distro-$arch/result/*rpm;
+                                if sudo rpm --addsign /var/lib/mock/$distro-$arch/result/*.rpm; then
+					for subrepo in $szSubRepo; do
+						repo=$szYumRepoDir/$subrepo/$distro/$arch;
+						sudo cp /var/lib/mock/$distro-$arch/result/*rpm $repo/RPMS/;
+						echo "Copying RPMs to $repo"
+						sudo createrepo -q -s sha -o $repo -d -p $repo;
+						sudo rm $repo/repodata/repomd.xml.asc
+						sudo gpg --passphrase-file passfile.txt --detach-sign --armor $repo/repodata/repomd.xml
+					done;
+					echo "Cleaning up RPMs"
+					sudo rm /var/lib/mock/$distro-$arch/result/*rpm;
+				else
+					echo "rpmsign FAILED";
+                                        exit 1;
+				fi
 			else
 				echo "mock rpm build FAILED";
 				exit 1;
