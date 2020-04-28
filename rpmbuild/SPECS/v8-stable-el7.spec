@@ -13,7 +13,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2002.0
+Version: 8.2004.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -700,6 +700,9 @@ done
 %{_libdir}/rsyslog/omhttp.so
 
 %changelog
+* Tue Apr 28 2020 Florian Riedl - 8.2004.0-1
+- Release build for 8.2004.0
+
 * Tue Feb 24 2020 Florian Riedl - 8.2002.0-1
 - Release build for 8.2002.0
 
