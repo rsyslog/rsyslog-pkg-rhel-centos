@@ -1,0 +1,30 @@
+--- rsyslog.service	2020-05-28 12:41:23.680927334 +0200
++++ platform/redhat/centos/rsyslog.service	2020-06-08 09:22:30.741077470 +0200
+@@ -1,19 +1,23 @@
+ [Unit]
+ Description=System Logging Service
+-Requires=syslog.socket
++;Requires=syslog.socket
++Wants=network.target network-online.target
++After=network.target network-online.target
+ Documentation=man:rsyslogd(8)
+ Documentation=https://www.rsyslog.com/doc/
+ 
+ [Service]
+ Type=notify
+-ExecStart=/usr/local/sbin/rsyslogd -n -iNONE
++EnvironmentFile=-/etc/sysconfig/rsyslog
++ExecStart=/usr/sbin/rsyslogd -n $SYSLOGD_OPTIONS
++Restart=on-failure
++UMask=0066
+ StandardOutput=null
+ Restart=on-failure
+-
+ # Increase the default a bit in order to allow many simultaneous
+ # files to be monitored, we might need a lot of fds.
+ LimitNOFILE=16384
+ 
+ [Install]
+ WantedBy=multi-user.target
+-Alias=syslog.service
++;Alias=syslog.service
