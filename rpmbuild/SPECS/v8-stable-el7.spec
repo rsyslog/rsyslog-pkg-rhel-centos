@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2004.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -60,7 +60,7 @@ Obsoletes: sysklogd < 1.5-11
 Obsoletes: rsyslog-mmutf8fix
 
 # Patches
-Patch0: rsyslog-systemd-centos7.patch
+Patch0: rsyslog-service-centos-rhel.patch
 
 %package crypto
 Summary: Encryption support
@@ -700,10 +700,14 @@ done
 %{_libdir}/rsyslog/omhttp.so
 
 %changelog
+* Wed Jun 17 2020 Florian Riedl - 8.2004.0-2
+- Implemented patch for service file
+  Ref: #72
+
 * Tue Apr 28 2020 Florian Riedl - 8.2004.0-1
 - Release build for 8.2004.0
 
-* Tue Feb 24 2020 Florian Riedl - 8.2002.0-1
+* Tue Feb 25 2020 Florian Riedl - 8.2002.0-1
 - Release build for 8.2002.0
 
 * Tue Jan 21 2020 Florian Riedl - 8.2001.0-3
