@@ -701,7 +701,7 @@ done
 %{_libdir}/rsyslog/omhttp.so
 
 %changelog
-* Tue Jun 22 2020 Florian Riedl - 8.2006.0-1
+* Tue Jun 23 2020 Florian Riedl - 8.2006.0-1
 - Release build for 8.2006.0
 - Implemented patch for service file
   Ref: #72
