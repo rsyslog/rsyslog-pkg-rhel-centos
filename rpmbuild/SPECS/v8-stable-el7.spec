@@ -14,7 +14,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2006.0
+Version: 8.2008.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -24,6 +24,7 @@ Source1: http://www.rsyslog.com/files/download/rsyslog/%{name}-doc-%{version}.ta
 Source2: rsyslog.conf
 Source3: rsyslog.sysconfig
 Source4: rsyslog.log
+Source5: rsyslog.service
 
 BuildRequires: automake
 BuildRequires: autoconf
@@ -61,7 +62,7 @@ Obsoletes: sysklogd < 1.5-11
 Obsoletes: rsyslog-mmutf8fix
 
 # Patches
-Patch0: rsyslog-service-centos-rhel.patch
+#Patch0: rsyslog-service-centos-rhel.patch
 
 %package crypto
 Summary: Encryption support
@@ -383,7 +384,7 @@ mv build doc
 
 # set up rsyslog sources
 %setup -q -D
-%patch0 -p1
+#%patch0 -p1
 
 autoreconf 
 
@@ -476,6 +477,8 @@ make
 %install
 make DESTDIR=%{buildroot} install
 
+install -D -m 644 %{SOURCE5} %{buildroot}%{_unitdir}/rsyslog.service
+
 install -d -m 755 %{buildroot}%{_sysconfdir}/sysconfig
 install -d -m 755 %{buildroot}%{_sysconfdir}/logrotate.d
 install -d -m 755 %{buildroot}%{_sysconfdir}/rsyslog.d
@@ -492,8 +495,6 @@ install -p -m 644 plugins/ompgsql/createDB.sql %{buildroot}%{rsyslog_docdir}/pgs
 cp -r doc/* %{buildroot}%{rsyslog_docdir}/html
 # get rid of libtool libraries
 rm -f %{buildroot}%{_libdir}/rsyslog/*.la
-# get rid of socket activation by default
-sed -i '/^Alias/s/^/;/;/^Requires=syslog.socket/s/^/;/' %{buildroot}%{_unitdir}/rsyslog.service
 
 # convert line endings from "\r\n" to "\n"
 cat tools/recover_qi.pl | tr -d '\r' > %{buildroot}%{_bindir}/rsyslog-recover-qi.pl
@@ -701,6 +702,9 @@ done
 %{_libdir}/rsyslog/omhttp.so
 
 %changelog
+* Tue Aug 25 2020 Florian Riedl - 8.2008.0-1
+- Release build for 8.2008.0
+
 * Tue Jun 23 2020 Florian Riedl - 8.2006.0-1
 - Release build for 8.2006.0
 - Implemented patch for service file
