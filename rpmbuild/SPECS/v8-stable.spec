@@ -18,7 +18,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2008.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -439,6 +439,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 		--enable-gnutls \
 		--enable-openssl \
 		--enable-imfile \
+		--enable-improg \
 		--enable-impstats \
 		--enable-imptcp \
 		--enable-libdbi \
@@ -545,6 +546,8 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %{_libdir}/rsyslog/imfile.so
 %{_libdir}/rsyslog/imklog.so
 %{_libdir}/rsyslog/immark.so
+%{_libdir}/rsyslog/improg.so
+%{_libdir}/rsyslog/impstats.so
 %{_libdir}/rsyslog/impstats.so
 %{_libdir}/rsyslog/imptcp.so
 %{_libdir}/rsyslog/imtcp.so
@@ -724,6 +727,10 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Sep 15 2020 Florian Riedl - 8.2008.0-2
+- Added module improg to base package
+  Fixes: #85
+
 * Tue Aug 25 2020 Florian Riedl - 8.2006.0-1
 - Release build for 8.2008.0
 
