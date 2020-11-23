@@ -705,6 +705,9 @@ done
 * Tue Oct 20 2020 Florian Riedl - 8.2010.0-1
 - Release build for 8.2010.0
 
+* Tue Sep 29 2020 Florian Riedl - 8.2008.0-2
+- Rebuild for librelp 1.8.0
+
 * Tue Aug 25 2020 Florian Riedl - 8.2008.0-1
 - Release build for 8.2008.0
 
