@@ -702,7 +702,7 @@ done
 %{_libdir}/rsyslog/omhttp.so
 
 %changelog
-* Tue Nov 29 2020 Florian Riedl - 8.2010.0-2
+* Tue Nov 24 2020 Florian Riedl - 8.2010.0-2
 - Rebuild for librelp 1.9.0
 
 * Tue Oct 20 2020 Florian Riedl - 8.2010.0-1
