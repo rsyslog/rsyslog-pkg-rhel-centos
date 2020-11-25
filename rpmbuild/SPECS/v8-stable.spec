@@ -17,7 +17,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2008.0
+Version: 8.2010.0
 Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -102,8 +102,8 @@ BuildRequires: postgresql-devel
 Summary: RELP protocol support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: librelp >= 1.5.0
-BuildRequires: librelp-devel >= 1.5.0
+Requires: librelp >= 1.9.0
+BuildRequires: librelp-devel >= 1.9.0
 BuildRequires: libgcrypt-devel
 
 %package gnutls
@@ -727,10 +727,19 @@ mv /var/lock/subsys/rsyslogd /var/lock/subsys/rsyslog
 %endif
 
 %changelog
+* Tue Nov 24 2020 Florian Riedl - 8.2010.0-2
+- Rebuild for librelp 1.9.0
+
+* Tue Oct 20 2020 Florian Riedl - 8.2010.0-1
+- Release build for 8.2010.0
+
+* Tue Sep 29 2020 Florian Riedl - 8.2008.0-2
+- Rebuild for librelp 1.8.0
+
 * Tue Sep 15 2020 Florian Riedl - 8.2008.0-2
 - Added module improg to base package
   Fixes: #85
-
+  
 * Tue Aug 25 2020 Florian Riedl - 8.2006.0-1
 - Release build for 8.2008.0
 
