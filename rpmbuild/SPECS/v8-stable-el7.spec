@@ -417,6 +417,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-imdiag \
 	--enable-imfile \
 	--enable-imjournal \
+	--enable-improg \
 	--enable-impstats \
 	--enable-imptcp \
 	--enable-libdbi \
@@ -537,6 +538,7 @@ done
 %{_libdir}/rsyslog/imjournal.so
 %{_libdir}/rsyslog/imklog.so
 %{_libdir}/rsyslog/immark.so
+%{_libdir}/rsyslog/improg.so
 %{_libdir}/rsyslog/impstats.so
 %{_libdir}/rsyslog/imptcp.so
 %{_libdir}/rsyslog/imtcp.so
@@ -711,6 +713,10 @@ done
 * Tue Sep 29 2020 Florian Riedl - 8.2008.0-2
 - Rebuild for librelp 1.8.0
 
+* Tue Sep 15 2020 Florian Riedl - 8.2008.0-2
+- Added module improg to base package
+  Fixes: #85
+  
 * Tue Aug 25 2020 Florian Riedl - 8.2008.0-1
 - Release build for 8.2008.0
 
