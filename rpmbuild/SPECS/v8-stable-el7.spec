@@ -14,7 +14,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2104.0
+Version: 8.2106.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -245,6 +245,19 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libcurl-devel
 
+%package mmdblookup
+Summary: mmdblookup MaxMind/GeoIP DB lookup for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: libmaxminddb-devel
+
+%package pmnormalize
+Summary: Log normalization parser module for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: liblognorm5-devel >= 2.0.6
+
+
 %description
 Rsyslog is an enhanced, multi-threaded syslog daemon. It supports MySQL,
 syslog/TCP, RFC 3195, permitted sender lists, filtering on any message part,
@@ -375,6 +388,12 @@ Function module for rainerscript function hash.
 %description omhttp
 This module provides native support for writing to Redis, using the hiredis client library.
 
+%description mmdblookup
+This module provides support for storing information about IP addresses in a highly optimized and flexible database format.
+
+%description pmnormalize
+This parser normalizes messages with the specified rules and populates the properties for further use.
+
 %prep
 # set up rsyslog-doc sources
 %setup -q -a 1 -T -c
@@ -468,6 +487,8 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-mmkubernetes \
 	--enable-omhttp \
 	--enable-pmnull \
+	--enable-mmdblookup \
+	--enable-pmnormalize \
 	--enable-debug-symbols
 
 #	--enable-pmrfc3164sd \
@@ -703,7 +724,22 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omhttp.so
 
+%files mmdblookup
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmdblookup.so
+
+%files pmnormalize
+%defattr(-,root,root)
+%{_libdir}/rsyslog/pmnormalize.so
+
 %changelog
+* Tue Jun 15 2021 Florian Riedl - 8.2106.0-1
+- Release build for 8.2106.0
+- Added module package for pmnormalize
+
+* Thu May 27 2021 Florian Riedl - 8.2104.0-2
+- Build for mmdblookup module package
+
 * Tue Apr 20 2021 Florian Riedl - 8.2104.0-1
 - Release build for 8.2104.0
 
