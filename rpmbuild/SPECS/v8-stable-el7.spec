@@ -14,7 +14,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2106.0
+Version: 8.2108.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -733,6 +733,9 @@ done
 %{_libdir}/rsyslog/pmnormalize.so
 
 %changelog
+* Tue Aug 17 2021 Florian Riedl - 8.2108.0-1
+- Release build for 8.2108.0
+
 * Tue Jun 15 2021 Florian Riedl - 8.2106.0-1
 - Release build for 8.2106.0
 - Added module package for pmnormalize
