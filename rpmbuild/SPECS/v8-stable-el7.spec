@@ -14,7 +14,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2112.0
+Version: 8.2202.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -219,10 +219,10 @@ Requires: %name = %version-%release
 Requires: libksi >= 3.13.0
 BuildRequires: libksi-devel
 
-%package omfile-hardened
-Summary: omfile-hardened support 
-Group: System Environment/Daemons
-Requires: %name = %version-%release
+#%package omfile-hardened
+#Summary: omfile-hardened support 
+#Group: System Environment/Daemons
+#Requires: %name = %version-%release
 
 %package mmkubernetes
 Summary: mmkubernetes support 
@@ -372,9 +372,9 @@ for the producer and 3 million msgs/second for the consumer.
 The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastructure 
 globally distributed by Guardtime. 
 
-%description omfile-hardened
-Duplicate of the omfile module with settings to harden the output 
-against failure.
+#%description omfile-hardened
+#Duplicate of the omfile module with settings to harden the output 
+#against failure.
 
 %description mmkubernetes
 Message modification module to add Kubernetes metadata to a messages.
@@ -483,7 +483,6 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-mmsequence \
 	--enable-mmrm1stspace \
 	--enable-pmciscoios \
-	--enable-omfile-hardened \
 	--enable-mmkubernetes \
 	--enable-omhttp \
 	--enable-pmnull \
@@ -492,7 +491,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-debug-symbols
 
 #	--enable-pmrfc3164sd \
-
+#	--enable-omfile-hardened \
 
 make
 
@@ -704,9 +703,9 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/lmsig_ksi_ls12.so
 
-%files omfile-hardened
-%defattr(-,root,root)
-%{_libdir}/rsyslog/omfile-hardened.so
+#%files omfile-hardened
+#%defattr(-,root,root)
+#%{_libdir}/rsyslog/omfile-hardened.so
 
 %files mmkubernetes
 %defattr(-,root,root)
@@ -733,6 +732,10 @@ done
 %{_libdir}/rsyslog/pmnormalize.so
 
 %changelog
+* Tue Feb 15 2022 Florian Riedl - 8.2202.0-1
+- Release build for 8.2202.0
+- disabled omfile-hardened due to incompatibility
+
 * Thu Dec 16 2021 Florian Riedl - 8.2112.0-1
 - Release build for 8.2112.0
 
