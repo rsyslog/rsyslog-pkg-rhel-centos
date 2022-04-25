@@ -14,8 +14,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2112.0
-Release: 2%{?dist}
+Version: 8.2204.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -719,8 +719,14 @@ done
 %{_libdir}/rsyslog/pmnormalize.so
 
 %changelog
-* Fri Feb 18 2022 Andre Lorbach - 8.2112.0-2
+* Tue Apr 19 2022 Florian Riedl - 8.2204.0-1
+- Release build for 8.2204.0
+
+* Fri Feb 18 2022 Andre Lorbach - 8.2202.0-2
 - Remove RPM rsyslog-omfile-hardened
+
+* Tue Feb 15 2022 Florian Riedl - 8.2202.0-1
+- Release build for 8.2202.0
 
 * Thu Dec 16 2021 Florian Riedl - 8.2112.0-1
 - Release build for 8.2112.0
