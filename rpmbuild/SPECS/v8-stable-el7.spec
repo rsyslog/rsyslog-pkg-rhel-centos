@@ -50,6 +50,21 @@ BuildRequires: zlib-devel
 %if 0%{?rhel} >= 8
 BuildRequires: libzstd-devel
 %endif
+#begin qpid-proton buildeps
+BuildRequires: wget
+BuildRequires: git
+BuildRequires: gcc-c++
+BuildRequires: cmake
+BuildRequires: openssl-devel
+BuildRequires: cyrus-sasl-devel
+BuildRequires: cyrus-sasl-plain
+BuildRequires: cyrus-sasl-md5
+%if 0%{?rhel} <= 8
+BuildRequires: swig
+%endif
+BuildRequires: python3-devel
+BuildRequires: ruby-devel
+#end
 
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
@@ -234,6 +249,11 @@ BuildRequires: adisconbuild-librdkafka-devel > 0.11.6
 BuildRequires: lz4-devel
 BuildRequires: cyrus-sasl-devel
 
+%package omazureeventhubs
+Summary: omazureeventhubs output support
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %if %{?rhel} <= 8
 %package ksi-ls12
 Summary: KSI signature support 
@@ -394,6 +414,10 @@ containing both Producer and Consumer support. It was designed with message deli
 reliability and high performance in mind, current figures exceed 800000 msgs/second 
 for the producer and 3 million msgs/second for the consumer.
 
+%description omazureeventhubs
+omazureeventhubs is using the Apache qpid proton C library implementation of the
+AMQP 1.0 which is recommend method to access Azure EventHubs.
+
 %if %{?rhel} <= 8
 %description ksi-ls12
 The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastructure 
@@ -425,6 +449,37 @@ This parser normalizes messages with the specified rules and populates the prope
 rm -r LICENSE README.md source build/objects.inv
 mv build doc
 
+%if 0%{?rhel} < 8
+# build cmake 3.16 on RHEL7!
+wget https://github.com/Kitware/CMake/releases/download/v3.16.0/cmake-3.16.0.tar.gz
+tar zxvf cmake-3.16.0.tar.gz
+cd cmake-3.16.0/
+./bootstrap --prefix=/usr/
+make -j$(nproc)
+make -j8 install
+%endif
+
+%if 0%{?rhel} <= 8
+# build qpid-proton 0.35 for RHEL 7,8
+wget https://github.com/apache/qpid-proton/archive/refs/tags/0.35.0.tar.gz
+tar zxvf 0.35.0.tar.gz
+cd qpid-proton-0.35.0/
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_STATIC_LIBS=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_BINDINGS=OFF
+make -j8 install
+%else
+# build qpid-proton 0.38 for RHEL 9+
+wget https://github.com/apache/qpid-proton/archive/refs/tags/0.38.0.tar.gz
+tar zxvf 0.38.0.tar.gz 
+cd qpid-proton-0.38.0/
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_STATIC_LIBS=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_BINDINGS=OFF
+make -j8 install
+%endif
+
+
 # set up rsyslog sources
 %setup -q -D
 #%patch0 -p1
@@ -447,6 +502,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 export HIREDIS_CFLAGS=-I/usr/include/hiredis
 export HIREDIS_LIBS=-L%{_libdir}
 %endif
+
 %configure \
 	--prefix=/usr \
 	--disable-static \
@@ -519,15 +575,15 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-pmnull \
 	--enable-mmdblookup \
 	--enable-pmnormalize \
+	--enable-omazureeventhubs \
+	--enable-qpidproton-static \
 	--enable-debug-symbols
-
 #	--enable-pmrfc3164sd \
 
-
-make
+make -j8
 
 %install
-make DESTDIR=%{buildroot} install
+make -j8 DESTDIR=%{buildroot} install
 
 install -D -m 644 %{SOURCE5} %{buildroot}%{_unitdir}/rsyslog.service
 
@@ -749,6 +805,10 @@ done
 %{_libdir}/rsyslog/omkafka.so
 %{_libdir}/rsyslog/imkafka.so
 
+%files omazureeventhubs
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omazureeventhubs.so
+
 %if %{?rhel} <= 8
 %files ksi-ls12
 %defattr(-,root,root)
@@ -781,6 +841,12 @@ done
 
 
 %changelog
+* Mon Aug 21 2023 Andre Lorbach - 8.2308.0-2
+- Added package definition for omazureeventhubs.
+- Build static library during build for qpid-proton
+- Link qpid-proton statically into omazureeventhubs, so there
+  is no package dependency for system package qpid-proton.
+
 * Tue Aug 15 2023 Florian Riedl - 8.2308.0-1
 - Release build for 8.2308.0
 
