@@ -123,11 +123,13 @@ Summary: Message modification module for snmptrapd generated messages
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%if %{?rhel} < 8
 %package libdbi
 Summary: Libdbi database support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libdbi-devel
+%endif
 
 %package mysql
 Summary: MySQL support for rsyslog
@@ -212,12 +214,14 @@ BuildRequires: adisconbuild-librdkafka-devel >= 0.11.6
 BuildRequires: lz4-devel
 BuildRequires: cyrus-sasl-devel
 
+%if %{?rhel} <= 8
 %package ksi-ls12
 Summary: KSI signature support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: libksi >= 3.13.0
 BuildRequires: libksi-devel
+%endif
 
 %package mmkubernetes
 Summary: mmkubernetes support 
@@ -295,10 +299,12 @@ Parse all fields of the message into structured data inside the JSON tree.
 This message modification module takes messages generated from snmptrapd and
 modifies them so that they look like they originated from the read originator.
 
+%if %{?rhel} < 8
 %description libdbi
 This module supports a large number of database systems via
 libdbi. Libdbi abstracts the database layer and provides drivers for
 many systems. Drivers are available via the libdbi-drivers project.
+%endif
 
 %description mysql
 The rsyslog-mysql package contains a dynamic shared object that will add
@@ -363,9 +369,11 @@ containing both Producer and Consumer support. It was designed with message deli
 reliability and high performance in mind, current figures exceed 800000 msgs/second 
 for the producer and 3 million msgs/second for the consumer.
 
+%if %{?rhel} <= 8
 %description ksi-ls12
 The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastructure 
 globally distributed by Guardtime. 
+%endif
 
 %description mmkubernetes
 Message modification module to add Kubernetes metadata to a messages.
@@ -430,7 +438,9 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-improg \
 	--enable-impstats \
 	--enable-imptcp \
+%if %{?rhel} < 8
 	--enable-libdbi \
+%endif
 	--enable-mail \
 	--enable-mmanon \
 	--enable-mmaudit \
@@ -468,7 +478,9 @@ export HIREDIS_LIBS=-L%{_libdir}
         --enable-omkafka \
 	--enable-imkafka \
 	--enable-kafka-static \
+%if %{?rhel} <= 8
 	--enable-ksi-ls12 \
+%endif
 	--enable-mmfields \
 	--enable-mmpstrucdata \
 	--enable-mmsequence \
@@ -603,9 +615,11 @@ done
 %{_libdir}/rsyslog/omhiredis.so
 %endif
 
+%if %{?rhel} < 8
 %files libdbi
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omlibdbi.so
+%endif
 
 %files mmaudit
 %defattr(-,root,root)
@@ -690,9 +704,11 @@ done
 %{_libdir}/rsyslog/omkafka.so
 %{_libdir}/rsyslog/imkafka.so
 
+%if %{?rhel} <= 8
 %files ksi-ls12
 %defattr(-,root,root)
 %{_libdir}/rsyslog/lmsig_ksi_ls12.so
+%endif
 
 %files mmkubernetes
 %defattr(-,root,root)
