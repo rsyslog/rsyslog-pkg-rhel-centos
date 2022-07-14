@@ -9,7 +9,7 @@ Source0: http://download.rsyslog.com/librelp/%{name}-%{version}.tar.gz
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: gnutls-devel, openssl-devel
+BuildRequires: libtool, gnutls-devel, openssl-devel
 
 %description
 Librelp is an easy to use library for the RELP protocol. RELP (stands

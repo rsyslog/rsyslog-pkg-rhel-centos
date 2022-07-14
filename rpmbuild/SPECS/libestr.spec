@@ -7,6 +7,7 @@ Group:      Networking/Admin
 URL: http://libestr.adiscon.com/
 Source0: http://libestr.adiscon.com/files/download/%{name}-%{version}.tar.gz
 BuildRoot:  /var/tmp/%{name}-build
+BuildRequires: libtool
 Requires: /sbin/ldconfig
 
 %description

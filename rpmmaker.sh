@@ -87,7 +87,7 @@ for distro in $szDist; do
 						repo=$szYumRepoDir/$subrepo/$distro/$arch;
 						sudo cp /var/lib/mock/$distro-$arch/result/*rpm $repo/RPMS/;
 						echo "Copying RPMs to $repo"
-						sudo createrepo -q -s sha -o $repo -d -p $repo;
+						sudo createrepo -q -s sha256 -o $repo -d -p $repo;
 						sudo rm $repo/repodata/repomd.xml.asc
 						sudo gpg --passphrase-file passfile.txt --detach-sign --armor $repo/repodata/repomd.xml
 					done;

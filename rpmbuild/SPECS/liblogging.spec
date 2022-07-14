@@ -9,7 +9,7 @@ Source0:	http://download.rsyslog.com/liblogging/liblogging-%{version}.tar.gz
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRoot:	%{_tmppath}/liblogging-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:	chrpath
+BuildRequires:	libtool, chrpath
 
 %description
 LibLogging stdlog library

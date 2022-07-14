@@ -28,7 +28,7 @@ for rsyslogver in $szRepos
                 sudo rm $repo/repodata/repomd.xml.asc
                 sudo chown $szLocalUser $repo/* -R
                 rpm --resign $repo/RPMS/*.rpm
-		sudo createrepo -q -s sha -o $repo -d -p $repo/RPMS/;
+		sudo createrepo -q -s sha256 -o $repo -d -p $repo/RPMS/;
 	        sudo gpg --detach-sign --armor $repo/repodata/repomd.xml
 		done;
 	done;
