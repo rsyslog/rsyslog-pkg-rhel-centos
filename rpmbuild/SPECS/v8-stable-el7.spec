@@ -1,4 +1,4 @@
-# SPEC file for EL7 and EL8 
+# SPEC file for EL7, EL8 and EL9
 %define rsyslog_statedir %{_sharedstatedir}/rsyslog
 %define rsyslog_pkidir %{_sysconfdir}/pki/rsyslog
 %define rsyslog_docdir %{_docdir}/%{name}-%{version}
@@ -15,7 +15,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2204.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -26,13 +26,17 @@ Source3: rsyslog.sysconfig
 Source4: rsyslog.log
 Source5: rsyslog.service
 
-BuildRequires: automake
+BuildRequires: make
+BuildRequires: gcc
 BuildRequires: autoconf
-BuildRequires: libtool
+BuildRequires: automake
 BuildRequires: bison
+BuildRequires: dos2unix
 BuildRequires: flex
+BuildRequires: libgcrypt-devel
 BuildRequires: libfastjson4-devel >= 0.99.8
 BuildRequires: libestr-devel >= 0.1.9
+BuildRequires: libtool
 BuildRequires: libuuid-devel
 BuildRequires: pkgconfig
 %if %{?rhel} >= 8
@@ -57,12 +61,25 @@ Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
 
+%if %{?rhel} > 8
+Recommends: %{name}-logrotate = %version-%release
+Requires: bash >= 2.0
+%{?systemd_ordering}
+%endif
+
 Provides: syslog
 Obsoletes: sysklogd < 1.5-11
 Obsoletes: rsyslog-mmutf8fix
 
 # Patches
 #Patch0: rsyslog-service-centos-rhel.patch
+
+%if %{?rhel} > 8
+%package logrotate
+Summary: Log rotation for rsyslog
+Requires: %name = %version-%release
+Requires: logrotate >= 3.5.2
+%endif
 
 %package crypto
 Summary: Encryption support
@@ -264,6 +281,11 @@ and fine grain output format control. It is compatible with stock sysklogd
 and can be used as a drop-in replacement. Rsyslog is simple to set up, with
 advanced features suitable for enterprise-class, encryption-protected syslog
 relay chains.
+
+%if %{?rhel} > 8
+%description logrotate
+This subpackage contains the default logrotate configuration for rsyslog.
+%endif
 
 %description crypto
 This package contains a module providing log file encryption and a
@@ -512,7 +534,12 @@ install -d -m 755 %{buildroot}%{rsyslog_docdir}/html
 
 install -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/rsyslog.conf
 install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/sysconfig/rsyslog
+%if %{?rhel} > 8
+install -p -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/logrotate.d/rsyslog
+%else
 install -p -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/logrotate.d/syslog
+%endif
+
 install -p -m 644 plugins/ommysql/createDB.sql %{buildroot}%{rsyslog_docdir}/mysql-createDB.sql
 install -p -m 644 plugins/ompgsql/createDB.sql %{buildroot}%{rsyslog_docdir}/pgsql-createDB.sql
 # extract documentation
@@ -554,7 +581,11 @@ done
 %{_unitdir}/rsyslog.service
 %config(noreplace) %{_sysconfdir}/rsyslog.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/rsyslog
+%if %{?rhel} > 8
+%config(noreplace) %{_sysconfdir}/logrotate.d/rsyslog
+%else
 %config(noreplace) %{_sysconfdir}/logrotate.d/syslog
+%endif
 # plugins
 %{_libdir}/rsyslog/imdiag.so
 %{_libdir}/rsyslog/imfile.so
@@ -594,6 +625,11 @@ done
 %{_libdir}/rsyslog/mmpstrucdata.so
 %{_libdir}/rsyslog/mmsequence.so
 %{_libdir}/rsyslog/pmnull.so
+
+%if %{?rhel} > 8
+%files logrotate
+%config(noreplace) %{_sysconfdir}/logrotate.d/rsyslog
+%endif
 
 %files crypto
 %defattr(-,root,root)
@@ -734,7 +770,12 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/pmnormalize.so
 
+
 %changelog
+* Mon Jul 25 2022 Andre Lorbach - 8.2204.0-2
+- Migrated changes from RHEL9 Spec definiton:
+-   Split out logrotate config and dependency into a subpackage
+
 * Tue Apr 19 2022 Florian Riedl - 8.2204.0-1
 - Release build for 8.2204.0
 
