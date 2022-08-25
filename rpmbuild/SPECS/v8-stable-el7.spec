@@ -227,7 +227,7 @@ Summary: Kafka output support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: lz4
-BuildRequires: adisconbuild-librdkafka-devel >= 0.11.6
+BuildRequires: adisconbuild-librdkafka-devel > 0.11.6
 BuildRequires: lz4-devel
 BuildRequires: cyrus-sasl-devel
 
@@ -386,7 +386,7 @@ subsequent message parsing less error-prone.
 Parser module which supports various Cisco IOS formats.
 
 %description kafka
-librdkafka is a C library implementation of the Apache Kafka protocol, 
+Includes omkafka and imkafka modules using librdkafka implementation of the Kafka protocol, 
 containing both Producer and Consumer support. It was designed with message delivery 
 reliability and high performance in mind, current figures exceed 800000 msgs/second 
 for the producer and 3 million msgs/second for the consumer.
