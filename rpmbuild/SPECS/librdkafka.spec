@@ -1,7 +1,7 @@
 Name:    adisconbuild-librdkafka
 # NOTE: Make sure to update this to match rdkafka.h version
-Version: 0.11.6
-Release: 2
+Version: 1.9.2
+Release: 1
 %define soname 1
 %define _unpackaged_files_terminate_build 0
 
@@ -88,6 +88,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Aug 25 2022 Andre Lorbach
+- Build dependency package 1.9.2
+
 * Wed Oct 31 2018 Florian Riedl
 - Re-Build dependency package 0.11.6
 
