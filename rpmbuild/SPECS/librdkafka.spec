@@ -11,7 +11,7 @@ License: BSD-2-Clause
 URL:     https://github.com/edenhill/librdkafka
 Source:	 adisconbuild-librdkafka-%{version}.tar.gz
 
-BuildRequires: libtool, zlib-devel libstdc++-devel gcc >= 4.1 gcc-c++ lz4-devel
+BuildRequires: wget curl openssl-devel libcurl-devel libtool zlib-devel libstdc++-devel gcc >= 4.1 gcc-c++ cyrus-sasl-devel 
 %if %{?rhel} >= 8
 BuildRequires: python3-devel
 %else
@@ -49,7 +49,7 @@ using librdkafka.
 %prep
 %setup -q
 
-%configure --disable-hdrhistogram
+%configure --enable-static --install-deps --disable-hdrhistogram --disable-lz4-ext
 
 %build
 make
