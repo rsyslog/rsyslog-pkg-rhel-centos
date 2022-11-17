@@ -72,7 +72,7 @@ fi
 for distro in $szDist; do 
 	for arch in $szArch; do	
 		echo "Making Source RPM for $szSpec.spec in $distro-$arch"
-		if sudo mock -r $distro-$arch --buildsrpm --spec $szRpmBaseDir/SPECS/$szSpec.spec --sources $szRpmBaseDir/SOURCES; then
+		if sudo mock --verbose -r $distro-$arch --buildsrpm --spec $szRpmBaseDir/SPECS/$szSpec.spec --sources $szRpmBaseDir/SOURCES; then
 			echo "mock rpm buildsrpm succeeded"
 
 			szSrcDirFile=`ls /var/lib/mock/$distro-$arch/result/*src.rpm`
