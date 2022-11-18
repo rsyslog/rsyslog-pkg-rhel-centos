@@ -1,7 +1,7 @@
 Name:    adisconbuild-librdkafka
 # NOTE: Make sure to update this to match rdkafka.h version
 Version: 1.9.2
-Release: 1
+Release: 5
 %define soname 1
 %define _unpackaged_files_terminate_build 0
 
@@ -28,6 +28,7 @@ It was designed with message delivery reliability and high performance in mind, 
 %package -n %{name}%{soname}
 Summary: The Apache Kafka C library
 Group:   Development/Libraries/C and C++
+Requires: zlib libstdc++ cyrus-sasl
 
 %description -n %{name}%{soname}
 librdkafka is a C/C++ library implementation of the Apache Kafka protocol, containing both Producer and Consumer support.
@@ -37,7 +38,6 @@ librdkafka is a C/C++ library implementation of the Apache Kafka protocol, conta
 Summary: The Apache Kafka C library (Development Environment)
 Group:   Development/Libraries/C and C++
 Requires: %{name}%{soname} = %{version}
-BuildRequires: openssl-devel cyrus-sasl-devel
 
 %description -n %{name}-devel
 librdkafka is a C/C++ library implementation of the Apache Kafka protocol, containing both Producer and Consumer support.
@@ -47,12 +47,14 @@ using librdkafka.
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}
 
-%configure --enable-static --install-deps --disable-hdrhistogram --disable-lz4-ext
+%configure --install-deps --disable-lz4-ext --disable-hdrhistogram --enable-static 
 
 %build
+cat config.log
 make
+examples/rdkafka_example -X builtin.features
 
 %install
 rm -rf %{buildroot}
@@ -69,8 +71,13 @@ rm -rf %{buildroot}
 %{_libdir}/librdkafka.so.%{soname}
 %{_libdir}/librdkafka++.so.%{soname}
 %defattr(-,root,root)
-%doc README.md CONFIGURATION.md INTRODUCTION.md
-%doc LICENSE LICENSE.pycrc LICENSE.snappy
+%doc %{_docdir}/librdkafka/README.md
+%doc %{_docdir}/librdkafka/LICENSE
+%doc %{_docdir}/librdkafka/CONFIGURATION.md
+%doc %{_docdir}/librdkafka/INTRODUCTION.md
+%doc %{_docdir}/librdkafka/STATISTICS.md
+%doc %{_docdir}/librdkafka/CHANGELOG.md
+%doc %{_docdir}/librdkafka/LICENSES.txt
 
 %defattr(-,root,root)
 #%{_bindir}/rdkafka_example
@@ -82,12 +89,22 @@ rm -rf %{buildroot}
 %{_includedir}/librdkafka
 %defattr(444,root,root)
 %{_libdir}/librdkafka.a
+%{_libdir}/librdkafka-static.a
 %{_libdir}/librdkafka.so
 %{_libdir}/librdkafka++.a
 %{_libdir}/librdkafka++.so
-
+%{_libdir}/pkgconfig/rdkafka++.pc
+%{_libdir}/pkgconfig/rdkafka.pc
+%{_libdir}/pkgconfig/rdkafka-static.pc
+%{_libdir}/pkgconfig/rdkafka++-static.pc
 
 %changelog
+* Thu Nov 17 2022 Andre Lorbach
+- Add missing static build files
+
+* Wed Nov 16 2022 Andre Lorbach
+- ReBuild for static building
+
 * Wed Aug 25 2022 Andre Lorbach
 - Build dependency package 1.9.2
 
