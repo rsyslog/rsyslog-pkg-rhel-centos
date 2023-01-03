@@ -7,6 +7,6 @@
     missingok
     sharedscripts
     postrotate
-	systemctl kill -s HUP rsyslog.service
+	/usr/bin/systemctl kill -s HUP rsyslog.service >/dev/null 2>&1 || true
     endscript
 }
