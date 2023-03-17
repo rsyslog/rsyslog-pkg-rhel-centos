@@ -47,6 +47,9 @@ BuildRequires: python-docutils
 # it depens on rhbz#1419228
 BuildRequires: systemd-devel >= 219-39
 BuildRequires: zlib-devel
+%if 0%{?rhel} >= 8
+BuildRequires: libzstd-devel
+%endif
 
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
@@ -454,6 +457,9 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-gnutls \
 	--enable-openssl \
 	--enable-gssapi-krb5 \
+%if 0%{?rhel} >= 8
+	--enable-libzstd \
+%endif
 	--enable-imdiag \
 	--enable-imfile \
 	--enable-imjournal \
@@ -605,6 +611,9 @@ done
 %{_libdir}/rsyslog/lmtcpclt.so
 %{_libdir}/rsyslog/lmtcpsrv.so
 %{_libdir}/rsyslog/lmzlibw.so
+%if 0%{?rhel} >= 8
+%{_libdir}/rsyslog/lmzstdw.so
+%endif
 %{_libdir}/rsyslog/mmanon.so
 %{_libdir}/rsyslog/mmcount.so
 %{_libdir}/rsyslog/mmexternal.so
