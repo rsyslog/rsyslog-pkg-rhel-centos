@@ -3,10 +3,10 @@
 %global debug_package %{nil} 
 
 Name:		libfastjson4
-Version:	0.99.9
+Version:	1.2304.0
 Release:	1%{?dist}
 Provides:	libfastjson4 = %{version}-%{release}
-Obsoletes:	libfastjson <= 0.99.6 
+Obsoletes:	libfastjson <= 0.99.9 
 Summary:	A JSON implementation in C
 Group:		Development/Libraries
 License:	MIT
@@ -98,6 +98,9 @@ rm -rf %{buildroot}
 #%doc doc/html/*
 
 %changelog
+* Tue Apr 18 2023 Florian Riedl <friedl@adiscon.com> - 1.2304.0-1
+- New RPM for libfastjson4 1.2304.0
+
 * Mon Feb 15 2021 Florian Riedl <friedl@adiscon.com> - 0.99.9-1
 - New RPM for libfastjson4 0.99.9
 
