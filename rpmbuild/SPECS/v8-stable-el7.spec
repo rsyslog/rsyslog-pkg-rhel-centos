@@ -14,7 +14,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2308.0
+Version: 8.2310.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -841,6 +841,9 @@ done
 
 
 %changelog
+* Tue Oct 10 2023 Florian Riedl - 8.2310.0-1
+- Release build for 8.2310.0
+
 * Mon Aug 21 2023 Andre Lorbach - 8.2308.0-2
 - Added package definition for omazureeventhubs.
 - Build static library during build for qpid-proton
