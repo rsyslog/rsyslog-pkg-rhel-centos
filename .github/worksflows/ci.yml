@@ -36,3 +36,5 @@ jobs:
       - name: git checkout packging project
         uses: actions/checkout@v1
 
+      - name: dummy
+        run: ls -l
