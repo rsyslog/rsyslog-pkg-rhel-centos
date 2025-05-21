@@ -863,7 +863,7 @@ done
 
 
 %changelog
-* Tue May 20 2025 Anmdre Lorbach- 8.2504.0-2
+* Tue May 20 2025 Andre Lorbach- 8.2504.0-2
 - Add dtls package definition (omdtls and imdtls)
 
 * Tue Apr 29 2025 Florian Riedl - 8.2504.0-1
