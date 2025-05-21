@@ -14,7 +14,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2406.0
+Version: 8.2504.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -863,8 +863,23 @@ done
 
 
 %changelog
-* Tue May 20 2025 Anmdre Lorbach- 8.2504.0-2
+* Tue May 20 2025 Andre Lorbach- 8.2504.0-2
 - Add dtls package definition (omdtls and imdtls)
+
+* Tue Apr 29 2025 Florian Riedl - 8.2504.0-1
+- Release build for 8.2504.0
+
+* Tue Feb 18 2025 Florian Riedl - 8.2502.0-1
+- Release build for 8.2502.0
+
+* Tue Dec 03 2024 Florian Riedl - 8.2412.0-1
+- Release build for 8.2412.0
+
+* Tue Oct 22 2024 Florian Riedl - 8.2410.0-1
+- Release build for 8.2410.0
+
+* Tue Aug 20 2024 Florian Riedl - 8.2408.0-1
+- Release build for 8.2408.0
 
 * Tue Jul 02 2024 Florian Riedl - 8.2406.0-1
 - Release build for 8.2406.0
