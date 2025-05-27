@@ -15,7 +15,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2504.0
-Release: 1%{?dist}
+Release: 3%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -261,6 +261,11 @@ Summary: omazureeventhubs output support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%package docker
+Summary: Integration between rsyslog and Docker
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %if %{?rhel} <= 8
 %package ksi-ls12
 Summary: KSI signature support 
@@ -433,6 +438,11 @@ ensuring confidentiality and integrity in UDP-based environments.
 omazureeventhubs is using the Apache qpid proton C library implementation of the
 AMQP 1.0 which is recommend method to access Azure EventHubs.
 
+%description docker
+Provides imdocker is an input module for rsyslog that allows the collection of
+Docker container logs directly from the Docker logging API. It provides seamless
+integration between rsyslog and Docker, enabling centralized logging of container output.
+
 %if %{?rhel} <= 8
 %description ksi-ls12
 The KSI-LS12 signature plugin provides access to the Keyless Signature Infrastructure 
@@ -579,6 +589,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-kafka-static \
 	--enable-omdtls \
 	--enable-imdtls \
+	--enable-imdocker \
 %if %{?rhel} <= 8
 	--enable-ksi-ls12 \
 %endif
@@ -831,6 +842,10 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omazureeventhubs.so
 
+%files docker
+%defattr(-,root,root)
+%{_libdir}/rsyslog/imdocker.so
+
 %if %{?rhel} <= 8
 %files ksi-ls12
 %defattr(-,root,root)
@@ -863,7 +878,10 @@ done
 
 
 %changelog
-* Tue May 20 2025 Andre Lorbach- 8.2504.0-2
+* Tue May 27 2025 Andre Lorbach - 8.2504.0-3
+- Added package definition for omazureeventhubs.
+
+* Tue May 20 2025 Andre Lorbach - 8.2504.0-2
 - Add dtls package definition (omdtls and imdtls)
 
 * Tue Apr 29 2025 Florian Riedl - 8.2504.0-1
