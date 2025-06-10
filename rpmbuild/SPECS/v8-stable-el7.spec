@@ -249,12 +249,14 @@ BuildRequires: adisconbuild-librdkafka-devel > 0.11.6
 BuildRequires: lz4-devel
 BuildRequires: cyrus-sasl-devel
 
+%if %{?rhel} >= 8
 %package dtls
 Summary: DTLS protocol support for rsyslog (imdtls and omdtls)
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: openssl-devel
 BuildRequires: libgcrypt-devel
+%endif
 
 %package omazureeventhubs
 Summary: omazureeventhubs output support
@@ -426,6 +428,7 @@ containing both Producer and Consumer support. It was designed with message deli
 reliability and high performance in mind, current figures exceed 800000 msgs/second 
 for the producer and 3 million msgs/second for the consumer.
 
+%if %{?rhel} >= 8
 %description dtls
 Includes omdtls and imdtls modules which provide secure logging over
 Datagram Transport Layer Security (DTLS).
@@ -433,6 +436,7 @@ omdtls allows rsyslog to send encrypted syslog messages over UDP.
 imdtls enables receiving encrypted messages from remote sources.
 Both modules support high-performance, reliable, and secure log transmission,
 ensuring confidentiality and integrity in UDP-based environments.
+%endif
 
 %description omazureeventhubs
 omazureeventhubs is using the Apache qpid proton C library implementation of the
@@ -587,8 +591,10 @@ export HIREDIS_LIBS=-L%{_libdir}
         --enable-omkafka \
 	--enable-imkafka \
 	--enable-kafka-static \
+%if %{?rhel} >= 8
 	--enable-omdtls \
 	--enable-imdtls \
+%endif
 	--enable-imdocker \
 %if %{?rhel} <= 8
 	--enable-ksi-ls12 \
@@ -833,10 +839,12 @@ done
 %{_libdir}/rsyslog/omkafka.so
 %{_libdir}/rsyslog/imkafka.so
 
+%if %{?rhel} >= 8
 %files dtls
 %defattr(-,root,root)
 %{_libdir}/rsyslog/imdtls.so
 %{_libdir}/rsyslog/omdtls.so
+%endif
 
 %files omazureeventhubs
 %defattr(-,root,root)
