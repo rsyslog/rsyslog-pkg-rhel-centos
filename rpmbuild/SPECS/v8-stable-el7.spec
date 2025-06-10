@@ -14,8 +14,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2504.0
-Release: 3%{?dist}
+Version: 8.2506.0
+Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -878,6 +878,9 @@ done
 
 
 %changelog
+* Tue Jun 10 2025 Florian Riedl - 8.2506.0-1
+- Release build for 8.2506.0
+
 * Tue May 27 2025 Andre Lorbach - 8.2504.0-3
 - Added package definition for omazureeventhubs.
 
