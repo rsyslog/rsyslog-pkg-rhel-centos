@@ -20,11 +20,10 @@ License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
 Source0: http://www.rsyslog.com/files/download/rsyslog/%{name}-%{version}.tar.gz
-Source1: http://www.rsyslog.com/files/download/rsyslog/%{name}-doc-%{version}.tar.gz
-Source2: rsyslog.conf
-Source3: rsyslog.sysconfig
-Source4: rsyslog.log
-Source5: rsyslog.service
+Source1: rsyslog.conf
+Source2: rsyslog.sysconfig
+Source3: rsyslog.log
+Source4: rsyslog.service
 
 BuildRequires: make
 BuildRequires: gcc
@@ -472,11 +471,9 @@ This module provides support for storing information about IP addresses in a hig
 This parser normalizes messages with the specified rules and populates the properties for further use.
 
 %prep
-# set up rsyslog-doc sources
-%setup -q -a 1 -T -c
 #%patch0 -p1
-rm -r LICENSE README.md source build/objects.inv
-mv build doc
+# Only build files for doc package
+# mv doc/build doc
 
 %if 0%{?rhel} < 8
 # build cmake 3.16 on RHEL7!
@@ -617,9 +614,18 @@ export HIREDIS_LIBS=-L%{_libdir}
 make -j8
 
 %install
+
+# --- DEBUG List all files in build directory to see what's available
+echo "=== DEBUG Listing build directory contents ==="
+ls -al
+ls -al doc/
+ls -al doc/build/html/
+echo "=== DEBUG End of build directory listing ==="
+# ---
+
 make -j8 DESTDIR=%{buildroot} install
 
-install -D -m 644 %{SOURCE5} %{buildroot}%{_unitdir}/rsyslog.service
+install -D -m 644 %{SOURCE4} %{buildroot}%{_unitdir}/rsyslog.service
 
 install -d -m 755 %{buildroot}%{_sysconfdir}/sysconfig
 install -d -m 755 %{buildroot}%{_sysconfdir}/logrotate.d
@@ -628,18 +634,18 @@ install -d -m 700 %{buildroot}%{rsyslog_statedir}
 install -d -m 700 %{buildroot}%{rsyslog_pkidir}
 install -d -m 755 %{buildroot}%{rsyslog_docdir}/html
 
-install -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/rsyslog.conf
-install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/sysconfig/rsyslog
+install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rsyslog.conf
+install -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/sysconfig/rsyslog
 %if %{?rhel} > 8
-install -p -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/logrotate.d/rsyslog
+install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/logrotate.d/rsyslog
 %else
-install -p -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/logrotate.d/syslog
+install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/logrotate.d/syslog
 %endif
 
 install -p -m 644 plugins/ommysql/createDB.sql %{buildroot}%{rsyslog_docdir}/mysql-createDB.sql
 install -p -m 644 plugins/ompgsql/createDB.sql %{buildroot}%{rsyslog_docdir}/pgsql-createDB.sql
 # extract documentation
-cp -r doc/* %{buildroot}%{rsyslog_docdir}/html
+cp -r doc/build/html/* %{buildroot}%{rsyslog_docdir}/html
 # get rid of libtool libraries
 rm -f %{buildroot}%{_libdir}/rsyslog/*.la
 
