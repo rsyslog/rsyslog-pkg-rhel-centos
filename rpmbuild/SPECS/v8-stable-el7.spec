@@ -619,7 +619,6 @@ make -j8
 echo "=== DEBUG Listing build directory contents ==="
 ls -al
 ls -al doc/
-ls -al doc/build/html/
 echo "=== DEBUG End of build directory listing ==="
 # ---
 
@@ -645,7 +644,7 @@ install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/logrotate.d/syslog
 install -p -m 644 plugins/ommysql/createDB.sql %{buildroot}%{rsyslog_docdir}/mysql-createDB.sql
 install -p -m 644 plugins/ompgsql/createDB.sql %{buildroot}%{rsyslog_docdir}/pgsql-createDB.sql
 # extract documentation
-cp -r doc/build/html/* %{buildroot}%{rsyslog_docdir}/html
+cp -r doc/* %{buildroot}%{rsyslog_docdir}/html
 # get rid of libtool libraries
 rm -f %{buildroot}%{_libdir}/rsyslog/*.la
 
