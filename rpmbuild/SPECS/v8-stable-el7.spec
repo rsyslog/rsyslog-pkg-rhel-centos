@@ -40,8 +40,10 @@ BuildRequires: libuuid-devel
 BuildRequires: pkgconfig
 %if %{?rhel} >= 8
 BuildRequires: python3-docutils
+BuildRequires: python3-pip
 %else
 BuildRequires: python-docutils
+BuildRequires: python-pip
 %endif
 # it depens on rhbz#1419228
 BuildRequires: systemd-devel >= 219-39
@@ -471,9 +473,7 @@ This module provides support for storing information about IP addresses in a hig
 This parser normalizes messages with the specified rules and populates the properties for further use.
 
 %prep
-#%patch0 -p1
-# Only build files for doc package
-# mv doc/build doc
+# %patch0 -p1
 
 %if 0%{?rhel} < 8
 # build cmake 3.16 on RHEL7!
@@ -509,8 +509,38 @@ make -j8 install
 # set up rsyslog sources
 %setup -q -D
 #%patch0 -p1
-
 autoreconf 
+# --- rsyslog Documentation Build Script
+set -x  # Enable verbose output to see all commands
+
+# Step 0: Prepare, move doc to _doc
+echo "Step 0: ls -al ./"
+ls -al ./ 2>&1 | tee /dev/stderr
+mv doc _doc
+cd _doc
+
+echo "Step 1: Installing pip requirements..."
+pip3 install -r requirements.txt 2>&1
+
+# Step 2: Build Sphinx documentation
+echo "Step 2: Building Sphinx documentation..."
+make html 2>&1
+echo "✓ Sphinx documentation built"
+
+# Step 3: List build directory contents
+echo "Step 3: Listing build directory contents..."
+ls -al 2>&1
+echo "✓ Directory contents listed"
+
+# Step 4: Copy to doc
+echo "Step 4: Move build html files doc"
+cd ..
+mv _doc/build/html doc
+
+# Step 5: Cleanup doc buildfiles
+# rm -rf %{buildroot}/_doc
+# ---
+
 
 %build
 chmod +x /usr/bin/*
