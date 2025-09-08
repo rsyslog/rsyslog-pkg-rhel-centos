@@ -519,12 +519,14 @@ ls -al ./ 2>&1 | tee /dev/stderr
 mv doc _doc
 cd _doc
 
-echo "Step 1: Installing pip requirements..."
+echo "Step 1: Installing sphinx via pip..."
+pip3 install -U sphinx
+echo "Step 1.1: Installing pip requirements..."
 pip3 install -r requirements.txt 2>&1
 
 # Step 2: Build Sphinx documentation
 echo "Step 2: Building Sphinx documentation..."
-make html 2>&1
+sphinx-build -b html source build 2>&1
 echo "✓ Sphinx documentation built"
 
 # Step 3: List build directory contents
