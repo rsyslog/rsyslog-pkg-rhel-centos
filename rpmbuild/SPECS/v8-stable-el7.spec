@@ -532,12 +532,13 @@ echo "✓ Sphinx documentation built"
 # Step 3: List build directory contents
 echo "Step 3: Listing build directory contents..."
 ls -al 2>&1
+ls -al build 2>&1
 echo "✓ Directory contents listed"
 
 # Step 4: Copy to doc
 echo "Step 4: Move build html files doc"
 cd ..
-mv _doc/build/html doc
+mv _doc/build doc
 
 # Step 5: Cleanup doc buildfiles
 # rm -rf %{buildroot}/_doc
