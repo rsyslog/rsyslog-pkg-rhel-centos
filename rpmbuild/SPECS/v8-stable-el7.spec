@@ -756,12 +756,12 @@ done
 %{_libdir}/rsyslog/pmaixforwardedfrom.so
 %{_libdir}/rsyslog/pmcisconames.so
 %{_libdir}/rsyslog/pmlastmsg.so
-#%{_libdir}/rsyslog/pmrfc3164sd.so
 %{_libdir}/rsyslog/pmsnare.so
 %{_libdir}/rsyslog/lmcry_gcry.so
 %{_libdir}/rsyslog/mmpstrucdata.so
 %{_libdir}/rsyslog/mmsequence.so
 %{_libdir}/rsyslog/pmnull.so
+%{_libdir}/rsyslog/mmleefparse.so
 
 %if %{?rhel} > 8
 %files logrotate
