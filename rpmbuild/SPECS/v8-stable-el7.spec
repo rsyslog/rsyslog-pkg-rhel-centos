@@ -250,6 +250,11 @@ BuildRequires: adisconbuild-librdkafka-devel > 0.11.6
 BuildRequires: lz4-devel
 BuildRequires: cyrus-sasl-devel
 
+%package mmsnarewinsec
+Summary: NXLog Snare Windows Security event parser support
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 %if %{?rhel} >= 8
 %package dtls
 Summary: DTLS protocol support for rsyslog (imdtls and omdtls)
@@ -428,6 +433,12 @@ Includes omkafka and imkafka modules using librdkafka implementation of the Kafk
 containing both Producer and Consumer support. It was designed with message delivery 
 reliability and high performance in mind, current figures exceed 800000 msgs/second 
 for the producer and 3 million msgs/second for the consumer.
+
+%description mmsnarewinsec
+The mmsnarewinsec module parses NXLog Snare-formatted Windows Security events
+that are embedded in RFC3164/RFC5424 syslog envelopes or delivered as JSON
+payloads. Incoming events are normalized and attached to the rsyslog message
+as a JSON representation that mirrors the structure documented by NXLog and Snare.
 
 %if %{?rhel} >= 8
 %description dtls
@@ -640,6 +651,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-mmdblookup \
 	--enable-pmnormalize \
 	--enable-omazureeventhubs \
+	--enable-mmsnarewinsec \
 	--enable-qpidproton-static \
 	--enable-debug-symbols
 #	--enable-pmrfc3164sd \
@@ -877,6 +889,10 @@ done
 %{_libdir}/rsyslog/omkafka.so
 %{_libdir}/rsyslog/imkafka.so
 
+%files mmsnarewinsec
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmsnarewinsec.so
+
 %if %{?rhel} >= 8
 %files dtls
 %defattr(-,root,root)
@@ -924,6 +940,9 @@ done
 
 
 %changelog
+* Wed Oct 01 2025 Andre Lorbach - 8.2506.0-2
+- Added package definition for mmmsnarewinsec.
+
 * Tue Jun 10 2025 Florian Riedl - 8.2506.0-1
 - Release build for 8.2506.0
 
