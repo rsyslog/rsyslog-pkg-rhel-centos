@@ -652,6 +652,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-pmnormalize \
 	--enable-omazureeventhubs \
 	--enable-mmsnareparse \
+	--enable-mmjsontransform \
 	--enable-qpidproton-static \
 	--enable-debug-symbols
 #	--enable-pmrfc3164sd \
@@ -774,6 +775,7 @@ done
 %{_libdir}/rsyslog/mmsequence.so
 %{_libdir}/rsyslog/pmnull.so
 %{_libdir}/rsyslog/mmleefparse.so
+%{_libdir}/rsyslog/mmjsontransform.so
 
 %if %{?rhel} > 8
 %files logrotate
@@ -940,6 +942,9 @@ done
 
 
 %changelog
+* Wed Oct 08 2025 Andre Lorbach - 8.2506.0-3
+- Added module mmjsontransform to base package.
+
 * Wed Oct 01 2025 Andre Lorbach - 8.2506.0-2
 - Added package definition for mmsnareparse.
 
