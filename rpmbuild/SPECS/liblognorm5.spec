@@ -1,5 +1,5 @@
 Name:		liblognorm5
-Version:	2.0.6
+Version:	2.0.8
 Release:	1%{?dist}
 Provides:	liblognorm5 = %{version}-%{release}
 Obsoletes:	liblognorm <= 2.0.3
@@ -96,6 +96,12 @@ fi
 
 
 %changelog
+* Thu Dec 04 2025 Florian Riedl
+- Build for release 2.0.8
+
+* Tue Oct 14 2025 Florian Riedl
+- Build for release 2.0.7
+
 * Wed Nov 07 2018 Florian Riedl
 - Build for release 2.0.6
 
