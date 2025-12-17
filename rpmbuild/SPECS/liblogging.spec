@@ -1,5 +1,5 @@
 Name:		liblogging
-Version:	1.0.6
+Version:	1.0.8
 Release:	1%{?dist}
 Summary:	LibLogging stdlog library
 License:	2-clause BSD
@@ -62,6 +62,9 @@ fi
 
 
 %changelog
+* Wed Dec 17 2025 Florian Riedl
+- New RPMs for 1.0.8
+
 * Mon Mar 06 2017 Florian Riedl
 - New RPMs for 1.0.6
 
