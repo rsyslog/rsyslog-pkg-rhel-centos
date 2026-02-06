@@ -1,0 +1,90 @@
+# Copyright 2020 Rainer Gerhards and Others
+#
+# https://github.com/rsyslog/rsyslog-pkg-ubuntu
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# CI: test build (no publish). Builds RPMs with mock and uploads them as artifacts.
+
+name: CI PR runner
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  RPM_SPEC: v8-stable-el7
+  MOCK_CONFIG: epel-8-x86_64
+
+jobs:
+  testbuild:
+    name: Test build (mock)
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU (for multi-arch if needed)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Run mock test build
+        run: |
+          mkdir -p build-result
+          docker run --rm --privileged \
+            -v "${{ github.workspace }}:/workspace:ro" \
+            -v "${{ github.workspace }}/build-result:/result" \
+            -w /build \
+            quay.io/rockylinux/rockylinux:8 \
+            bash -ex - '
+              set -e
+              dnf install -y mock dnf-utils
+              cp -v /workspace/etc-mock/*.cfg /etc/mock/ 2>/dev/null || true
+              MOCK_CONFIG="'"${{ env.MOCK_CONFIG }}"'"
+              SPEC="'"${{ env.RPM_SPEC }}"'"
+              echo "Using mock config: $MOCK_CONFIG, spec: $SPEC"
+              mock -r "$MOCK_CONFIG" --buildsrpm \
+                --spec "/workspace/rpmbuild/SPECS/${SPEC}.spec" \
+                --sources /workspace/rpmbuild/SOURCES \
+                --resultdir /build/srpm
+              SRPM=$(ls /build/srpm/*.src.rpm)
+              mock -r "$MOCK_CONFIG" "$SRPM" --resultdir /build/rpms
+              echo "Build succeeded. Copying RPMs to result dir for artifacts."
+              cp -v /build/srpm/*.rpm /result/ 2>/dev/null || true
+              cp -v /build/rpms/*.rpm /result/
+            '
+
+      - name: Upload RPM artifacts (test build only, not published)
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpms-${{ env.MOCK_CONFIG }}
+          path: build-result/
+          if-no-files-found: error
+
+  # Optional: simple validation job that only checks the repo and spec exist (fast)
+  validate:
+    name: Validate repo
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check spec and sources
+        run: |
+          test -f rpmbuild/SPECS/v8-stable-el7.spec
+          test -d rpmbuild/SOURCES
+          echo "Repo layout OK"
+          grep -q "BuildRequires:" rpmbuild/SPECS/v8-stable-el7.spec
+          echo "Spec looks valid"
