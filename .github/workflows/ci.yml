@@ -32,40 +32,54 @@ jobs:
   testbuild:
     name: Test build (mock)
     runs-on: ubuntu-22.04
-    timeout-minutes: 90
+    timeout-minutes: 120
+    container:
+      image: quay.io/rockylinux/rockylinux:8
+      options: --privileged
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up QEMU (for multi-arch if needed)
-        uses: docker/setup-qemu-action@v3
-
       - name: Run mock test build
+        env:
+          MOCK_CONFIG: ${{ env.MOCK_CONFIG }}
+          RPM_SPEC: ${{ env.RPM_SPEC }}
         run: |
-          mkdir -p build-result
-          docker run --rm --privileged \
-            -v "${{ github.workspace }}:/workspace:ro" \
-            -v "${{ github.workspace }}/build-result:/result" \
-            -w /build \
-            quay.io/rockylinux/rockylinux:8 \
-            bash -ex - '
-              set -e
-              dnf install -y mock dnf-utils
-              cp -v /workspace/etc-mock/*.cfg /etc/mock/ 2>/dev/null || true
-              MOCK_CONFIG="'"${{ env.MOCK_CONFIG }}"'"
-              SPEC="'"${{ env.RPM_SPEC }}"'"
-              echo "Using mock config: $MOCK_CONFIG, spec: $SPEC"
-              mock -r "$MOCK_CONFIG" --buildsrpm \
-                --spec "/workspace/rpmbuild/SPECS/${SPEC}.spec" \
-                --sources /workspace/rpmbuild/SOURCES \
-                --resultdir /build/srpm
-              SRPM=$(ls /build/srpm/*.src.rpm)
-              mock -r "$MOCK_CONFIG" "$SRPM" --resultdir /build/rpms
-              echo "Build succeeded. Copying RPMs to result dir for artifacts."
-              cp -v /build/srpm/*.rpm /result/ 2>/dev/null || true
-              cp -v /build/rpms/*.rpm /result/
-            '
+          set -e
+          # Heartbeat so the job shows progress (spec %prep can take 30+ min)
+          heartbeat() { while true; do sleep 120; echo "[$(date -u +%H:%M:%S)] CI still building (mock chroot/build in progress)..."; done; }
+          heartbeat &
+          HEARTBEAT_PID=$!
+          trap "kill $HEARTBEAT_PID 2>/dev/null || true" EXIT
+          echo "== Step 1: EPEL and mock =="
+          dnf install -y epel-release
+          dnf install -y mock dnf-utils
+          echo "== Step 2: Mock configs and dirs =="
+          cp -v etc-mock/*.cfg /etc/mock/ || true
+          mkdir -p build-result /var/lib/mock
+          echo "== Step 3: mock --buildsrpm (can take 20-40 min: chroot init + cmake/qpid-proton/docs) =="
+          if ! mock -r "$MOCK_CONFIG" --verbose --buildsrpm \
+            --spec "rpmbuild/SPECS/${RPM_SPEC}.spec" \
+            --sources rpmbuild/SOURCES \
+            --resultdir build-result/srpm; then
+            echo "=== mock --buildsrpm FAILED, logs ==="
+            tail -300 build-result/srpm/*.log 2>/dev/null || true
+            find /var/lib/mock -name "*.log" -exec tail -200 {} \; 2>/dev/null || true
+            exit 1
+          fi
+          echo "== Step 4: mock build from SRPM =="
+          SRPM=$(ls build-result/srpm/*.src.rpm)
+          if ! mock -r "$MOCK_CONFIG" --verbose "$SRPM" --resultdir build-result/rpms; then
+            echo "=== mock build FAILED, logs ==="
+            tail -300 build-result/rpms/*.log 2>/dev/null || true
+            find /var/lib/mock -name "*.log" -exec tail -200 {} \; 2>/dev/null || true
+            exit 1
+          fi
+          echo "== Step 5: collect artifacts =="
+          cp -v build-result/srpm/*.rpm build-result/ 2>/dev/null || true
+          cp -v build-result/rpms/*.rpm build-result/
+          ls -la build-result/
 
       - name: Upload RPM artifacts (test build only, not published)
         uses: actions/upload-artifact@v4
