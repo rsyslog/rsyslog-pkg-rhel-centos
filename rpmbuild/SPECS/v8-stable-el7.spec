@@ -48,6 +48,11 @@ BuildRequires: python-pip
 # it depens on rhbz#1419228
 BuildRequires: systemd-devel >= 219-39
 BuildRequires: zlib-devel
+# libyaml, protobuf-c, snappy (module/build deps)
+BuildRequires: libyaml-devel
+BuildRequires: protobuf-c-devel
+BuildRequires: snappy-devel
+BuildRequires: protobuf-c
 %if 0%{?rhel} >= 8
 BuildRequires: libzstd-devel
 %endif
