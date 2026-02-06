@@ -950,7 +950,7 @@ done
 * Tue Dec 09 2025 Florian Riedl - 8.2512.0-1
 - Release build for 8.2512.0
 
-* Tue Oct 10 2025 Florian Riedl - 8.2510.0-1
+* Fri Oct 10 2025 Florian Riedl - 8.2510.0-1
 - Release build for 8.2510.0
 
 * Wed Oct 08 2025 Andre Lorbach - 8.2506.0-3
