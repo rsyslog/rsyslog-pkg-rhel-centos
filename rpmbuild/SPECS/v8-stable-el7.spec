@@ -14,7 +14,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2506.0
+Version: 8.2512.0
 Release: 1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
@@ -942,11 +942,20 @@ done
 
 
 %changelog
+* Tue Dec 09 2025 Florian Riedl - 8.2512.0-1
+- Release build for 8.2512.0
+
+* Tue Oct 10 2025 Florian Riedl - 8.2510.0-1
+- Release build for 8.2510.0
+
 * Wed Oct 08 2025 Andre Lorbach - 8.2506.0-3
 - Added module mmjsontransform to base package.
 
 * Wed Oct 01 2025 Andre Lorbach - 8.2506.0-2
 - Added package definition for mmsnareparse.
+
+* Mon Sep 01 2025 Florian Riedl - 8.2508.0-1
+- Release build for 8.2508.0
 
 * Tue Jun 10 2025 Florian Riedl - 8.2506.0-1
 - Release build for 8.2506.0
