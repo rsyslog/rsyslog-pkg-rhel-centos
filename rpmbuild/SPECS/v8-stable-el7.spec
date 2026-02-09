@@ -16,6 +16,11 @@ Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2512.0
 Release: 1%{?dist}
+# impstats-push and liboverride_*.so available from 8.2602.0 (numeric 0/1 for %if)
+%global have_impstats_push_and_liboverride 0
+%if 0%{?rhel} >= 8
+%global have_impstats_push_and_liboverride %{lua: if rpm.vercmp(rpm.expand("%{version}"), "8.2602.0") >= 0 then io.write("1") else io.write("0") end}
+%endif
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -527,37 +532,29 @@ make -j8 install
 #%patch0 -p1
 autoreconf 
 # --- rsyslog Documentation Build Script
+# Build Sphinx docs inside doc/ so doc/Makefile.in stays for configure (required
+# since rsyslog commit f6ace27: doc is in AC_CONFIG_FILES / SUBDIRS).
 set -x  # Enable verbose output to see all commands
 
-# Step 0: Prepare, move doc to _doc
 echo "Step 0: ls -al ./"
 ls -al ./ 2>&1 | tee /dev/stderr
-mv doc _doc
-cd _doc
 
 echo "Step 1: Installing sphinx via pip..."
-pip3 install -U sphinx
-echo "Step 1.1: Installing pip requirements..."
+pip3 install -U sphinx 2>&1
+echo "Step 1.1: Installing pip requirements in doc/..."
+cd doc
 pip3 install -r requirements.txt 2>&1
 
-# Step 2: Build Sphinx documentation
-echo "Step 2: Building Sphinx documentation..."
-sphinx-build -b html source build 2>&1
+echo "Step 2: Building Sphinx documentation (output in doc/build)..."
+num_cpus=$(nproc)
+sphinx-build -j$num_cpus -b html source build 2>&1
 echo "✓ Sphinx documentation built"
 
-# Step 3: List build directory contents
-echo "Step 3: Listing build directory contents..."
+echo "Step 3: Listing doc directory contents..."
 ls -al 2>&1
 ls -al build 2>&1
 echo "✓ Directory contents listed"
-
-# Step 4: Copy to doc
-echo "Step 4: Move build html files doc"
 cd ..
-mv _doc/build doc
-
-# Step 5: Cleanup doc buildfiles
-# rm -rf %{buildroot}/_doc
 # ---
 
 
@@ -596,6 +593,9 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-imjournal \
 	--enable-improg \
 	--enable-impstats \
+%if 0%{have_impstats_push_and_liboverride}
+	--enable-impstats-push \
+%endif
 	--enable-imptcp \
 %if %{?rhel} < 8
 	--enable-libdbi \
@@ -694,8 +694,8 @@ install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/logrotate.d/syslog
 
 install -p -m 644 plugins/ommysql/createDB.sql %{buildroot}%{rsyslog_docdir}/mysql-createDB.sql
 install -p -m 644 plugins/ompgsql/createDB.sql %{buildroot}%{rsyslog_docdir}/pgsql-createDB.sql
-# extract documentation
-cp -r doc/* %{buildroot}%{rsyslog_docdir}/html
+# extract documentation (Sphinx output is in doc/build/ when built in-tree)
+cp -r doc/build/* %{buildroot}%{rsyslog_docdir}/html
 # get rid of libtool libraries
 rm -f %{buildroot}%{_libdir}/rsyslog/*.la
 
@@ -759,6 +759,11 @@ done
 %{_libdir}/rsyslog/lmzlibw.so
 %if 0%{?rhel} >= 8
 %{_libdir}/rsyslog/lmzstdw.so
+%endif
+%if 0%{have_impstats_push_and_liboverride}
+%{_libdir}/rsyslog/liboverride_getaddrinfo.so
+%{_libdir}/rsyslog/liboverride_gethostname.so
+%{_libdir}/rsyslog/liboverride_gethostname_nonfqdn.so
 %endif
 %{_libdir}/rsyslog/mmanon.so
 %{_libdir}/rsyslog/mmcount.so
