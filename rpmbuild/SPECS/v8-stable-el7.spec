@@ -16,11 +16,8 @@ Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2512.0
 Release: 1%{?dist}
-# impstats-push and liboverride_*.so available from 8.2602.0 (numeric 0/1 for %if)
-%global have_impstats_push_and_liboverride 0
-%if 0%{?rhel} >= 8
-%global have_impstats_push_and_liboverride %{lua: if rpm.vercmp(rpm.expand("%{version}"), "8.2602.0") >= 0 then io.write("1") else io.write("0") end}
-%endif
+# Build-time generated file list for optional liboverride_*.so modules.
+%global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -48,7 +45,9 @@ BuildRequires: python3-docutils
 BuildRequires: python3-pip
 %else
 BuildRequires: python-docutils
+%if 0%{?rhel} != 7
 BuildRequires: python-pip
+%endif
 %endif
 # it depens on rhbz#1419228
 BuildRequires: systemd-devel >= 219-39
@@ -514,7 +513,8 @@ cd qpid-proton-0.35.0/
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_STATIC_LIBS=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_BINDINGS=OFF
-make -j8 install
+# Avoid intermittent generated-header race seen with parallel build.
+make -j1 install
 %else
 # build qpid-proton 0.38 for RHEL 9+
 wget https://github.com/apache/qpid-proton/archive/refs/tags/0.38.0.tar.gz
@@ -523,7 +523,8 @@ cd qpid-proton-0.38.0/
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_STATIC_LIBS=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_BINDINGS=OFF
-make -j8 install
+# Avoid intermittent generated-header race seen on EL9/EPEL9 with parallel build.
+make -j1 install
 %endif
 
 
@@ -539,6 +540,7 @@ set -x  # Enable verbose output to see all commands
 echo "Step 0: ls -al ./"
 ls -al ./ 2>&1 | tee /dev/stderr
 
+%if 0%{?rhel} != 7
 echo "Step 1: Installing sphinx via pip..."
 pip3 install -U sphinx 2>&1
 echo "Step 1.1: Installing pip requirements in doc/..."
@@ -555,6 +557,9 @@ ls -al 2>&1
 ls -al build 2>&1
 echo "✓ Directory contents listed"
 cd ..
+%else
+echo "Skipping Sphinx documentation build on RHEL 7 (no python-pip in buildroot)"
+%endif
 # ---
 
 
@@ -593,7 +598,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-imjournal \
 	--enable-improg \
 	--enable-impstats \
-%if 0%{have_impstats_push_and_liboverride}
+%if 0%{?rhel} >= 8
 	--enable-impstats-push \
 %endif
 	--enable-imptcp \
@@ -695,7 +700,25 @@ install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/logrotate.d/syslog
 install -p -m 644 plugins/ommysql/createDB.sql %{buildroot}%{rsyslog_docdir}/mysql-createDB.sql
 install -p -m 644 plugins/ompgsql/createDB.sql %{buildroot}%{rsyslog_docdir}/pgsql-createDB.sql
 # extract documentation (Sphinx output is in doc/build/ when built in-tree)
+%if 0%{?rhel} != 7
 cp -r doc/build/* %{buildroot}%{rsyslog_docdir}/html
+%endif
+
+# Generate file list for optional liboverride modules.
+# Older sources may not build these files; newer ones do.
+# Keep file non-empty for older sources where no liboverride modules exist.
+# rpmbuild errors out on an empty %files -f input file.
+echo "%%exclude %{_libdir}/rsyslog/__liboverride_filelist_placeholder__.so" > %{liboverride_filelist}
+for so in \
+  liboverride_getaddrinfo.so \
+  liboverride_gethostname.so \
+  liboverride_gethostname_nonfqdn.so
+do
+  if [ -f %{buildroot}%{_libdir}/rsyslog/$so ]; then
+    echo %{_libdir}/rsyslog/$so >> %{liboverride_filelist}
+  fi
+done
+
 # get rid of libtool libraries
 rm -f %{buildroot}%{_libdir}/rsyslog/*.la
 
@@ -716,7 +739,7 @@ done
 %postun
 %systemd_postun_with_restart rsyslog.service
 
-%files
+%files -f %{liboverride_filelist}
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING* ChangeLog
 %exclude %{rsyslog_docdir}/html
@@ -759,11 +782,6 @@ done
 %{_libdir}/rsyslog/lmzlibw.so
 %if 0%{?rhel} >= 8
 %{_libdir}/rsyslog/lmzstdw.so
-%endif
-%if 0%{have_impstats_push_and_liboverride}
-%{_libdir}/rsyslog/liboverride_getaddrinfo.so
-%{_libdir}/rsyslog/liboverride_gethostname.so
-%{_libdir}/rsyslog/liboverride_gethostname_nonfqdn.so
 %endif
 %{_libdir}/rsyslog/mmanon.so
 %{_libdir}/rsyslog/mmcount.so
