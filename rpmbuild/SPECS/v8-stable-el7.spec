@@ -55,6 +55,7 @@ BuildRequires: zlib-devel
 # libyaml, protobuf-c, snappy (module/build deps)
 BuildRequires: libyaml-devel
 BuildRequires: protobuf-c-devel
+BuildRequires: protobuf-c-compiler
 BuildRequires: snappy-devel
 BuildRequires: protobuf-c
 %if 0%{?rhel} >= 8
