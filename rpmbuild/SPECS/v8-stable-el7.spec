@@ -43,10 +43,14 @@ BuildRequires: pkgconfig
 %if %{?rhel} >= 8
 BuildRequires: python3-docutils
 BuildRequires: python3-pip
+# Pillow (rst2pdf/doc deps) build requirements
+BuildRequires: libjpeg-turbo-devel
 %else
 BuildRequires: python-docutils
 %if 0%{?rhel} != 7
 BuildRequires: python-pip
+# Pillow (rst2pdf/doc deps) build requirements
+BuildRequires: libjpeg-turbo-devel
 %endif
 %endif
 # it depens on rhbz#1419228
