@@ -325,6 +325,33 @@ and can be used as a drop-in replacement. Rsyslog is simple to set up, with
 advanced features suitable for enterprise-class, encryption-protected syslog
 relay chains.
 
+This base package includes the following plugins and modules:
+
+Input modules: imdiag (diagnostics/testing), imfile (file monitoring),
+imjournal (systemd journal), imklog (kernel log), immark (mark messages),
+improg (external program input), impstats (periodic statistics), imptcp
+(high-performance plain TCP), imtcp (TCP), imudp (UDP), imuxsock (Unix
+socket).
+
+Output modules: omjournal (systemd journal), ommail (email), omprog
+(external program output), omruleset (ruleset forwarding), omstdout
+(standard output), omtesting (testing), omuxsock (Unix socket).
+
+Message modification modules: mmanon (IP address anonymization), mmcount
+(message counting), mmexternal (external modification), mmjsontransform
+(JSON transformation), mmleefparse (LEEF format parsing for IBM QRadar and
+SIEM solutions), mmpstrucdata (RFC 5424 structured data parsing), mmsequence
+(sequence numbering), mmutf8fix (UTF-8 correction).
+
+Parser modules: pmaixforwardedfrom (AIX forwarded-from format),
+pmcisconames (Cisco names format), pmlastmsg (last message repeated),
+pmnull (null/discard parser), pmsnare (Snare format).
+
+Library modules: lmcry_gcry (GnuTLS/gcrypt crypto), lmnet, lmnetstrms,
+lmnsd_ptcp (plain TCP network stream driver), lmregexp (regular expressions),
+lmtcpclt (TCP client), lmtcpsrv (TCP server), lmzlibw (zlib compression),
+lmzstdw (zstd compression, RHEL 8+).
+
 %if %{?rhel} > 8
 %description logrotate
 This subpackage contains the default logrotate configuration for rsyslog.
@@ -942,6 +969,9 @@ done
 
 
 %changelog
+* Wed Feb 25 2026 Andre Lorbach - 8.2512.0-2
+- Expanded main package description to list all included plugins and modules.
+
 * Tue Dec 09 2025 Florian Riedl - 8.2512.0-1
 - Release build for 8.2512.0
 
