@@ -41,6 +41,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Download rsyslog tarball if missing
+        run: |
+          SPEC=rpmbuild/SPECS/${{ env.RPM_SPEC }}.spec
+          VERSION=$(grep -E '^Version:' "$SPEC" | awk '{print $2}')
+          TARBALL=rpmbuild/SOURCES/rsyslog-${VERSION}.tar.gz
+          if [ ! -f "$TARBALL" ]; then
+            echo "Downloading rsyslog-${VERSION}.tar.gz"
+            curl -fsSL -o "$TARBALL" "https://www.rsyslog.com/files/download/rsyslog/rsyslog-${VERSION}.tar.gz" || exit 1
+            echo "Downloaded $TARBALL"
+          fi
+
       - name: Run mock test build
         env:
           MOCK_CONFIG: ${{ env.MOCK_CONFIG }}

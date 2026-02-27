@@ -14,7 +14,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2512.0
+Version: 8.2602.0
 Release: 1%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
@@ -576,6 +576,11 @@ ls -al ./ 2>&1 | tee /dev/stderr
 echo "Step 1: Installing sphinx via pip..."
 pip3 install -U sphinx 2>&1
 echo "Step 1.1: Installing pip requirements in doc/..."
+# Fix conf.py only if version is missing: add version from spec (v8-stable-el7.spec)
+# Do not use commented-out #version in conf.py - always use %{version}
+if ! grep -q '^version = ' doc/source/conf.py 2>/dev/null; then
+  sed -i "/^release = /i version = '%{version}'" doc/source/conf.py
+fi
 cd doc
 pip3 install -r requirements.txt 2>&1
 
@@ -1002,6 +1007,9 @@ done
 
 
 %changelog
+* Fri Feb 27 2026 Andre Lorbach - 8.2602.0-1
+- Release build for 8.2512.0
+
 * Wed Feb 25 2026 Andre Lorbach - 8.2512.0-2
 - Expanded main package description to list all included plugins and modules.
 
