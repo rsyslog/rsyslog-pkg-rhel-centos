@@ -69,6 +69,22 @@ else
         szSubRepo=$RPM_REPO
 fi
 
+# Ensure rsyslog source tarball exists - download if missing
+_spec_path="$szRpmBaseDir/SPECS/$szSpec.spec"
+_pkg_name=$(grep -E '^Name:' "$_spec_path" | awk '{print $2}')
+if [ "$_pkg_name" = "rsyslog" ]; then
+    _version=$(grep -E '^Version:' "$_spec_path" | awk '{print $2}')
+    _tarball="$szRpmBaseDir/SOURCES/rsyslog-${_version}.tar.gz"
+    if [ ! -f "$_tarball" ]; then
+        echo "Downloading rsyslog-${_version}.tar.gz (not found in SOURCES)"
+        wget -q -O "$_tarball" "https://www.rsyslog.com/files/download/rsyslog/rsyslog-${_version}.tar.gz" || {
+            echo "ERROR: Failed to download rsyslog-${_version}.tar.gz"
+            exit 1
+        }
+        echo "Downloaded $_tarball"
+    fi
+fi
+
 for distro in $szDist; do 
 	for arch in $szArch; do	
 		echo "Making Source RPM for $szSpec.spec in $distro-$arch"
