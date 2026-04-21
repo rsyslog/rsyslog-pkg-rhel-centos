@@ -14,7 +14,7 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2602.0
+Version: 8.2604.0
 Release: 1%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
@@ -1007,8 +1007,11 @@ done
 
 
 %changelog
+* Tue Apr 21 2026 Florian Riedl - 8.2604.0-1
+- Release build for 8.2604.0
+
 * Fri Feb 27 2026 Andre Lorbach - 8.2602.0-1
-- Release build for 8.2512.0
+- Release build for 8.2602.0
 
 * Wed Feb 25 2026 Andre Lorbach - 8.2512.0-2
 - Expanded main package description to list all included plugins and modules.
