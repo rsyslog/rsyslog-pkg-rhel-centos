@@ -15,7 +15,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2602.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 License: (GPLv3+ and ASL 2.0)
@@ -335,6 +335,12 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: liblognorm5-devel >= 2.0.6
 
+%package omotel
+Summary: omotel output module for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: libcurl-devel
+
 
 %description
 Rsyslog is an enhanced, multi-threaded syslog daemon. It supports MySQL,
@@ -535,6 +541,9 @@ This module provides support for storing information about IP addresses in a hig
 %description pmnormalize
 This parser normalizes messages with the specified rules and populates the properties for further use.
 
+%description omotel
+OTEL output module for sending syslog messages to OpenTelemetry endpoints.
+
 %prep
 # %patch0 -p1
 
@@ -713,6 +722,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-mmsnareparse \
 	--enable-mmjsontransform \
 	--enable-qpidproton-static \
+	--enable-omotel \
 	--enable-debug-symbols
 #	--enable-pmrfc3164sd \
 
@@ -1021,8 +1031,15 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/pmnormalize.so
 
+%files omotel
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omotel.so
+
 
 %changelog
+* Wed May 13 2026 Andre Lorbach - 8.2602.0-3
+- Added package definition for omotel (OpenTelemetry output module).
+
 * Mon May 11 2026 Andre Lorbach - 8.2602.0-2
 - Add rsyslog-imbeats subpackage (imbeats input module, Lumberjack v2).
 
