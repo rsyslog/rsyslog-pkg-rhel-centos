@@ -15,7 +15,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2602.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 License: (GPLv3+ and ASL 2.0)
@@ -30,6 +30,7 @@ Source4: rsyslog.service
 BuildRequires: make
 BuildRequires: gcc
 BuildRequires: autoconf
+BuildRequires: autoconf-archive
 BuildRequires: automake
 BuildRequires: bison
 BuildRequires: dos2unix
@@ -1037,6 +1038,9 @@ done
 
 
 %changelog
+* Wed Jun 24 2026 Andre Lorbach - 8.2602.0-5
+- Add BuildRequires autoconf-archive for daily snapshot autoreconf in mock.
+
 * Wed Jun 24 2026 Andre Lorbach - 8.2602.0-4
 - Install libyaml-devel on daily-build host before configure (upstream libyaml default-on).
 
