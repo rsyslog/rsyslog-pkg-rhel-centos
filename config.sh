@@ -10,3 +10,7 @@ szRpmBaseDir=$(dirname "$0")/rpmbuild
 szRpmBuildDir=$szRpmBaseDir/SRPMS
 szYumRepoDir=$(dirname "$0")/yumrepo
 szLocalUser=pkg
+
+if [ -x "${szBaseDir}/install-host-build-deps.sh" ]; then
+	"${szBaseDir}/install-host-build-deps.sh"
+fi
