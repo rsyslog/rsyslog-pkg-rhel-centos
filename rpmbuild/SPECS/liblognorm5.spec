@@ -69,7 +69,7 @@ V=1 make
 make install INSTALL="install -p" DESTDIR=%{buildroot}
 rm -f %{buildroot}/%{_libdir}/*.{a,la}
 chrpath -d %{buildroot}/%{_bindir}/lognormalizer
-chrpath -d %{buildroot}/%{_libdir}/liblognorm.so.5.1.0
+chrpath -d %{buildroot}/%{_libdir}/liblognorm.so.5.2.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -98,6 +98,7 @@ fi
 %changelog
 * Fri Jun 26 2026 Florian Riedl
 - Build for release 2.1.0
+- Updated chrpath target for liblognorm.so.5.2.0 soname bump
 
 * Tue Dec 16 2025 Florian Riedl
 - Build for release 2.0.9
