@@ -1,5 +1,5 @@
 Name:		liblognorm5
-Version:	2.0.7
+Version:	2.1.0
 Release:	1%{?dist}
 Provides:	liblognorm5 = %{version}-%{release}
 Obsoletes:	liblognorm <= 2.0.3
@@ -69,7 +69,7 @@ V=1 make
 make install INSTALL="install -p" DESTDIR=%{buildroot}
 rm -f %{buildroot}/%{_libdir}/*.{a,la}
 chrpath -d %{buildroot}/%{_bindir}/lognormalizer
-chrpath -d %{buildroot}/%{_libdir}/liblognorm.so.5.1.0
+chrpath -d %{buildroot}/%{_libdir}/liblognorm.so.5.2.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -96,6 +96,16 @@ fi
 
 
 %changelog
+* Fri Jun 26 2026 Florian Riedl
+- Build for release 2.1.0
+- Updated chrpath target for liblognorm.so.5.2.0 soname bump
+
+* Tue Dec 16 2025 Florian Riedl
+- Build for release 2.0.9
+
+* Thu Dec 04 2025 Florian Riedl
+- Build for release 2.0.8
+
 * Tue Oct 14 2025 Florian Riedl
 - Build for release 2.0.7
 
