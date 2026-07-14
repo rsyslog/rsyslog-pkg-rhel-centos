@@ -342,6 +342,17 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libcurl-devel
 
+%package omazuredce
+Summary: Azure Monitor Logs Ingestion output module for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: libcurl-devel
+
+%package omsendertrack
+Summary: Sender tracking output module for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+
 
 %description
 Rsyslog is an enhanced, multi-threaded syslog daemon. It supports MySQL,
@@ -545,6 +556,17 @@ This parser normalizes messages with the specified rules and populates the prope
 %description omotel
 OTEL output module for sending syslog messages to OpenTelemetry endpoints.
 
+%description omazuredce
+Azure Monitor Logs Ingestion output module for rsyslog. Batches JSON records
+and sends them to the Azure Monitor Logs Ingestion API via a Data Collection
+Endpoint (DCE), Data Collection Rule (DCR), and Microsoft Entra
+client-credentials authentication.
+
+%description omsendertrack
+Rsyslog output module for tracking message senders across all input sources.
+It records per-sender statistics such as hostname, message count, and last
+event time, and stores the data in a JSON-formatted state file.
+
 %prep
 # %patch0 -p1
 
@@ -724,6 +746,8 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-mmjsontransform \
 	--enable-qpidproton-static \
 	--enable-omotel \
+	--enable-omazuredce \
+	--enable-omsendertrack \
 	--enable-debug-symbols
 #	--enable-pmrfc3164sd \
 
@@ -1036,8 +1060,19 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omotel.so
 
+%files omazuredce
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omazuredce.so
+
+%files omsendertrack
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omsendertrack.so
+
 
 %changelog
+* Tue Jul 14 2026 Andre Lorbach - 8.2606.0-2
+- Added package definitions for omazuredce (Azure Monitor Logs Ingestion) and omsendertrack (sender tracking output module).
+
 * Thu Jun 25 2026 Florian Riedl - 8.2606.0-1
 - Release build for 8.2606.0
 
