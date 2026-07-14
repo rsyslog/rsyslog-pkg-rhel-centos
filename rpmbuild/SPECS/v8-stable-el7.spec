@@ -14,8 +14,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2602.0
-Release: 5%{?dist}
+Version: 8.2606.0
+Release: 1%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 License: (GPLv3+ and ASL 2.0)
@@ -1038,6 +1038,9 @@ done
 
 
 %changelog
+* Thu Jun 25 2026 Florian Riedl - 8.2606.0-1
+- Release build for 8.2606.0
+
 * Wed Jun 24 2026 Andre Lorbach - 8.2602.0-5
 - Add BuildRequires autoconf-archive for daily snapshot autoreconf in mock.
 
