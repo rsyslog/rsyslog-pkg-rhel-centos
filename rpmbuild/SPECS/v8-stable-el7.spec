@@ -15,7 +15,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2606.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 License: (GPLv3+ and ASL 2.0)
@@ -1070,6 +1070,9 @@ done
 
 
 %changelog
+* Thu Jul 14 2026 Florian Riedl - 8.2606.0-2
+- Rebuild for added package definitions of omazuredce and omsendertrack
+
 * Tue Jul 14 2026 Andre Lorbach - 8.2606.0-2
 - Added package definitions for omazuredce (Azure Monitor Logs Ingestion) and omsendertrack (sender tracking output module).
 
