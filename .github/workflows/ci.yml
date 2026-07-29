@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     https://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,15 +26,20 @@ on:
 
 env:
   RPM_SPEC: v8-stable-el7
-  MOCK_CONFIG: epel-8-x86_64
 
 jobs:
   testbuild:
-    name: Test build (mock)
+    name: Test build (mock ${{ matrix.mock_config }})
     runs-on: ubuntu-22.04
     timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        mock_config:
+          - epel-9-x86_64
+          - epel-10-x86_64
     container:
-      image: quay.io/rockylinux/rockylinux:8
+      image: quay.io/rockylinux/rockylinux:9
       options: --privileged
 
     steps:
@@ -62,7 +67,7 @@ jobs:
 
       - name: Run mock test build
         env:
-          MOCK_CONFIG: ${{ env.MOCK_CONFIG }}
+          MOCK_CONFIG: ${{ matrix.mock_config }}
           RPM_SPEC: ${{ env.RPM_SPEC }}
         run: |
           set -e
@@ -71,11 +76,18 @@ jobs:
           heartbeat &
           HEARTBEAT_PID=$!
           trap "kill $HEARTBEAT_PID 2>/dev/null || true" EXIT
+          echo "== Selected mock target: $MOCK_CONFIG =="
           echo "== Step 1: EPEL and mock =="
           dnf install -y epel-release
           dnf install -y mock dnf-utils
           echo "== Step 2: Mock configs and dirs =="
-          cp -v etc-mock/*.cfg /etc/mock/ || true
+          # Replace symlink targets with regular files so custom configs do not
+          # overwrite shared mock-core-configs aliases like centos-stream+epel-*.
+          for cfg in etc-mock/*.cfg; do
+            dest="/etc/mock/$(basename "$cfg")"
+            rm -f "$dest"
+            cp -v "$cfg" "$dest"
+          done
           mkdir -p build-result /var/lib/mock
           echo "== Step 3: mock --buildsrpm (can take 20-40 min: chroot init + cmake/qpid-proton/docs) =="
           if ! mock -r "$MOCK_CONFIG" --verbose --buildsrpm \
@@ -103,7 +115,7 @@ jobs:
       - name: Upload RPM artifacts (test build only, not published)
         uses: actions/upload-artifact@v4
         with:
-          name: rpms-${{ env.MOCK_CONFIG }}
+          name: rpms-${{ matrix.mock_config }}
           path: build-result/
           if-no-files-found: error
 
@@ -121,3 +133,8 @@ jobs:
           echo "Repo layout OK"
           grep -q "BuildRequires:" rpmbuild/SPECS/v8-stable-el7.spec
           echo "Spec looks valid"
+          test -f etc-mock/epel-10-x86_64.cfg
+          test -f etc-mock/rhel-10-x86_64.cfg
+          grep -q 'epel-10' config.sh
+          grep -q 'rhel-10' config.sh
+          echo "EL10 mock targets registered"
