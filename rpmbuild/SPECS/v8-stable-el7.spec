@@ -1,4 +1,4 @@
-# SPEC file for EL7, EL8 and EL9
+# SPEC file for EL7, EL8, EL9, and EL10
 %define rsyslog_statedir %{_sharedstatedir}/rsyslog
 %define rsyslog_pkidir %{_sysconfdir}/pki/rsyslog
 %define rsyslog_docdir %{_docdir}/%{name}-%{version}
@@ -10,6 +10,24 @@
 %global want_hiredis 1
 %global want_mongodb 1
 %global want_rabbitmq 1
+%endif
+# EL10 (and current CentOS Stream packaging) use unversioned library package
+# names, while Adiscon EL7/EL8/EL9 repos still ship the libfastjson4/liblognorm5
+# names used historically by this spec.
+%if 0%{?rhel} >= 10
+%global libfastjson_pkg libfastjson
+%global libfastjson_devel_pkg libfastjson-devel
+%global liblognorm_pkg liblognorm
+%global liblognorm_devel_pkg liblognorm-devel
+# CentOS Stream/CRB librdkafka-devel has no librdkafka-static.a.
+%global kafka_static_flag %{nil}
+%else
+%global libfastjson_pkg libfastjson4
+%global libfastjson_devel_pkg libfastjson4-devel
+%global liblognorm_pkg liblognorm5
+%global liblognorm_devel_pkg liblognorm5-devel
+# Adiscon custom librdkafka builds ship librdkafka-static.a.
+%global kafka_static_flag --enable-kafka-static
 %endif
 
 Summary: Enhanced system logging and kernel message trapping daemon
@@ -36,7 +54,7 @@ BuildRequires: bison
 BuildRequires: dos2unix
 BuildRequires: flex
 BuildRequires: libgcrypt-devel
-BuildRequires: libfastjson4-devel >= 0.99.8
+BuildRequires: %{libfastjson_devel_pkg} >= 0.99.8
 BuildRequires: libestr-devel >= 0.1.9
 BuildRequires: libtool
 BuildRequires: libuuid-devel
@@ -85,11 +103,7 @@ BuildRequires: ruby-devel
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
 Requires: libestr >= 0.1.11
-%if 0%{?rhel} >= 8
-Requires: libfastjson4 >= 0.99.8
-%else
-Requires: libfastjson4 >= 0.99.8
-%endif
+Requires: %{libfastjson_pkg} >= 0.99.8
 
 Requires(post): systemd
 Requires(preun): systemd
@@ -143,21 +157,21 @@ BuildRequires: hiredis-devel >= 0.13.1
 Summary: mmfields support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: liblognorm5 >= 2.0.6
-BuildRequires: liblognorm5-devel >= 2.0.6
+Requires: %{liblognorm_pkg} >= 2.0.6
+BuildRequires: %{liblognorm_devel_pkg} >= 2.0.6
 
 %package mmjsonparse
 Summary: mmjsonparse support 
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-Requires: liblognorm5 >= 2.0.6
-BuildRequires: liblognorm5-devel >= 2.0.6
+Requires: %{liblognorm_pkg} >= 2.0.6
+BuildRequires: %{liblognorm_devel_pkg} >= 2.0.6
 
 %package mmnormalize
 Summary: Log normalization support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: liblognorm5-devel >= 2.0.6
+BuildRequires: %{liblognorm_devel_pkg} >= 2.0.6
 
 %package mmaudit
 Summary: Message modification module supporting Linux audit format
@@ -186,8 +200,13 @@ BuildRequires: libdbi-devel
 Summary: MySQL support for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
+%if 0%{?rhel} >= 10
+# EL10 provides the MySQL client ABI via MariaDB Connector/C.
+BuildRequires: mariadb-connector-c-devel
+%else
 BuildRequires: mysql >= 4.0
 BuildRequires: mysql-devel >= 4.0
+%endif
 
 %if %{want_mongodb}
 %package mongodb
@@ -261,7 +280,12 @@ Summary: Kafka output support
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 Requires: lz4
+%if 0%{?rhel} >= 10
+# EL10 ships librdkafka in CentOS Stream/CRB; Adiscon custom builds are EL7-EL9 only.
+BuildRequires: librdkafka-devel >= 0.11.0
+%else
 BuildRequires: adisconbuild-librdkafka-devel > 0.11.6
+%endif
 BuildRequires: lz4-devel
 BuildRequires: cyrus-sasl-devel
 
@@ -334,7 +358,7 @@ BuildRequires: libmaxminddb-devel
 Summary: Log normalization parser module for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
-BuildRequires: liblognorm5-devel >= 2.0.6
+BuildRequires: %{liblognorm_devel_pkg} >= 2.0.6
 
 %package omotel
 Summary: omotel output module for rsyslog
@@ -644,7 +668,9 @@ echo "Skipping Sphinx documentation build on RHEL 7 (no python-pip in buildroot)
 
 
 %build
-chmod +x /usr/bin/*
+# Some mock chroots ship tools without the executable bit. Ignore dangling
+# symlinks (e.g. /usr/bin/pg_config on EL10) so chmod does not fail the build.
+chmod -f +x /usr/bin/* || true
 %ifarch sparc64
 #sparc64 need big PIE
 export CFLAGS="-g $RPM_OPT_FLAGS -fPIE -DPATH_PIDFILE=\\\"/var/run/syslogd.pid\\\""
@@ -722,7 +748,7 @@ export HIREDIS_LIBS=-L%{_libdir}
         	--enable-omkafka \
 	--enable-imkafka \
 	--enable-imbeats \
-	--enable-kafka-static \
+	%{kafka_static_flag} \
 %if %{?rhel} >= 8
 	--enable-omdtls \
 	--enable-imdtls \
