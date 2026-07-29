@@ -26,17 +26,28 @@
 %global libfastjson_devel_pkg libfastjson4-devel
 %global liblognorm_pkg liblognorm5
 %global liblognorm_devel_pkg liblognorm5-devel
-# Adiscon custom librdkafka builds ship librdkafka-static.a.
+# EL7/EL8 helper packages and the EL9 in-tree build provide
+# librdkafka-static.a.
 %global kafka_static_flag --enable-kafka-static
 %endif
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2606.0
-Release: 1%{?dist}
+Release: 3%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
+%if 0%{?rhel} == 9
+# Keep the bundled librdkafka installation inside the mockbuild-writable RPM
+# build directory; it must not write to the mock chroot's /usr.
+%global librdkafka_stage_prefix %{_builddir}/librdkafka-stage
+%global librdkafka_stage_libdir %{librdkafka_stage_prefix}%{_libdir}
+# EL9 statically embeds bundled librdkafka in the Kafka modules. LICENSES.txt
+# covers its BSD-2/3-Clause, MIT, Zlib, ISC, and public-domain components.
+License: (GPLv3+ and ASL 2.0 and BSD-2-Clause and BSD-3-Clause and MIT and Zlib and ISC and Public Domain)
+%else
 License: (GPLv3+ and ASL 2.0)
+%endif
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
 Source0: http://www.rsyslog.com/files/download/rsyslog/%{name}-%{version}.tar.gz
@@ -44,6 +55,10 @@ Source1: rsyslog.conf
 Source2: rsyslog.sysconfig
 Source3: rsyslog.log
 Source4: rsyslog.service
+# Verified upstream SHA256:
+# bb246e754dee3560e9b42bf4e844dc05de4b146a3cae937e36301ffacdc456e7
+Source5: librdkafka-2.14.1.tar.gz
+Patch0: rsyslog-kafka-static-zstd.patch
 
 BuildRequires: make
 BuildRequires: gcc
@@ -83,6 +98,20 @@ BuildRequires: snappy-devel
 BuildRequires: protobuf-c
 %if 0%{?rhel} >= 8
 BuildRequires: libzstd-devel
+%endif
+%if 0%{?rhel} == 9
+# Build the bundled librdkafka 2.14.1 static archive during %prep. Keep these
+# explicit instead of allowing librdkafka configure to install dependencies.
+BuildRequires: gcc-c++
+BuildRequires: libstdc++-devel
+BuildRequires: diffutils
+BuildRequires: which
+BuildRequires: libcurl-devel
+BuildRequires: openssl-devel
+BuildRequires: cyrus-sasl-devel
+BuildRequires: zlib-devel
+BuildRequires: libzstd-devel
+BuildRequires: python3-devel
 %endif
 #begin qpid-proton buildeps
 BuildRequires: wget
@@ -283,6 +312,8 @@ Requires: lz4
 %if 0%{?rhel} >= 10
 # EL10 ships librdkafka in CentOS Stream/CRB; Adiscon custom builds are EL7-EL9 only.
 BuildRequires: librdkafka-devel >= 0.11.0
+%elif 0%{?rhel} == 9
+# EL9 builds bundled librdkafka 2.14.1 during %prep; no helper RPM is needed.
 %else
 BuildRequires: adisconbuild-librdkafka-devel > 0.11.6
 %endif
@@ -626,10 +657,30 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_STATIC_LIBS=ON -DCMAKE_POSITION_IND
 make -j1 install
 %endif
 
+%if 0%{?rhel} == 9
+# Build the current bundled librdkafka static archive and stage it below the
+# writable RPM build directory. Do not download or install dependencies here.
+cd %{_builddir}
+tar -xzf %{SOURCE5}
+rm -rf %{librdkafka_stage_prefix}
+(
+  cd librdkafka-2.14.1
+  ./configure --prefix=%{librdkafka_stage_prefix} --libdir=%{librdkafka_stage_libdir} \
+    --enable-static --disable-lz4-ext --enable-zstd
+  make -j$(nproc)
+  examples/rdkafka_example -X builtin.features | tee librdkafka-features.txt
+  grep -F 'sasl_scram' librdkafka-features.txt
+  make install
+)
+%endif
 
 # set up rsyslog sources
 %setup -q -D
-#%patch0 -p1
+%if 0%{?rhel} == 9
+# librdkafka 2.14.1's static archive can include Zstd. Link it explicitly so
+# the Kafka modules have no unresolved Zstd symbols at load time.
+%patch0 -p1
+%endif
 autoreconf 
 # --- rsyslog Documentation Build Script
 # Build Sphinx docs inside doc/ so doc/Makefile.in stays for configure (required
@@ -678,6 +729,15 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %else
 export CFLAGS="-g $RPM_OPT_FLAGS -fpie -DPATH_PIDFILE=\\\"/var/run/syslogd.pid\\\""
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
+%endif
+
+%if 0%{?rhel} == 9
+# Find the staged headers, pkg-config data, and static archive when configuring
+# and linking the Kafka modules. These paths are build-only and are not packaged.
+export PKG_CONFIG_PATH=%{librdkafka_stage_libdir}/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}
+export CPPFLAGS="-I%{librdkafka_stage_prefix}/include${CPPFLAGS:+ ${CPPFLAGS}}"
+export LDFLAGS="$LDFLAGS -L%{librdkafka_stage_libdir}"
+export LD_LIBRARY_PATH=%{librdkafka_stage_libdir}${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %endif
 
 %if %{want_hiredis}
@@ -809,6 +869,12 @@ install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/logrotate.d/syslog
 
 install -p -m 644 plugins/ommysql/createDB.sql %{buildroot}%{rsyslog_docdir}/mysql-createDB.sql
 install -p -m 644 plugins/ompgsql/createDB.sql %{buildroot}%{rsyslog_docdir}/pgsql-createDB.sql
+%if 0%{?rhel} == 9
+# The static Kafka modules contain bundled librdkafka. Preserve all upstream
+# third-party notices with the package that embeds that code.
+install -Dpm 0644 %{_builddir}/librdkafka-2.14.1/LICENSES.txt \
+  %{buildroot}%{_licensedir}/%{name}-kafka/librdkafka-LICENSES.txt
+%endif
 # extract documentation (Sphinx output is in doc/build/ when built in-tree)
 %if 0%{?rhel} != 7
 cp -r doc/build/* %{buildroot}%{rsyslog_docdir}/html
@@ -1028,6 +1094,9 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omkafka.so
 %{_libdir}/rsyslog/imkafka.so
+%if 0%{?rhel} == 9
+%license %{_licensedir}/%{name}-kafka/librdkafka-LICENSES.txt
+%endif
 
 %files imbeats
 %defattr(-,root,root)
@@ -1096,6 +1165,12 @@ done
 
 
 %changelog
+* Thu Jul 30 2026 Andre Lorbach - 8.2606.0-3
+- Build the bundled librdkafka 2.14.1 static archive in a mockbuild-writable
+  staging directory on EL9, including the Kafka 4 SCRAM fix.
+- Keep the Kafka modules free of a librdkafka runtime dependency, ship the
+  bundled license notices, and verify static linkage in CI.
+
 * Tue Jul 14 2026 Andre Lorbach - 8.2606.0-2
 - Added package definitions for omazuredce (Azure Monitor Logs Ingestion) and omsendertrack (sender tracking output module).
 

@@ -1,0 +1,22 @@
+diff --git a/plugins/omkafka/Makefile.am b/plugins/omkafka/Makefile.am
+--- a/plugins/omkafka/Makefile.am
++++ b/plugins/omkafka/Makefile.am
+@@ -7,6 +7,6 @@ else
+ omkafka_la_SOURCES = omkafka.c
+ if ENABLE_KAFKA_STATIC
+-omkafka_la_LDFLAGS = -module -avoid-version -Wl,--whole-archive -l:librdkafka-static.a -Wl,--no-whole-archive -ldl -lresolv -lcurl -lssl -lpthread -lcrypto -lsasl2 -lz -llz4 -lrt -lm
++omkafka_la_LDFLAGS = -module -avoid-version -Wl,--whole-archive -l:librdkafka-static.a -Wl,--no-whole-archive -ldl -lresolv -lcurl -lssl -lpthread -lcrypto -lsasl2 -lz -lzstd -llz4 -lrt -lm
+ else
+ omkafka_la_LDFLAGS = -module -avoid-version $(LIBRDKAFKA_LIBS) -lm
+ endif
+diff --git a/plugins/imkafka/Makefile.am b/plugins/imkafka/Makefile.am
+--- a/plugins/imkafka/Makefile.am
++++ b/plugins/imkafka/Makefile.am
+@@ -7,6 +7,6 @@ else
+ imkafka_la_SOURCES = imkafka.c
+ if ENABLE_KAFKA_STATIC
+-imkafka_la_LDFLAGS = -module -avoid-version -Wl,--whole-archive -l:librdkafka-static.a -Wl,--no-whole-archive -ldl -lresolv -lcurl -lssl -lpthread -lcrypto -lsasl2 -lz -llz4 -lrt -lm
++imkafka_la_LDFLAGS = -module -avoid-version -Wl,--whole-archive -l:librdkafka-static.a -Wl,--no-whole-archive -ldl -lresolv -lcurl -lssl -lpthread -lcrypto -lsasl2 -lz -lzstd -llz4 -lrt -lm
+ else
+ imkafka_la_LDFLAGS = -module -avoid-version $(LIBRDKAFKA_LIBS) -lm
+ endif

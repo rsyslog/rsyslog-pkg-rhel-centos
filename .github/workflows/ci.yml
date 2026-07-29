@@ -79,7 +79,7 @@ jobs:
           echo "== Selected mock target: $MOCK_CONFIG =="
           echo "== Step 1: EPEL and mock =="
           dnf install -y epel-release
-          dnf install -y mock dnf-utils
+          dnf install -y mock dnf-utils cpio binutils
           echo "== Step 2: Mock configs and dirs =="
           # Replace symlink targets with regular files so custom configs do not
           # overwrite shared mock-core-configs aliases like centos-stream+epel-*.
@@ -99,15 +99,51 @@ jobs:
             find /var/lib/mock -name "*.log" -exec tail -200 {} \; 2>/dev/null || true
             exit 1
           fi
-          echo "== Step 4: mock build from SRPM =="
           SRPM=$(ls build-result/srpm/*.src.rpm)
+          echo "== Step 4: mock build from SRPM =="
           if ! mock -r "$MOCK_CONFIG" --verbose "$SRPM" --resultdir build-result/rpms; then
             echo "=== mock build FAILED, logs ==="
             tail -300 build-result/rpms/*.log 2>/dev/null || true
             find /var/lib/mock -name "*.log" -exec tail -200 {} \; 2>/dev/null || true
             exit 1
           fi
-          echo "== Step 5: collect artifacts =="
+          if [ "$MOCK_CONFIG" = "epel-9-x86_64" ]; then
+            echo "== Step 5: verify static Kafka linkage =="
+            KAFKA_RPM=$(find build-result/rpms -maxdepth 1 -type f -name 'rsyslog-kafka-*.x86_64.rpm' ! -name '*-debuginfo-*' ! -name '*-debugsource-*' -print -quit)
+            if [ -z "$KAFKA_RPM" ]; then
+              echo "Missing rsyslog-kafka RPM" >&2
+              exit 1
+            fi
+            if ! rpm -qlp "$KAFKA_RPM" | grep -Fx '/usr/share/licenses/rsyslog-kafka/librdkafka-LICENSES.txt'; then
+              echo "rsyslog-kafka is missing the bundled librdkafka license notices" >&2
+              exit 1
+            fi
+            if ! rpm -qp --qf '%{LICENSE}\n' "$KAFKA_RPM" | grep -F 'BSD-2-Clause'; then
+              echo "rsyslog-kafka is missing its bundled librdkafka license metadata" >&2
+              exit 1
+            fi
+            if rpm -qp --requires "$KAFKA_RPM" | grep -F 'librdkafka.so.1'; then
+              echo "rsyslog-kafka unexpectedly has a dynamic librdkafka dependency" >&2
+              exit 1
+            fi
+            mkdir -p build-result/kafka-module-check
+            (
+              cd build-result/kafka-module-check
+              rpm2cpio "../../$KAFKA_RPM" | cpio -idm --quiet
+            )
+            for module_name in omkafka.so imkafka.so; do
+              module=$(find build-result/kafka-module-check -type f -name "$module_name" -print -quit)
+              if [ -z "$module" ]; then
+                echo "rsyslog-kafka is missing $module_name" >&2
+                exit 1
+              fi
+              if readelf -d "$module" | grep -F 'librdkafka.so.1'; then
+                echo "$module unexpectedly links librdkafka dynamically" >&2
+                exit 1
+              fi
+            done
+          fi
+          echo "== Step 6: collect artifacts =="
           cp -v build-result/srpm/*.rpm build-result/ 2>/dev/null || true
           cp -v build-result/rpms/*.rpm build-result/
           ls -la build-result/
