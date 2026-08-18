@@ -34,7 +34,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2608.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 %if 0%{?rhel} == 9
@@ -131,6 +131,7 @@ BuildRequires: ruby-devel
 
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
+Requires: python3
 Requires: libestr >= 0.1.11
 Requires: %{libfastjson_pkg} >= 0.99.8
 
@@ -146,7 +147,7 @@ Requires: bash >= 2.0
 
 Provides: syslog
 Obsoletes: sysklogd < 1.5-11
-Obsoletes: rsyslog-mmutf8fix
+Obsoletes: rsyslog-mmutf8fix < %{version}-%{release}
 
 # Patches
 #Patch0: rsyslog-service-centos-rhel.patch
@@ -884,6 +885,7 @@ cp -r doc/build/* %{buildroot}%{rsyslog_docdir}/html
 # Older sources may not build these files; newer ones do.
 # Keep file non-empty for older sources where no liboverride modules exist.
 # rpmbuild errors out on an empty %files -f input file.
+touch %{buildroot}%{_libdir}/rsyslog/__liboverride_filelist_placeholder__.so
 echo "%%exclude %{_libdir}/rsyslog/__liboverride_filelist_placeholder__.so" > %{liboverride_filelist}
 for so in \
   liboverride_getaddrinfo.so \
@@ -927,6 +929,8 @@ done
 %dir %{rsyslog_pkidir}
 %{_sbindir}/rsyslogd
 %attr(755,root,root) %{_bindir}/rsyslog-recover-qi.pl
+%attr(755,root,root) %{_bindir}/rsyslog-segqueue
+%{_mandir}/man1/rsyslog-segqueue.1.gz
 %{_mandir}/man5/rsyslog.conf.5.gz
 %{_mandir}/man8/rsyslogd.8.gz
 %{_unitdir}/rsyslog.service
@@ -1165,6 +1169,11 @@ done
 
 
 %changelog
+* Tue Aug 18 2026 Rainer Gerhards - 8.2608.0-2
+- Package the rsyslog-segqueue utility and manual page.
+- Keep the generated liboverride file list valid when no override modules build.
+- Use a versioned mmutf8fix obsoletion to avoid the RPM warning.
+
 * Tue Aug 18 2026 Florian Riedl - 8.2608.0-1
 - Release build for 8.2608.0
 
