@@ -1,0 +1,20 @@
+rpmbuild/SPECS/v8-stable-el7.spec
+  s_8c85512cba2ff9::t_9f08e6e45871eb 37,134,888,932-933,1172-1174,1176
+  s_8c85512cba2ff9::t_a178740a90310a 150,1175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c0b2aebde2780cac922cb33b551e82a0ba586d4e",
+  "prompts": {},
+  "sessions": {
+    "s_8c85512cba2ff9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a01616-c42e-7850-8e78-b6677979f043",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Rainer Gerhards <rgerhards@adiscon.com>"
+    }
+  }
+}
