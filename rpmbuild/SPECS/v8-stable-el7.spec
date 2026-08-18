@@ -33,8 +33,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2606.0
-Release: 3%{?dist}
+Version: 8.2608.0
+Release: 1%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 %if 0%{?rhel} == 9
@@ -1165,6 +1165,9 @@ done
 
 
 %changelog
+* Tue Aug 18 2026 Florian Riedl - 8.2608.0-1
+- Release build for 8.2608.0
+
 * Thu Jul 30 2026 Andre Lorbach - 8.2606.0-3
 - Build the bundled librdkafka 2.14.1 static archive in a mockbuild-writable
   staging directory on EL9, including the Kafka 4 SCRAM fix.
