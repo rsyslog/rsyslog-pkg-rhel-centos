@@ -34,7 +34,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2606.0
-Release: 3%{?dist}
+Release: 5%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 %if 0%{?rhel} == 9
@@ -379,6 +379,22 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libcurl-devel
 
+%if 0%{?rhel} >= 9
+%package omkinesis
+Summary: Amazon Kinesis Data Streams output module for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: libcurl-devel
+%endif
+
+%if 0%{?rhel} >= 8
+%package imhttp
+Summary: imhttp input module for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: civetweb-devel apr-util-devel
+%endif
+
 %package mmdblookup
 Summary: mmdblookup MaxMind/GeoIP DB lookup for rsyslog
 Group: System Environment/Daemons
@@ -602,6 +618,16 @@ Function module for rainerscript function hash.
 %description omhttp
 This module provides native support for writing to Redis, using the hiredis client library.
 
+%if 0%{?rhel} >= 9
+%description omkinesis
+Output module for sending syslog messages to Amazon Kinesis Data Streams.
+%endif
+
+%if 0%{?rhel} >= 8
+%description imhttp
+This module provides support for HTTP server.
+%endif
+
 %description mmdblookup
 This module provides support for storing information about IP addresses in a highly optimized and flexible database format.
 
@@ -824,6 +850,12 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-pmciscoios \
 	--enable-mmkubernetes \
 	--enable-omhttp \
+%if 0%{?rhel} >= 9
+	--enable-omkinesis \
+%endif
+%if 0%{?rhel} >= 8
+	--enable-imhttp \
+%endif
 	--enable-pmnull \
 	--enable-mmdblookup \
 	--enable-pmnormalize \
@@ -927,6 +959,8 @@ done
 %dir %{rsyslog_pkidir}
 %{_sbindir}/rsyslogd
 %attr(755,root,root) %{_bindir}/rsyslog-recover-qi.pl
+%attr(755,root,root) %{_bindir}/rsyslog-segqueue
+%{_mandir}/man1/rsyslog-segqueue.1.gz
 %{_mandir}/man5/rsyslog.conf.5.gz
 %{_mandir}/man8/rsyslogd.8.gz
 %{_unitdir}/rsyslog.service
@@ -1143,6 +1177,18 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omhttp.so
 
+%if 0%{?rhel} >= 9
+%files omkinesis
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omkinesis.so
+%endif
+
+%if 0%{?rhel} >= 8
+%files imhttp
+%defattr(-,root,root)
+%{_libdir}/rsyslog/imhttp.so
+%endif
+
 %files mmdblookup
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmdblookup.so
@@ -1165,6 +1211,13 @@ done
 
 
 %changelog
+* Thu Oct 22 2026 Rainer Gerhards <rgerhards@adiscon.com> - 8.2606.0-5
+- Sync current-source package ownership for rsyslog-segqueue and omkinesis.
+- Keep imhttp package support for EL8 and newer.
+
+* Thu Oct 22 2026 Rainer Gerhards <rgerhards@adiscon.com> - 8.2606.0-4
+- Add the imhttp input module subpackage for EL8 and newer.
+
 * Thu Jul 30 2026 Andre Lorbach - 8.2606.0-3
 - Build the bundled librdkafka 2.14.1 static archive in a mockbuild-writable
   staging directory on EL9, including the Kafka 4 SCRAM fix.

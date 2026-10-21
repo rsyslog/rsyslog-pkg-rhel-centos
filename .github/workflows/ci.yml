@@ -107,6 +107,18 @@ jobs:
             find /var/lib/mock -name "*.log" -exec tail -200 {} \; 2>/dev/null || true
             exit 1
           fi
+          IMHTTP_RPM=$(find build-result/rpms -maxdepth 1 -type f \
+            -name 'rsyslog-imhttp-*.x86_64.rpm' \
+            ! -name '*-debuginfo-*' ! -name '*-debugsource-*' -print -quit)
+          if [ -z "$IMHTTP_RPM" ]; then
+            echo "Missing rsyslog-imhttp RPM" >&2
+            exit 1
+          fi
+          if ! rpm -qlp "$IMHTTP_RPM" |
+            grep -Eq '^/usr/lib(64)?/rsyslog/imhttp\.so$'; then
+            echo "rsyslog-imhttp is missing imhttp.so" >&2
+            exit 1
+          fi
           if [ "$MOCK_CONFIG" = "epel-9-x86_64" ]; then
             echo "== Step 5: verify static Kafka linkage =="
             KAFKA_RPM=$(find build-result/rpms -maxdepth 1 -type f -name 'rsyslog-kafka-*.x86_64.rpm' ! -name '*-debuginfo-*' ! -name '*-debugsource-*' -print -quit)
