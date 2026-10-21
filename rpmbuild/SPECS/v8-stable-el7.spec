@@ -33,8 +33,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2608.0
-Release: 2%{?dist}
+Version: 8.2610.0
+Release: 1%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 %if 0%{?rhel} == 9
@@ -703,6 +703,11 @@ fi
 cd doc
 pip3 install -r requirements.txt 2>&1
 
+%if 0%{?rhel} == 10
+# Legacy Sphinx extensions require pkg_resources, removed in setuptools 82.
+python3 -m pip install 'setuptools<82' 2>&1
+%endif
+
 echo "Step 2: Building Sphinx documentation (output in doc/build)..."
 num_cpus=$(nproc)
 sphinx-build -j$num_cpus -b html source build 2>&1
@@ -752,6 +757,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--disable-static \
 	--disable-testbench \
 	--disable-liblogging-stdlog \
+	--disable-omkinesis \
 	--enable-elasticsearch \
 	--enable-generate-man-pages \
 	--enable-gnutls \
@@ -806,7 +812,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-unlimited-select \
 	--enable-usertools \
 	--enable-uuid \
-        	--enable-omkafka \
+       	--enable-omkafka \
 	--enable-imkafka \
 	--enable-imbeats \
 	%{kafka_static_flag} \
@@ -1169,6 +1175,9 @@ done
 
 
 %changelog
+* Tue Oct 20 2026 Florian Riedl - 8.2610.0-1
+- Release build for 8.2610.0
+
 * Tue Aug 18 2026 Rainer Gerhards - 8.2608.0-2
 - Package the rsyslog-segqueue utility and manual page.
 - Keep the generated liboverride file list valid when no override modules build.
