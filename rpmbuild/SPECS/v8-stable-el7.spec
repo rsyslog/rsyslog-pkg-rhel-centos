@@ -33,8 +33,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2606.0
-Release: 3%{?dist}
+Version: 8.2610.0
+Release: 1%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 %if 0%{?rhel} == 9
@@ -131,6 +131,7 @@ BuildRequires: ruby-devel
 
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
+Requires: python3
 Requires: libestr >= 0.1.11
 Requires: %{libfastjson_pkg} >= 0.99.8
 
@@ -146,7 +147,7 @@ Requires: bash >= 2.0
 
 Provides: syslog
 Obsoletes: sysklogd < 1.5-11
-Obsoletes: rsyslog-mmutf8fix
+Obsoletes: rsyslog-mmutf8fix < %{version}-%{release}
 
 # Patches
 #Patch0: rsyslog-service-centos-rhel.patch
@@ -702,6 +703,11 @@ fi
 cd doc
 pip3 install -r requirements.txt 2>&1
 
+%if 0%{?rhel} == 10
+# Legacy Sphinx extensions require pkg_resources, removed in setuptools 82.
+python3 -m pip install 'setuptools<82' 2>&1
+%endif
+
 echo "Step 2: Building Sphinx documentation (output in doc/build)..."
 num_cpus=$(nproc)
 sphinx-build -j$num_cpus -b html source build 2>&1
@@ -751,6 +757,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--disable-static \
 	--disable-testbench \
 	--disable-liblogging-stdlog \
+	--disable-omkinesis \
 	--enable-elasticsearch \
 	--enable-generate-man-pages \
 	--enable-gnutls \
@@ -805,7 +812,7 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-unlimited-select \
 	--enable-usertools \
 	--enable-uuid \
-        	--enable-omkafka \
+       	--enable-omkafka \
 	--enable-imkafka \
 	--enable-imbeats \
 	%{kafka_static_flag} \
@@ -884,6 +891,7 @@ cp -r doc/build/* %{buildroot}%{rsyslog_docdir}/html
 # Older sources may not build these files; newer ones do.
 # Keep file non-empty for older sources where no liboverride modules exist.
 # rpmbuild errors out on an empty %files -f input file.
+touch %{buildroot}%{_libdir}/rsyslog/__liboverride_filelist_placeholder__.so
 echo "%%exclude %{_libdir}/rsyslog/__liboverride_filelist_placeholder__.so" > %{liboverride_filelist}
 for so in \
   liboverride_getaddrinfo.so \
@@ -927,6 +935,8 @@ done
 %dir %{rsyslog_pkidir}
 %{_sbindir}/rsyslogd
 %attr(755,root,root) %{_bindir}/rsyslog-recover-qi.pl
+%attr(755,root,root) %{_bindir}/rsyslog-segqueue
+%{_mandir}/man1/rsyslog-segqueue.1.gz
 %{_mandir}/man5/rsyslog.conf.5.gz
 %{_mandir}/man8/rsyslogd.8.gz
 %{_unitdir}/rsyslog.service
@@ -1165,6 +1175,17 @@ done
 
 
 %changelog
+* Tue Oct 20 2026 Florian Riedl - 8.2610.0-1
+- Release build for 8.2610.0
+
+* Tue Aug 18 2026 Rainer Gerhards - 8.2608.0-2
+- Package the rsyslog-segqueue utility and manual page.
+- Keep the generated liboverride file list valid when no override modules build.
+- Use a versioned mmutf8fix obsoletion to avoid the RPM warning.
+
+* Tue Aug 18 2026 Florian Riedl - 8.2608.0-1
+- Release build for 8.2608.0
+
 * Thu Jul 30 2026 Andre Lorbach - 8.2606.0-3
 - Build the bundled librdkafka 2.14.1 static archive in a mockbuild-writable
   staging directory on EL9, including the Kafka 4 SCRAM fix.
