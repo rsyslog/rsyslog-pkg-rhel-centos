@@ -34,7 +34,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2610.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 %if 0%{?rhel} == 9
@@ -417,6 +417,13 @@ Summary: Sender tracking output module for rsyslog
 Group: System Environment/Daemons
 Requires: %name = %version-%release
 
+%if 0%{?rhel} >= 9
+%package omkinesis
+Summary: Amazon Kinesis Data Streams output module for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: libcurl-devel
+%endif
 
 %description
 Rsyslog is an enhanced, multi-threaded syslog daemon. It supports MySQL,
@@ -636,6 +643,12 @@ Rsyslog output module for tracking message senders across all input sources.
 It records per-sender statistics such as hostname, message count, and last
 event time, and stores the data in a JSON-formatted state file.
 
+%if 0%{?rhel} >= 9
+%description omkinesis
+Amazon Kinesis Data Streams output module for rsyslog. It signs PutRecord
+requests with libcurl AWS SigV4.
+%endif
+
 %prep
 # %patch0 -p1
 
@@ -770,7 +783,6 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--disable-static \
 	--disable-testbench \
 	--disable-liblogging-stdlog \
-	--disable-omkinesis \
 	--enable-elasticsearch \
 	--enable-generate-man-pages \
 	--enable-gnutls \
@@ -857,6 +869,11 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-omotel \
 	--enable-omazuredce \
 	--enable-omsendertrack \
+%if 0%{?rhel} >= 9
+	--enable-omkinesis \
+%else
+	--disable-omkinesis \
+%endif
 	--enable-debug-symbols
 #	--enable-pmrfc3164sd \
 
@@ -1195,8 +1212,17 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omsendertrack.so
 
+%if 0%{?rhel} >= 9
+%files omkinesis
+%defattr(-,root,root)
+%{_libdir}/rsyslog/omkinesis.so
+%endif
 
 %changelog
+* Thu Nov 26 2026 Andre Lorbach - 8.2610.0-2
+- Add the rsyslog-omkinesis subpackage on EL9 and newer. Disable omkinesis
+  on EL8, where libcurl is older than 7.75.
+
 * Tue Oct 20 2026 Florian Riedl - 8.2610.0-1
 - Release build for 8.2610.0
 
