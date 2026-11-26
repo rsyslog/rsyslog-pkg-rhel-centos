@@ -46,24 +46,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download rsyslog tarball from GitHub release
+      - name: Download the rsyslog source declared by the spec
         run: |
           set -e
           SPEC=rpmbuild/SPECS/${{ env.RPM_SPEC }}.spec
-          RELEASE_JSON=$(curl -fsSL https://api.github.com/repos/rsyslog/rsyslog/releases/latest)
-          RELEASE_TAG=$(echo "$RELEASE_JSON" | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p' | head -1)
-          if [ -z "$RELEASE_TAG" ]; then
-            echo "Failed to resolve latest rsyslog GitHub release tag" >&2
+          VERSION=$(sed -n 's/^Version:[[:space:]]*\([^[:space:]]*\).*/\1/p' "$SPEC")
+          if [ -z "$VERSION" ]; then
+            echo "Failed to resolve rsyslog version from $SPEC" >&2
             exit 1
           fi
-          VERSION=${RELEASE_TAG#v}
           TARBALL=rpmbuild/SOURCES/rsyslog-${VERSION}.tar.gz
-          URL="https://github.com/rsyslog/rsyslog/releases/download/${RELEASE_TAG}/rsyslog-${VERSION}.tar.gz"
-          echo "Latest GitHub release: ${RELEASE_TAG} (${URL})"
+          URL="https://www.rsyslog.com/files/download/rsyslog/rsyslog-${VERSION}.tar.gz"
           curl -fsSL -o "$TARBALL" "$URL"
           echo "Downloaded $TARBALL"
-          sed -i "s/^Version: .*/Version: ${VERSION}/" "$SPEC"
-          echo "Updated spec Version to ${VERSION} for CI mock build"
 
       - name: Run mock test build
         env:
