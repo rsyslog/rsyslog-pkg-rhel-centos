@@ -380,6 +380,14 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libcurl-devel
 
+%if 0%{?rhel} >= 8
+%package imhttp
+Summary: imhttp input module for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: civetweb-devel apr-util-devel
+%endif
+
 %package mmdblookup
 Summary: mmdblookup MaxMind/GeoIP DB lookup for rsyslog
 Group: System Environment/Daemons
@@ -603,6 +611,11 @@ Function module for rainerscript function hash.
 %description omhttp
 This module provides native support for writing to Redis, using the hiredis client library.
 
+%if 0%{?rhel} >= 8
+%description imhttp
+This module provides support for HTTP server.
+%endif
+
 %description mmdblookup
 This module provides support for storing information about IP addresses in a highly optimized and flexible database format.
 
@@ -825,6 +838,9 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-pmciscoios \
 	--enable-mmkubernetes \
 	--enable-omhttp \
+%if 0%{?rhel} >= 8
+	--enable-imhttp \
+%endif
 	--enable-pmnull \
 	--enable-mmdblookup \
 	--enable-pmnormalize \
@@ -1147,6 +1163,12 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omhttp.so
 
+%if 0%{?rhel} >= 8
+%files imhttp
+%defattr(-,root,root)
+%{_libdir}/rsyslog/imhttp.so
+%endif
+
 %files mmdblookup
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmdblookup.so
@@ -1176,6 +1198,9 @@ done
 
 * Tue Aug 18 2026 Florian Riedl - 8.2608.0-1
 - Release build for 8.2608.0
+
+* Thu Oct 22 2026 Rainer Gerhards <rgerhards@adiscon.com> - 8.2606.0-4
+- Add the imhttp input module subpackage for EL8 and newer.
 
 * Thu Jul 30 2026 Andre Lorbach - 8.2606.0-3
 - Build the bundled librdkafka 2.14.1 static archive in a mockbuild-writable

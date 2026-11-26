@@ -46,24 +46,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download rsyslog tarball from GitHub release
+      - name: Download the rsyslog source declared by the spec
         run: |
           set -e
           SPEC=rpmbuild/SPECS/${{ env.RPM_SPEC }}.spec
-          RELEASE_JSON=$(curl -fsSL https://api.github.com/repos/rsyslog/rsyslog/releases/latest)
-          RELEASE_TAG=$(echo "$RELEASE_JSON" | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p' | head -1)
-          if [ -z "$RELEASE_TAG" ]; then
-            echo "Failed to resolve latest rsyslog GitHub release tag" >&2
+          VERSION=$(sed -n 's/^Version:[[:space:]]*\([^[:space:]]*\).*/\1/p' "$SPEC")
+          if [ -z "$VERSION" ]; then
+            echo "Failed to resolve rsyslog version from $SPEC" >&2
             exit 1
           fi
-          VERSION=${RELEASE_TAG#v}
           TARBALL=rpmbuild/SOURCES/rsyslog-${VERSION}.tar.gz
-          URL="https://github.com/rsyslog/rsyslog/releases/download/${RELEASE_TAG}/rsyslog-${VERSION}.tar.gz"
-          echo "Latest GitHub release: ${RELEASE_TAG} (${URL})"
+          URL="https://www.rsyslog.com/files/download/rsyslog/rsyslog-${VERSION}.tar.gz"
           curl -fsSL -o "$TARBALL" "$URL"
           echo "Downloaded $TARBALL"
-          sed -i "s/^Version: .*/Version: ${VERSION}/" "$SPEC"
-          echo "Updated spec Version to ${VERSION} for CI mock build"
 
       - name: Run mock test build
         env:
@@ -105,6 +100,18 @@ jobs:
             echo "=== mock build FAILED, logs ==="
             tail -300 build-result/rpms/*.log 2>/dev/null || true
             find /var/lib/mock -name "*.log" -exec tail -200 {} \; 2>/dev/null || true
+            exit 1
+          fi
+          IMHTTP_RPM=$(find build-result/rpms -maxdepth 1 -type f \
+            -name 'rsyslog-imhttp-*.x86_64.rpm' \
+            ! -name '*-debuginfo-*' ! -name '*-debugsource-*' -print -quit)
+          if [ -z "$IMHTTP_RPM" ]; then
+            echo "Missing rsyslog-imhttp RPM" >&2
+            exit 1
+          fi
+          if ! rpm -qlp "$IMHTTP_RPM" |
+            grep -Eq '^/usr/lib(64)?/rsyslog/imhttp\.so$'; then
+            echo "rsyslog-imhttp is missing imhttp.so" >&2
             exit 1
           fi
           if [ "$MOCK_CONFIG" = "epel-9-x86_64" ]; then
