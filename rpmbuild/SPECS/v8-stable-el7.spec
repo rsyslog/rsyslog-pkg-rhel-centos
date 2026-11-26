@@ -1223,6 +1223,9 @@ done
 - Add the rsyslog-omkinesis subpackage on EL9 and newer. Disable omkinesis
   on EL8, where libcurl is older than 7.75.
 
+* Thu Oct 22 2026 Rainer Gerhards <rgerhards@adiscon.com> - 8.2606.0-4
+- Add the imhttp input module subpackage for EL8 and newer.
+
 * Tue Oct 20 2026 Florian Riedl - 8.2610.0-1
 - Release build for 8.2610.0
 
@@ -1233,9 +1236,6 @@ done
 
 * Tue Aug 18 2026 Florian Riedl - 8.2608.0-1
 - Release build for 8.2608.0
-
-* Thu Oct 22 2026 Rainer Gerhards <rgerhards@adiscon.com> - 8.2606.0-4
-- Add the imhttp input module subpackage for EL8 and newer.
 
 * Thu Jul 30 2026 Andre Lorbach - 8.2606.0-3
 - Build the bundled librdkafka 2.14.1 static archive in a mockbuild-writable
