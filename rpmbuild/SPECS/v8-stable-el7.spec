@@ -33,8 +33,8 @@
 
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
-Version: 8.2606.0
-Release: 3%{?dist}
+Version: 8.2608.0
+Release: 2%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 %if 0%{?rhel} == 9
@@ -131,6 +131,7 @@ BuildRequires: ruby-devel
 
 Requires: logrotate >= 3.5.2
 Requires: bash >= 2.0
+Requires: python3
 Requires: libestr >= 0.1.11
 Requires: %{libfastjson_pkg} >= 0.99.8
 
@@ -146,7 +147,7 @@ Requires: bash >= 2.0
 
 Provides: syslog
 Obsoletes: sysklogd < 1.5-11
-Obsoletes: rsyslog-mmutf8fix
+Obsoletes: rsyslog-mmutf8fix < %{version}-%{release}
 
 # Patches
 #Patch0: rsyslog-service-centos-rhel.patch
@@ -379,6 +380,14 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libcurl-devel
 
+%if 0%{?rhel} >= 8
+%package imhttp
+Summary: imhttp input module for rsyslog
+Group: System Environment/Daemons
+Requires: %name = %version-%release
+BuildRequires: civetweb-devel apr-util-devel
+%endif
+
 %package mmdblookup
 Summary: mmdblookup MaxMind/GeoIP DB lookup for rsyslog
 Group: System Environment/Daemons
@@ -602,6 +611,11 @@ Function module for rainerscript function hash.
 %description omhttp
 This module provides native support for writing to Redis, using the hiredis client library.
 
+%if 0%{?rhel} >= 8
+%description imhttp
+This module provides support for HTTP server.
+%endif
+
 %description mmdblookup
 This module provides support for storing information about IP addresses in a highly optimized and flexible database format.
 
@@ -824,6 +838,9 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-pmciscoios \
 	--enable-mmkubernetes \
 	--enable-omhttp \
+%if 0%{?rhel} >= 8
+	--enable-imhttp \
+%endif
 	--enable-pmnull \
 	--enable-mmdblookup \
 	--enable-pmnormalize \
@@ -884,6 +901,7 @@ cp -r doc/build/* %{buildroot}%{rsyslog_docdir}/html
 # Older sources may not build these files; newer ones do.
 # Keep file non-empty for older sources where no liboverride modules exist.
 # rpmbuild errors out on an empty %files -f input file.
+touch %{buildroot}%{_libdir}/rsyslog/__liboverride_filelist_placeholder__.so
 echo "%%exclude %{_libdir}/rsyslog/__liboverride_filelist_placeholder__.so" > %{liboverride_filelist}
 for so in \
   liboverride_getaddrinfo.so \
@@ -927,6 +945,8 @@ done
 %dir %{rsyslog_pkidir}
 %{_sbindir}/rsyslogd
 %attr(755,root,root) %{_bindir}/rsyslog-recover-qi.pl
+%attr(755,root,root) %{_bindir}/rsyslog-segqueue
+%{_mandir}/man1/rsyslog-segqueue.1.gz
 %{_mandir}/man5/rsyslog.conf.5.gz
 %{_mandir}/man8/rsyslogd.8.gz
 %{_unitdir}/rsyslog.service
@@ -1143,6 +1163,12 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omhttp.so
 
+%if 0%{?rhel} >= 8
+%files imhttp
+%defattr(-,root,root)
+%{_libdir}/rsyslog/imhttp.so
+%endif
+
 %files mmdblookup
 %defattr(-,root,root)
 %{_libdir}/rsyslog/mmdblookup.so
@@ -1165,6 +1191,17 @@ done
 
 
 %changelog
+* Tue Aug 18 2026 Rainer Gerhards - 8.2608.0-2
+- Package the rsyslog-segqueue utility and manual page.
+- Keep the generated liboverride file list valid when no override modules build.
+- Use a versioned mmutf8fix obsoletion to avoid the RPM warning.
+
+* Tue Aug 18 2026 Florian Riedl - 8.2608.0-1
+- Release build for 8.2608.0
+
+* Thu Oct 22 2026 Rainer Gerhards <rgerhards@adiscon.com> - 8.2606.0-4
+- Add the imhttp input module subpackage for EL8 and newer.
+
 * Thu Jul 30 2026 Andre Lorbach - 8.2606.0-3
 - Build the bundled librdkafka 2.14.1 static archive in a mockbuild-writable
   staging directory on EL9, including the Kafka 4 SCRAM fix.
