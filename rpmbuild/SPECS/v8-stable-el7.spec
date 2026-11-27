@@ -34,7 +34,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 8.2610.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 # Build-time generated file list for optional liboverride_*.so modules.
 %global liboverride_filelist %{_builddir}/%{name}-%{version}/liboverride.files
 %if 0%{?rhel} == 9
@@ -380,7 +380,7 @@ Group: System Environment/Daemons
 Requires: %name = %version-%release
 BuildRequires: libcurl-devel
 
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 && "%{?adiscon_repo}" == "epel"
 %package imhttp
 Summary: imhttp input module for rsyslog
 Group: System Environment/Daemons
@@ -618,7 +618,7 @@ Function module for rainerscript function hash.
 %description omhttp
 This module provides native support for writing to Redis, using the hiredis client library.
 
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 && "%{?adiscon_repo}" == "epel"
 %description imhttp
 This module provides support for HTTP server.
 %endif
@@ -856,8 +856,11 @@ export HIREDIS_LIBS=-L%{_libdir}
 	--enable-pmciscoios \
 	--enable-mmkubernetes \
 	--enable-omhttp \
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 && "%{?adiscon_repo}" == "epel"
 	--enable-imhttp \
+%endif
+%if 0%{?rhel} >= 8 && "%{?adiscon_repo}" != "epel"
+	--disable-imhttp \
 %endif
 	--enable-pmnull \
 	--enable-mmdblookup \
@@ -1186,7 +1189,7 @@ done
 %defattr(-,root,root)
 %{_libdir}/rsyslog/omhttp.so
 
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 && "%{?adiscon_repo}" == "epel"
 %files imhttp
 %defattr(-,root,root)
 %{_libdir}/rsyslog/imhttp.so
@@ -1219,6 +1222,10 @@ done
 %endif
 
 %changelog
+* Fri Nov 27 2026 Andre Lorbach - 8.2610.0-3
+- Build imhttp only on EPEL 8 and newer. RHEL repositories do not ship
+  civetweb-devel, so RHEL 8 and newer disable the module.
+
 * Thu Nov 26 2026 Andre Lorbach - 8.2610.0-2
 - Add the rsyslog-omkinesis subpackage on EL9 and newer. Disable omkinesis
   on EL8, where libcurl is older than 7.75.
